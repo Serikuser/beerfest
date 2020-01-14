@@ -44,7 +44,7 @@
                                     <input type="hidden" name="command" value="make_book"/>
                                     <input type="hidden" name="barId" value="${bar.barId}"/>
                                     <div class="form-group">
-                                        <h5>Резервация:</h5>
+                                        <h5>Бронирование:</h5>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-clock"></i></span>
@@ -66,14 +66,14 @@
                                         </div>
                                     </div>
                                     <button type="submit" class="button_success button_width_30">
-                                        Зарезервировать
+                                       Бронировать
                                     </button>
+                                    <hr>
                                     <script>
                                         $('#${bar.barId}').datetimepicker({
-                                            yearStart: 2020,
-                                            yearEnd: 2020,
-                                            monthStart: 1,
-                                            monthEnd: 3,
+                                            startDate:'2020/03/10',
+                                            minDate:'2020/03/10',
+                                            maxDate:'2020/03/13'
                                         });
                                     </script>
                                 </form>
