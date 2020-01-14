@@ -48,27 +48,22 @@ public class BarDAOImpl implements BarDAO {
     }
 
     @Override
-    public Entity findEntity(Object id) {
+    public Bar findEntity(Long id) {
         return null;
     }
 
     @Override
-    public boolean delete(Entity entity) {
+    public boolean delete(Bar entity) {
         return false;
     }
 
     @Override
-    public boolean delete(Object id) {
+    public boolean delete(Long id) {
         return false;
     }
 
     @Override
-    public boolean create(Entity entity) {
-        return false;
-    }
-
-    @Override
-    public Entity update(Entity entity) {
+    public Bar update(Bar entity) {
         return null;
     }
 
@@ -121,7 +116,7 @@ public class BarDAOImpl implements BarDAO {
     }
 
     @Override
-    public boolean submitBar(Bar bar) {
+    public boolean create(Bar bar) {
         boolean flag = false;
         ProxyConnection connection = null;
         PreparedStatement statement = null;

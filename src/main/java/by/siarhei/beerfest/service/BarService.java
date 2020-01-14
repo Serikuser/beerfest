@@ -15,7 +15,7 @@ public class BarService {
         bar.setPlaces(places);
         bar.setDescription(barDescription);
         BarDAOImpl dao = new BarDAOImpl();
-        dao.submitBar(bar);
+        dao.create(bar);
     }
 
     public static boolean checkUserSubmission(String login) {

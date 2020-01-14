@@ -6,13 +6,11 @@ import by.siarhei.beerfest.entity.Entity;
 import java.util.List;
 import java.util.Map;
 
-public interface BarDAO extends BaseDAO {
+public interface BarDAO extends BaseDAO<Long, Bar> {
 
     int getBeerIdByName(String name);
 
     int getFoodIdByName(String name);
-
-    boolean submitBar(Bar bar);
 
     boolean isUserSubmittedBar(String login);
 

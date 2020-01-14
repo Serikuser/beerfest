@@ -194,7 +194,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findEntity(Integer id) {
+    public User findEntity(Long id) {
         return null;
     }
 
@@ -204,7 +204,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Long id) {
         return false;
     }
 
