@@ -24,6 +24,7 @@ public class MakeBookCommand implements ActionCommand {
     private static final String ATTRIBUTE_PARTICIPANTS = "participants";
     private static final String ERROR_JOKE = "ru.message.signup.error.joke";
     private static final String MAKE_BOOK_ERROR = "ru.message.submit.book.error";
+    private static final String MAKE_BOOK_ERROR_INVALID_DATE = "ru.message.submit.book.error.date";
     private static final String MAKE_BOOK_ERROR_FULL = "ru.message.submit.book.full";
     private static final String MAKE_BOOK_SUCCESS = "ru.message.submit.book.success";
     private static final String PARAMETER_BAR_ID = "barId";
@@ -31,7 +32,7 @@ public class MakeBookCommand implements ActionCommand {
     private static final String PARAMETER_BOOK_DATE = "bookDate";
 
 
-    // FIXME: 14.01.2020
+    // FIXME: 14.01.2020 validation
     @Override
     public String execute(SessionRequestContent content) throws IOException, ServletException {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
@@ -42,11 +43,16 @@ public class MakeBookCommand implements ActionCommand {
                 long accountId = (long) content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID);
                 long barId = Long.parseLong(content.getParameter(PARAMETER_BAR_ID));
                 int places = Integer.parseInt(content.getParameter(PARAMETER_BOOK_PLACES));
-                Date date = Date.valueOf(content.getParameter(PARAMETER_BOOK_DATE));
-                if (BookService.makeBook(accountId, barId, places, date)) {
-                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_SUCCESS));
+                String inputDate = content.getParameter(PARAMETER_BOOK_DATE);
+                if (!inputDate.isEmpty()) {
+                    Date date = Date.valueOf(inputDate);
+                    if (BookService.makeBook(accountId, barId, places, date)) {
+                        content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_SUCCESS));
+                    } else {
+                        content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_ERROR));
+                    }
                 } else {
-                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_ERROR));
+                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_ERROR_INVALID_DATE));
                 }
             } else {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_ERROR_FULL));

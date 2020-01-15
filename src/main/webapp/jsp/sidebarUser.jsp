@@ -33,7 +33,7 @@
         <div class="profile-info_label"> ${userStatus} </div>
     </div>
     <div class="profile-info_item">
-        <form action="controller" class="needs-validation" onsubmit="return cryptChange()" novalidate>
+        <form action="controller" method="POST" class="needs-validation" onsubmit="return cryptChange()" novalidate>
             <div class="row">
                 <div class="col">
                     <div class="form-group">

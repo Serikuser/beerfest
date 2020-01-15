@@ -51,7 +51,7 @@
                                             </div>
                                             <input size="16" name="bookDate" class="form-control" type="text"
                                                    placeholder="Выберете дату"
-                                                   id="${bar.barId}" readonly/>
+                                                   id="${bar.barId}" required readonly/>
                                         </div>
                                         <div class="input-group mb-3">
                                             <select class="custom-select" id="places" name="bookPlaces">
@@ -73,6 +73,10 @@
                                         $('#${bar.barId}').datetimepicker({
                                             format:"Y-m-d",
                                             timepicker:false,
+                                            defaultDate:'2020/03/10',
+                                            scrollMonth:false,
+                                            scrollTime:false,
+                                            scrollInput:false,
                                             startDate:'2020/03/10',
                                             minDate:'2020/03/10',
                                             maxDate:'2020/03/13',

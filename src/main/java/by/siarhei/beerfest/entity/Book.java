@@ -52,4 +52,9 @@ public class Book extends Entity {
     public void setDate(Date date) {
         this.date = date;
     }
+    @Override
+    public String toString() {
+        return String.format(
+                "user with id: %s, bar with id: %s, reserved places: %s, on date: %s", userId, barId, places, date);
+    }
 }

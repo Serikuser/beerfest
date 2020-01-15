@@ -3,7 +3,6 @@ package by.siarhei.beerfest.command;
 import by.siarhei.beerfest.command.impl.*;
 
 public enum CommandType {
-
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand()),
     SIGNUP(new SignupCommand()),
