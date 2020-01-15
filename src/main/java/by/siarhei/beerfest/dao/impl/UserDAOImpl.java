@@ -29,6 +29,10 @@ public class UserDAOImpl implements UserDAO {
                     "UPDATE account " +
                     "SET password=? " +
                     "WHERE login=?";
+    private static final String UPDATE_AVATAR_BY_LOGIN_SQL =
+                    "UPDATE account " +
+                    "SET avatar_url=? " +
+                    "WHERE login=?";
     private static final String SELECT_USER_BY_ID_SQL =
                     "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
                     "FROM account " +
@@ -186,6 +190,28 @@ public class UserDAOImpl implements UserDAO {
             close(resultSet);
         }
         return user;
+    }
+
+    @Override
+    public boolean updateAvatar(String login, String uploadedFilePath) {
+        ProxyConnection connection = null;
+        PreparedStatement statement = null;
+        boolean flag;
+        try {
+            connection = ConnectionPool.INSTANCE.getConnection();
+            statement = connection.prepareStatement(UPDATE_AVATAR_BY_LOGIN_SQL);
+            statement.setString(1, uploadedFilePath);
+            statement.setString(2, login);
+            statement.execute();
+            flag = true;
+        } catch (SQLException e) {
+            logger.error(String.format("Cannot avatar throws exception: %s", e));
+            flag = false;
+        } finally {
+            close(statement);
+            close(connection);
+        }
+        return flag;
     }
 
     @Override

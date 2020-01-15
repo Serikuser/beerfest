@@ -46,4 +46,13 @@ public class AccountService {
         UserDAOImpl dao = new UserDAOImpl();
         return dao.findUserByLogin(login);
     }
+
+    public static boolean chageAvatar(String login, String uploadedFilePath) {
+        boolean flag = false;
+        if (!uploadedFilePath.isEmpty()) {
+            UserDAOImpl dao = new UserDAOImpl();
+            flag = dao.updateAvatar(login, uploadedFilePath);
+        }
+        return flag;
+    }
 }

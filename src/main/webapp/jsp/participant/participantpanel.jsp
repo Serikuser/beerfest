@@ -38,6 +38,23 @@
                     </form>
                 </div>
                 <div class="container sidebar-block_border">
+                    <label for="avatarUpload">Сменить аватар</label>
+                    <form id="avatarUpload" class="md-form" action="upload" method="POST" enctype="multipart/form-data" >
+                        <input type="hidden" name="uploadType" value="avatar" accept="image/*"/>
+                        <div class="file-field">
+                            <input type="file" name="file" required="required">
+                        </div>
+                        <hr>
+                        <div class="auth_field">
+                            <div class="auth_error"> ${uploadFileMessage}</div>
+                        </div>
+                        <button type="submit" class="button_success button_width_30">
+                            Загрузить
+                        </button>
+                        <hr>
+                    </form>
+                </div>
+                <div class="container sidebar-block_border">
                     <label for="barSubmit">Заполните форму, что бы принять участие в фестивале</label>
                     <div class="auth_field">
                         <div class="auth_error"> ${baRErrorMessage}</div>

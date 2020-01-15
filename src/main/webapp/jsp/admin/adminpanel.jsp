@@ -35,9 +35,28 @@
                         <button type="submit" class="button_success button_width_30">
                             Сменить
                         </button>
+                        <hr>
                     </form>
                 </div>
                 <div class="container sidebar-block_border">
+                    <label for="avatarUpload">Сменить аватар</label>
+                    <form id="avatarUpload" class="md-form" action="upload" method="POST" enctype="multipart/form-data" >
+                        <input type="hidden" name="uploadType" value="avatar"/>
+                        <div class="file-field">
+                            <input type="file" name="file" required="required" accept="image/*">
+                        </div>
+                        <hr>
+                        <div class="auth_field">
+                            <div class="auth_error"> ${uploadFileMessage}</div>
+                        </div>
+                        <button type="submit" class="button_success button_width_30">
+                            Загрузить
+                        </button>
+                        <hr>
+                    </form>
+                </div>
+                <div class="container sidebar-block_border">
+                    <label for="beerSubmit">Добавить тип пива</label>
                     <div class="auth_field">
                         <div class="auth_error"> ${beerSubmitMessage}</div>
                     </div>
@@ -69,6 +88,7 @@
                     <div class="auth_error"> ${foodSubmitMessage}</div>
                 </div>
                 <div class="container sidebar-block_border">
+                    <label for="foodSubmit">Добавить тип кухни</label>
                     <form id="foodSubmit" method="POST" action="controller" autocomplete="off">
                         <input type="hidden" name="command" value="submit_Food"/>
                         <div class="row">

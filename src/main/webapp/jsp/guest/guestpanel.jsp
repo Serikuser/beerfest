@@ -15,7 +15,7 @@
     <div class="app_inner" style="padding-top: 64px">
         <div class="main">
             <div class="main_inner sidebar-block_border">
-                <div class="container">
+                <div class="container sidebar-block_border">
                     <form class="needs-validation" onsubmit="return cryptChange()" novalidate>
                         <div class="row">
                             <div class="col">
@@ -30,7 +30,26 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" >Сменить</button>
+                        <button type="submit" class="button_success button_width_30">
+                            Сменить
+                        </button>
+                    </form>
+                </div>
+                <div class="container sidebar-block_border">
+                    <label for="avatarUpload">Сменить аватар</label>
+                    <form id="avatarUpload" class="md-form" action="upload" method="POST" enctype="multipart/form-data" >
+                        <input type="hidden" name="uploadType" value="avatar"/>
+                        <div class="file-field">
+                            <input type="file" name="file" required="required" accept="image/*">
+                        </div>
+                        <hr>
+                        <div class="auth_field">
+                            <div class="auth_error"> ${uploadFileMessage}</div>
+                        </div>
+                        <button type="submit" class="button_success button_width_30">
+                            Загрузить
+                        </button>
+                        <hr>
                     </form>
                 </div>
             </div>
