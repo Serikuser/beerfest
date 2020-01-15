@@ -1,7 +1,7 @@
 package by.siarhei.beerfest.command.impl;
 
 import by.siarhei.beerfest.command.ActionCommand;
-import by.siarhei.beerfest.entity.Entity;
+import by.siarhei.beerfest.entity.Bar;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.service.FeedUpdateService;
 import by.siarhei.beerfest.session.SessionRequestContent;
@@ -17,7 +17,7 @@ public class ParticipantListUpdateCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content) throws IOException, ServletException {
         String page = ConfigurationManager.getProperty(JSP_PARTICIPANTS);
-        List<Entity> list = FeedUpdateService.updateParticipants();
+        List<Bar> list = FeedUpdateService.updateParticipants();
         content.setAttribute(ATTRIBUTE_PARTICIPANTS,list);
         return page;
     }

@@ -14,7 +14,7 @@ public class AccountService {
 
     public static User defineUserById(long id) {
         UserDAOImpl dao = new UserDAOImpl();
-        return dao.findUserById(id);
+        return dao.findEntity(id);
     }
 
     public static boolean changeUserPassword(String login, String eMail, String newPassword) {

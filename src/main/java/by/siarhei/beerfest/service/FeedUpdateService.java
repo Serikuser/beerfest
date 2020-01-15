@@ -3,6 +3,7 @@ package by.siarhei.beerfest.service;
 import by.siarhei.beerfest.dao.BarDAO;
 import by.siarhei.beerfest.dao.impl.BarDAOImpl;
 import by.siarhei.beerfest.dao.impl.FeedDAOImpl;
+import by.siarhei.beerfest.entity.Bar;
 import by.siarhei.beerfest.entity.Entity;
 
 import java.util.List;
@@ -12,12 +13,12 @@ public class FeedUpdateService {
 
     public static List<Entity> updateNews() {
         FeedDAOImpl dao = new FeedDAOImpl();
-        return dao.getFeedList();
+        return dao.findAll();
     }
 
-    public static List<Entity> updateParticipants() {
+    public static List<Bar> updateParticipants() {
         BarDAO dao = new BarDAOImpl();
-        return  dao.getBarList();
+        return  dao.findAll();
     }
 
     public static Map<Long, String> updateFoodList() {

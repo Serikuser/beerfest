@@ -3,7 +3,6 @@ package by.siarhei.beerfest.service;
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.CommandType;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 public class CommandProvider {

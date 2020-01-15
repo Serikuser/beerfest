@@ -9,7 +9,5 @@ public interface UserDAO extends BaseDAO<Long, User> {
 
     boolean updatePassword(String login, String newPassword);
 
-    User findUserById(long id);
-
     boolean updateAvatar(String login, String uploadedFilePath);
 }

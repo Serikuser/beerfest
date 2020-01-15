@@ -71,9 +71,11 @@
                                     <hr>
                                     <script>
                                         $('#${bar.barId}').datetimepicker({
+                                            format:"Y-m-d",
+                                            timepicker:false,
                                             startDate:'2020/03/10',
                                             minDate:'2020/03/10',
-                                            maxDate:'2020/03/13'
+                                            maxDate:'2020/03/13',
                                         });
                                     </script>
                                 </form>

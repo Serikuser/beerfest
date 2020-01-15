@@ -32,7 +32,8 @@ public class BarDAOImpl implements BarDAO {
     private static final String CHECK_BAR_BY_USER_LOGIN = String.format(
             "SELECT count(*) as %s " +
                     "FROM bar " +
-                    "INNER JOIN account " + "ON bar.account_id = account.id " +
+                    "INNER JOIN account " +
+                    "ON bar.account_id = account.id " +
                     "WHERE account.login= ? ", COINCIDENCES_RESULT_INDEX);
     private static final String SELECT_ALL_BAR_SQL =
             "SELECT bar.id,bar.account_id,bar.name,bar.description,bar.food_id,food.name,bar.beer_id,beer.name,bar.places " +
@@ -44,7 +45,37 @@ public class BarDAOImpl implements BarDAO {
 
     @Override
     public List findAll() {
-        return null;
+        List<Entity> list = new ArrayList<>();
+        ProxyConnection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.INSTANCE.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(SELECT_ALL_BAR_SQL);
+            BarFactory factory = BarFactory.getInstance();
+            while (resultSet.next()) {
+                int index = 1;
+                long barId = resultSet.getLong(index++);
+                long accountId = resultSet.getLong(index++);
+                String name = resultSet.getString(index++);
+                String description = resultSet.getString(index++);
+                long foodId = resultSet.getLong(index++);
+                String foodName = resultSet.getString(index++);
+                long beerId = resultSet.getLong(index++);
+                String beerName = resultSet.getString(index++);
+                int places = resultSet.getInt(index);
+                list.add(factory.create(barId, accountId, name, description, foodId, foodName, beerId, beerName, places));
+            }
+
+        } catch (SQLException e) {
+            logger.error(String.format("Bar list cant be updated throws exception: %s", e));
+        } finally {
+            close(connection);
+            close(statement);
+            close(resultSet);
+        }
+        return list;
     }
 
     @Override
@@ -68,7 +99,7 @@ public class BarDAOImpl implements BarDAO {
     }
 
     @Override
-    public int getBeerIdByName(String name) {
+    public int findBeerIdByName(String name) {
         int id = 0;
         ProxyConnection connection = null;
         PreparedStatement statement = null;
@@ -92,7 +123,7 @@ public class BarDAOImpl implements BarDAO {
     }
 
     @Override
-    public int getFoodIdByName(String name) {
+    public int findFoodIdByName(String name) {
         int id = 0;
         ProxyConnection connection = null;
         PreparedStatement statement = null;
@@ -165,41 +196,6 @@ public class BarDAOImpl implements BarDAO {
             close(resultSet);
         }
         return flag;
-    }
-
-    @Override
-    public List<Entity> getBarList() {
-        List<Entity> list = new ArrayList<>();
-        ProxyConnection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = ConnectionPool.INSTANCE.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(SELECT_ALL_BAR_SQL);
-            BarFactory factory = BarFactory.getInstance();
-            while (resultSet.next()) {
-                int index = 1;
-                long barId = resultSet.getLong(index++);
-                long accountId = resultSet.getLong(index++);
-                String name = resultSet.getString(index++);
-                String description = resultSet.getString(index++);
-                long foodId = resultSet.getLong(index++);
-                String foodName = resultSet.getString(index++);
-                long beerId = resultSet.getLong(index++);
-                String beerName = resultSet.getString(index++);
-                int places = resultSet.getInt(index);
-                list.add(factory.create(barId, accountId, name, description, foodId, foodName, beerId, beerName, places));
-            }
-
-        } catch (SQLException e) {
-            logger.error(String.format("Bar list cant be updated throws exception: %s", e));
-        } finally {
-            close(connection);
-            close(statement);
-            close(resultSet);
-        }
-        return list;
     }
 
     @Override

@@ -156,7 +156,34 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findUserById(long id) {
+    public boolean updateAvatar(String login, String uploadedFilePath) {
+        ProxyConnection connection = null;
+        PreparedStatement statement = null;
+        boolean flag;
+        try {
+            connection = ConnectionPool.INSTANCE.getConnection();
+            statement = connection.prepareStatement(UPDATE_AVATAR_BY_LOGIN_SQL);
+            statement.setString(1, uploadedFilePath);
+            statement.setString(2, login);
+            statement.execute();
+            flag = true;
+        } catch (SQLException e) {
+            logger.error(String.format("Cannot avatar throws exception: %s", e));
+            flag = false;
+        } finally {
+            close(statement);
+            close(connection);
+        }
+        return flag;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return null;
+    }
+
+    @Override
+    public User findEntity(Long id) {
         User user = new User();
         ProxyConnection connection = null;
         PreparedStatement statement = null;
@@ -190,38 +217,6 @@ public class UserDAOImpl implements UserDAO {
             close(resultSet);
         }
         return user;
-    }
-
-    @Override
-    public boolean updateAvatar(String login, String uploadedFilePath) {
-        ProxyConnection connection = null;
-        PreparedStatement statement = null;
-        boolean flag;
-        try {
-            connection = ConnectionPool.INSTANCE.getConnection();
-            statement = connection.prepareStatement(UPDATE_AVATAR_BY_LOGIN_SQL);
-            statement.setString(1, uploadedFilePath);
-            statement.setString(2, login);
-            statement.execute();
-            flag = true;
-        } catch (SQLException e) {
-            logger.error(String.format("Cannot avatar throws exception: %s", e));
-            flag = false;
-        } finally {
-            close(statement);
-            close(connection);
-        }
-        return flag;
-    }
-
-    @Override
-    public List<User> findAll() {
-        return null;
-    }
-
-    @Override
-    public User findEntity(Long id) {
-        return null;
     }
 
     @Override

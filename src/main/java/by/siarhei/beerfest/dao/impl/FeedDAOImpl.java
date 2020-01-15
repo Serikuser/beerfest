@@ -20,35 +20,6 @@ public class FeedDAOImpl implements FeedDAO {
 
     @Override
     public List findAll() {
-        return null;
-    }
-
-    @Override
-    public Entity findEntity(Object id) {
-        return null;
-    }
-
-    @Override
-    public boolean delete(Entity entity) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(Object id) {
-        return false;
-    }
-
-    @Override
-    public boolean create(Entity entity) {
-        return false;
-    }
-
-    @Override
-    public Entity update(Entity entity) {
-        return null;
-    }
-
-    public List<Entity> getFeedList() {
         List<Entity> list = new ArrayList<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -75,5 +46,30 @@ public class FeedDAOImpl implements FeedDAO {
             close(resultSet);
         }
         return list;
+    }
+
+    @Override
+    public Entity findEntity(Object id) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(Object id) {
+        return false;
+    }
+
+    @Override
+    public boolean create(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public Entity update(Entity entity) {
+        return null;
     }
 }

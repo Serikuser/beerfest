@@ -1,6 +1,5 @@
 package by.siarhei.beerfest.factory;
 
-import by.siarhei.beerfest.entity.Entity;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
