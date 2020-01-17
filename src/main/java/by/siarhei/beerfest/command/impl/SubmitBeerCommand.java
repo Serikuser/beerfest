@@ -7,9 +7,6 @@ import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.impl.BarService;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
-
 public class SubmitBeerCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String ATTRIBUTE_USER_ROLE = "userRole";

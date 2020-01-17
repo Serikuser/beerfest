@@ -9,9 +9,6 @@ import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.impl.AccountService;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
-
 public class SignupCommand implements ActionCommand {
 
     public static final String PARAMETER_USERNAME = "username";

@@ -63,7 +63,7 @@ public class ProxyConnection implements Connection {
         try {
             ConnectionPool.INSTANCE.releaseConnection(this);
         } catch (NotProxyConnectionException e) {
-            e.printStackTrace();
+            logger.error(String.format("Connection cant be closed throws exception: %s", e));
         }
     }
 

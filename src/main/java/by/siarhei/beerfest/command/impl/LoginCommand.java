@@ -12,8 +12,6 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +51,7 @@ public class LoginCommand implements ActionCommand {
             fillRequest(content, user);
             RoleType roleType = (RoleType) content.getAttribute(ATTRIBUTE_USER_ROLE);
             page = ConfigurationManager.getProperty(roleType.getPage());
-
+            logger.info(String.format("User: %s has logged in", user));
         } else {
             content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE));
         }
