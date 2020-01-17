@@ -16,41 +16,10 @@
         <div class="main">
             <div class="main_inner sidebar-block_border">
                 <div class="container sidebar-block_border">
-                    <form class="needs-validation" onsubmit="return cryptChange()" novalidate>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="passwordChange">Сменить пароль</label>
-                                    <input id="passwordChange" type="password" class="form-control" required minlength="6" maxlength="50">
-                                    <input type="hidden" id="user-real-password-change" name="newPassword"/>
-                                    <input type="hidden" name="command" value="changePassword"/>
-                                    <div class="auth_error"> ${errorMessage}</div>
-                                    <div class="valid-feedback">Выглядит нормально</div>
-                                    <div class="invalid-feedback">Введите корректный пароль (минимум 6 символов)</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="button_success button_width_30">
-                            Сменить
-                        </button>
-                    </form>
+                    <jsp:include page="/jsp/changePassword.jsp"/>
                 </div>
                 <div class="container sidebar-block_border">
-                    <label for="avatarUpload">Сменить аватар</label>
-                    <form id="avatarUpload" class="md-form" action="upload" method="POST" enctype="multipart/form-data" >
-                        <input type="hidden" name="uploadType" value="avatar"/>
-                        <div class="file-field">
-                            <input type="file" name="file" required="required" accept="image/*">
-                        </div>
-                        <hr>
-                        <div class="auth_field">
-                            <div class="auth_error"> ${uploadFileMessage}</div>
-                        </div>
-                        <button type="submit" class="button_success button_width_30">
-                            Загрузить
-                        </button>
-                        <hr>
-                    </form>
+                   <jsp:include page="/jsp/changeAvatar.jsp"/>
                 </div>
             </div>
         </div>

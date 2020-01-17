@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.entity;
 
 public class User extends Entity {
-    private long id;
     private String login;
     private String password;
     private String email;
@@ -10,14 +9,6 @@ public class User extends Entity {
     private StatusType status;
 
     public User() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getLogin() {

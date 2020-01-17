@@ -6,8 +6,8 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.AccountService;
-import by.siarhei.beerfest.session.SessionRequestContent;
+import by.siarhei.beerfest.service.impl.AccountService;
+import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -25,14 +25,15 @@ public class SignupCommand implements ActionCommand {
     private static final String SIGNUP_ERROR_JOKE = "ru.message.signup.error.joke";
 
     @Override
-    public String execute(SessionRequestContent content) throws IOException, ServletException {
+    public String execute(SessionRequestContent content){
         String page = ConfigurationManager.getProperty(JSP_MAIN);
+        AccountService service = new AccountService();
         if (isEnterDataExist(content)) {
             String name = content.getParameter(PARAMETER_USERNAME);
             String eMail = content.getParameter(PARAMETER_EMAIL);
             String password = content.getParameter(PARAMETER_PASSWORD);
             RoleType role = RoleType.valueOf(content.getParameter(PARAMETER_ROLE).toUpperCase());
-            if (AccountService.signupUser(name, eMail, password, role, StatusType.ACTIVE)) {
+            if (service.signupUser(name, eMail, password, role, StatusType.ACTIVE)) {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_SUCCESS));
             } else {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR));

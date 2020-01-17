@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.entity;
 
 public class Bar extends Entity {
-    private long barId;
     private long accountId;
     private String name;
     private String description;
@@ -76,14 +75,6 @@ public class Bar extends Entity {
 
     public void setBeerName(String beerName) {
         this.beerName = beerName;
-    }
-
-    public long getBarId() {
-        return barId;
-    }
-
-    public void setBarId(long barId) {
-        this.barId = barId;
     }
 
     @Override

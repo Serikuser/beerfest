@@ -2,6 +2,9 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <title>Beer Festival</title>
@@ -16,51 +19,18 @@
         <div class="main">
             <div class="main_inner sidebar-block_border">
                 <div class="container sidebar-block_border">
-                    <form class="needs-validation" method="POST" action="controller" autocomplete="off"
-                          onsubmit="return cryptChange()" novalidate>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="passwordChange">Сменить пароль</label>
-                                    <input id="passwordChange" type="password" class="form-control" required
-                                           minlength="6" maxlength="50">
-                                    <input type="hidden" id="user-real-password-change" name="newPassword"/>
-                                    <input type="hidden" name="command" value="changePassword"/>
-                                    <div class="auth_error"> ${errorMessage}</div>
-                                    <div class="valid-feedback">Выглядит нормально</div>
-                                    <div class="invalid-feedback">Введите корректный пароль (минимум 6 символов)</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="button_success button_width_30">
-                            Сменить
-                        </button>
-                    </form>
+                 <jsp:include page="/jsp/changePassword.jsp"/>
                 </div>
                 <div class="container sidebar-block_border">
-                    <label for="avatarUpload">Сменить аватар</label>
-                    <form id="avatarUpload" class="md-form" action="upload" method="POST" enctype="multipart/form-data" >
-                        <input type="hidden" name="uploadType" value="avatar" accept="image/*"/>
-                        <div class="file-field">
-                            <input type="file" name="file" required="required">
-                        </div>
-                        <hr>
-                        <div class="auth_field">
-                            <div class="auth_error"> ${uploadFileMessage}</div>
-                        </div>
-                        <button type="submit" class="button_success button_width_30">
-                            Загрузить
-                        </button>
-                        <hr>
-                    </form>
+                  <jsp:include page="/jsp/changeAvatar.jsp"/>
                 </div>
                 <div class="container sidebar-block_border">
-                    <label for="barSubmit">Заполните форму, что бы принять участие в фестивале</label>
+                    <label for="barSubmit"><fmt:message key="panel.participant.label"/></label>
                     <div class="auth_field">
                         <div class="auth_error"> ${baRErrorMessage}</div>
                     </div>
                     <form id="barSubmit" method="POST" action="controller" autocomplete="off">
-                        <input type="hidden" name="command" value="submitBar"/>
+                        <input type="hidden" name="command" value="submit_bar"/>
                         <div class="row">
                             <div class="col">
                                 <div class="form-group">
@@ -71,8 +41,8 @@
                                             </span>
                                         </div>
                                         <input type="text" name="barName" class="form-control"
-                                               placeholder="Название бара"
-                                               aria-label="Название бара"
+                                               placeholder="<fmt:message key="panel.participant.placeholder.barname"/>"
+                                               aria-label="<fmt:message key="panel.participant.placeholder.barname"/>"
                                                aria-describedby="basic-addon1">
                                     </div>
                                     <div class="input-group mb-3">
@@ -100,14 +70,14 @@
 
                                     <div class="input-group mb-3">
                                         <input type="text" name="places" class="form-control"
-                                               placeholder="Количество мест"
+                                               placeholder="<fmt:message key="panel.participant.placeholder.places"/>"
                                                aria-label="Recipient's username" aria-describedby="basic-addon2">
                                         <div class="input-group-append">
                                             <span class="input-group-text" id="basic-addon2">
                                                 <i class="fas fa-utensils"></i></span>
                                         </div>
                                     </div>
-                                    <label for="barDescription">Описание вашего бара</label>
+                                    <label for="barDescription"><fmt:message key="panel.participant.description"/></label>
                                     <div class="input-group" id="barDescription">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-file-alt"></i>
@@ -122,7 +92,7 @@
                             </div>
                         </div>
                         <button type="submit" class="button_success button_width_30">
-                            Принять участие
+                            <fmt:message key="panel.participant.button"/>
                         </button>
                     </form>
                 </div>

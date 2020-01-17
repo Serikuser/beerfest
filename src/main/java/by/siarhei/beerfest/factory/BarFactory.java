@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.factory;
 
 import by.siarhei.beerfest.entity.Bar;
-import by.siarhei.beerfest.entity.Entity;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -31,9 +30,9 @@ public class BarFactory {
         return instance;
     }
 
-    public Entity create(long barId, long accountId, String name, String description, long foodId, String foodName, long beerId, String beerName, int places) {
+    public Bar create(long barId, long accountId, String name, String description, long foodId, String foodName, long beerId, String beerName, int places) {
         Bar bar = new Bar();
-        bar.setBarId(barId);
+        bar.setId(barId);
         bar.setAccountId(accountId);
         bar.setName(name);
         bar.setDescription(description);

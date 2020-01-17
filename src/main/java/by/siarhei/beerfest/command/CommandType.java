@@ -6,13 +6,14 @@ public enum CommandType {
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand()),
     SIGNUP(new SignupCommand()),
-    CHANGEPASSWORD(new ChangePasswordCommand()),
+    CHANGE_PASSWORD(new ChangePasswordCommand()),
     PROFILE(new ProfileCommand()),
-    SUBMITBAR(new SubmitBarCommand()),
+    SUBMIT_BAR(new SubmitBarCommand()),
     PARTICIPANT_LIST_UPDATE(new ParticipantListUpdateCommand()),
     SUBMIT_BEER(new SubmitBeerCommand()),
     SUBMIT_FOOD(new SubmitFoodCommand()),
     MAKE_BOOK(new MakeBookCommand()),
+    CHANGE_LOCALE(new ChangeLocaleCommand()),
     FEED_UPDATE(new FeedUpdateCommand());
 
     CommandType(ActionCommand command) {

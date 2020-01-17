@@ -3,8 +3,8 @@ package by.siarhei.beerfest.servlet;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.AccountService;
 import by.siarhei.beerfest.service.UploadType;
+import by.siarhei.beerfest.service.impl.AccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,6 +45,7 @@ public class UploadServlet extends HttpServlet {
             , HttpServletResponse response)
             throws ServletException, IOException {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
+        AccountService service = new AccountService();
         RoleType roleType = (RoleType) request.getSession().getAttribute(ATTRIBUTE_USER_ROLE);
         if (roleType != RoleType.UNAUTHORIZED) {
             page = ConfigurationManager.getProperty(roleType.getPage());
@@ -62,7 +63,7 @@ public class UploadServlet extends HttpServlet {
                 } catch (IOException e) {
                     logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
                 }
-                if (AccountService.chageAvatar(login, uploadedFilePath)) {
+                if (service.chageAvatar(login, uploadedFilePath)) {
                     request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SUCCESS));
                     request.getSession().setAttribute(ATTRIBUTE_USER_AVATAR_URL,uploadedFilePath);
                 } else {

@@ -2,6 +2,9 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="button_success button_width_100">Резервации</button>
+            <button type="submit" class="button_success button_width_100"><fmt:message key="panel.guest.button.books"/></button>
         </form>
     </div>
     <div class="profile-info_item">
@@ -33,7 +36,7 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="button_success button_width_100">Коментарии</button>
+            <button type="submit" class="button_success button_width_100"><fmt:message key="panel.guest.button.comments"/></button>
         </form>
     </div>
 </div>

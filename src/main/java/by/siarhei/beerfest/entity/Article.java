@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.entity;
 
 public class Article extends Entity {
-    private long id;
     private String title;
     private String text;
     private String imgSrc;
@@ -31,14 +30,6 @@ public class Article extends Entity {
 
     public void setImgSrc(String imgSrc) {
         this.imgSrc = imgSrc;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 }
 

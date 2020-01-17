@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.factory;
 
 import by.siarhei.beerfest.entity.Article;
-import by.siarhei.beerfest.entity.Entity;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -31,7 +30,7 @@ public class ArticleFactory {
         return instance;
     }
 
-    public Entity create(long id, String title, String text, String imgSrc) {
+    public Article create(long id, String title, String text, String imgSrc) {
         Article article = new Article();
         article.setId(id);
         article.setTitle(title);

@@ -1,10 +1,11 @@
 package by.siarhei.beerfest.dao;
 
 import by.siarhei.beerfest.entity.Bar;
+import by.siarhei.beerfest.exception.FeedUpdateException;
 
 import java.util.Map;
 
-public interface BarDAO extends BaseDAO<Long, Bar> {
+public interface BarDao extends BaseDao<Long, Bar> {
 
     int findBeerIdByName(String name);
 
@@ -12,9 +13,9 @@ public interface BarDAO extends BaseDAO<Long, Bar> {
 
     boolean isUserSubmittedBar(String login);
 
-    Map<Long, String> getFoodList();
+    Map<Long, String> findAllFoodType() throws FeedUpdateException;
 
-    Map<Long, String> getBeerList();
+    Map<Long, String> findnAllBeerType() throws FeedUpdateException;
 
     boolean submitBeer(String beerName);
 

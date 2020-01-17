@@ -15,6 +15,9 @@
     <div class="app_inner" style="padding-top: 64px">
         <div class="main">
             <div class="main_inner">
+                <div class="auth_field">
+                    <div class="auth_error"> ${updateErrorMessage}</div>
+                </div>
                 <div class="feed">
                     <c:forEach items="${feed}" var="feed">
                         <article class="news news_main">

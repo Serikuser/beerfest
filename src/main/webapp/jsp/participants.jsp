@@ -2,6 +2,9 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <title>Beer Festival News</title>
@@ -30,7 +33,7 @@
                             <div class="container">
                                 <h1><i class="fas fa-utensils"></i> ${bar.name}</h1>
                                 <hr>
-                                <h5>Описание бара:</h5>
+                                <h5><fmt:message key="participants.description"/></h5>
                                 <div class="well">
                                         ${bar.description}
                                 </div>
@@ -42,22 +45,22 @@
                             <div class="container" style="display: <c:if test="${signetGuestVisible == null}">none</c:if>">
                                 <form id="book" method="POST" action="controller" autocomplete="off">
                                     <input type="hidden" name="command" value="make_book"/>
-                                    <input type="hidden" name="barId" value="${bar.barId}"/>
+                                    <input type="hidden" name="barId" value="${bar.id}"/>
                                     <div class="form-group">
-                                        <h5>Бронирование:</h5>
+                                        <h5><fmt:message key="participants.book"/></h5>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-clock"></i></span>
                                             </div>
                                             <input size="16" name="bookDate" class="form-control" type="text"
-                                                   placeholder="Выберете дату"
-                                                   id="${bar.barId}" required readonly/>
+                                                   placeholder="<fmt:message key="participants.placeholder.date"/>"
+                                                   id="${bar.id}" required readonly/>
                                         </div>
                                         <div class="input-group mb-3">
                                             <select class="custom-select" id="places" name="bookPlaces">
-                                                <option value=1>Столик на одного</option>
-                                                <option value=2>Столик на двоих</option>
-                                                <option value=4>Групповой столик (4 персоны)</option>
+                                                <option value=1><fmt:message key="participants.option.one"/></option>
+                                                <option value=2><fmt:message key="participants.option.two"/></option>
+                                                <option value=4><fmt:message key="participants.option.four"/></option>
                                             </select>
                                             <div class="input-group-append">
                                                 <label class="input-group-text" for="places">
@@ -66,11 +69,11 @@
                                         </div>
                                     </div>
                                     <button type="submit" class="button_success button_width_30">
-                                       Бронировать
+                                        <fmt:message key="participants.button.book"/>
                                     </button>
                                     <hr>
                                     <script>
-                                        $('#${bar.barId}').datetimepicker({
+                                        $('#${bar.id}').datetimepicker({
                                             format:"Y-m-d",
                                             timepicker:false,
                                             defaultDate:'2020/03/10',

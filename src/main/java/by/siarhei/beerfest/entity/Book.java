@@ -4,7 +4,6 @@ package by.siarhei.beerfest.entity;
 import java.sql.Date;
 
 public class Book extends Entity {
-    long bookId;
     long userId;
     long barId;
     int places;
@@ -14,11 +13,11 @@ public class Book extends Entity {
     }
 
     public long getBookId() {
-        return bookId;
+        return id;
     }
 
     public void setBookId(long bookId) {
-        this.bookId = bookId;
+        this.id = bookId;
     }
 
     public long getUserId() {

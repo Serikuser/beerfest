@@ -1,7 +1,5 @@
-package by.siarhei.beerfest.service;
+package by.siarhei.beerfest.command;
 
-import by.siarhei.beerfest.command.ActionCommand;
-import by.siarhei.beerfest.command.CommandType;
 import by.siarhei.beerfest.command.impl.EmptyCommand;
 import by.siarhei.beerfest.manager.MessageManager;
 
@@ -19,7 +17,6 @@ public class CommandProvider {
     public static ActionCommand defineCommand(HttpServletRequest request) {
         String action = request.getParameter(PARAMETER_COMMAND);
         ActionCommand current = new EmptyCommand();
-        // FIXME: 15.01.2020 remove it to filter chain
         if (action == null || action.isEmpty()) {
             return current;
         }

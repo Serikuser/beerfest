@@ -1,6 +1,7 @@
 package by.siarhei.beerfest.dao;
 
 import by.siarhei.beerfest.entity.Entity;
+import by.siarhei.beerfest.exception.FeedUpdateException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,10 +11,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public interface BaseDAO<K, T extends Entity> {
+public interface BaseDao<K, T extends Entity> {
     Logger logger = LogManager.getLogger();
 
-    List<T> findAll();
+    List<T> findAll() throws FeedUpdateException;
 
     T findEntity(K id);
 

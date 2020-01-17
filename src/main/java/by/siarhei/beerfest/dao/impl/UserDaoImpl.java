@@ -2,7 +2,7 @@ package by.siarhei.beerfest.dao.impl;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
-import by.siarhei.beerfest.dao.UserDAO;
+import by.siarhei.beerfest.dao.UserDao;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class UserDAOImpl implements UserDAO {
+public class UserDaoImpl implements UserDao {
 
     private static final String INSERT_LOGIN_SQL = "INSERT INTO account (login,password,email,avatar_url,role,status) VALUES (?,?,?,?,?,?)";
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
@@ -41,7 +41,7 @@ public class UserDAOImpl implements UserDAO {
                     "INNER JOIN status " +
                     "ON account.status = status.id WHERE account.id=?";
 
-    public UserDAOImpl() {
+    public UserDaoImpl() {
     }
 
     @Override
@@ -79,7 +79,7 @@ public class UserDAOImpl implements UserDAO {
         }
         return user;
     }
-
+    @Override
     public boolean isLoginPasswordMatch(String login, String password) {
         ProxyConnection connection = null;
         PreparedStatement statement = null;

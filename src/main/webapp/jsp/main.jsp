@@ -2,6 +2,9 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <title>Beer Festival</title>
@@ -17,12 +20,12 @@
             <div class="main_inner">
                 <article class="news news_main">
                     <header class="news_header">
-                        <h2 class="news_title">Всем привет, тут будет приветствие очень милое и крутое!</h2>
+                        <h2 class="news_title"><fmt:message key="main.title"/></h2>
                     </header>
                     <div class="news_content news_typography ">
                         <div class="news_content-inner">
                             <div class="news-block_text">
-                                <p>А тут будет много текста, о том какие мы крутые и что предоставляем</p>
+                                <p><fmt:message key="main.text"/></p>
                             </div>
                             <div class="news-block_img">
                                 <img src="/Beerfest/img/hello.jpg" class="rounded mx-auto d-block"
@@ -46,5 +49,6 @@
 <script src="<c:url value="/js/auth_form.js" />"></script>
 <script src="<c:url value="/js/validation.js" />"></script>
 <script src="<c:url value="/js/header.js" />"></script>
+
 </body>
 </html>

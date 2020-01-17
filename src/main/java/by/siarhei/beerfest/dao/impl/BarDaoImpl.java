@@ -2,9 +2,9 @@ package by.siarhei.beerfest.dao.impl;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
-import by.siarhei.beerfest.dao.BarDAO;
+import by.siarhei.beerfest.dao.BarDao;
 import by.siarhei.beerfest.entity.Bar;
-import by.siarhei.beerfest.entity.Entity;
+import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.factory.BarFactory;
 
 import java.sql.PreparedStatement;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BarDAOImpl implements BarDAO {
+public class BarDaoImpl implements BarDao {
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
     private static final String INSERT_BAR_SQL = "INSERT INTO bar (account_id,name,description,food_id,beer_id ,places) VALUES (?,?,?,?,?,?)";
     private static final String INSERT_BEER_SQL = "INSERT INTO beer (name) VALUES (?)";
@@ -44,8 +44,8 @@ public class BarDAOImpl implements BarDAO {
                     "ON bar.food_id = food.id ";
 
     @Override
-    public List findAll() {
-        List<Entity> list = new ArrayList<>();
+    public List<Bar> findAll() throws FeedUpdateException {
+        List<Bar> list = new ArrayList<>();
         ProxyConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -55,21 +55,22 @@ public class BarDAOImpl implements BarDAO {
             resultSet = statement.executeQuery(SELECT_ALL_BAR_SQL);
             BarFactory factory = BarFactory.getInstance();
             while (resultSet.next()) {
-                int index = 1;
-                long barId = resultSet.getLong(index++);
-                long accountId = resultSet.getLong(index++);
-                String name = resultSet.getString(index++);
-                String description = resultSet.getString(index++);
-                long foodId = resultSet.getLong(index++);
-                String foodName = resultSet.getString(index++);
-                long beerId = resultSet.getLong(index++);
-                String beerName = resultSet.getString(index++);
-                int places = resultSet.getInt(index);
+                int index = 0;
+                long barId = resultSet.getLong(++index);
+                long accountId = resultSet.getLong(++index);
+                String name = resultSet.getString(++index);
+                String description = resultSet.getString(++index);
+                long foodId = resultSet.getLong(++index);
+                String foodName = resultSet.getString(++index);
+                long beerId = resultSet.getLong(++index);
+                String beerName = resultSet.getString(++index);
+                int places = resultSet.getInt(++index);
                 list.add(factory.create(barId, accountId, name, description, foodId, foodName, beerId, beerName, places));
             }
 
         } catch (SQLException e) {
             logger.error(String.format("Bar list cant be updated throws exception: %s", e));
+            throw new FeedUpdateException(e);
         } finally {
             close(connection);
             close(statement);
@@ -199,7 +200,7 @@ public class BarDAOImpl implements BarDAO {
     }
 
     @Override
-    public Map<Long, String> getFoodList() {
+    public Map<Long, String> findAllFoodType() throws FeedUpdateException {
         Map<Long, String> foodList = new HashMap<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -217,6 +218,7 @@ public class BarDAOImpl implements BarDAO {
 
         } catch (SQLException e) {
             logger.error(String.format("Cant get food list throws exception: %s", e));
+            throw new FeedUpdateException(e);
         } finally {
             close(connection);
             close(statement);
@@ -226,7 +228,7 @@ public class BarDAOImpl implements BarDAO {
     }
 
     @Override
-    public Map<Long, String> getBeerList() {
+    public Map<Long, String> findnAllBeerType() throws FeedUpdateException {
         Map<Long, String> beerList = new HashMap<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -244,6 +246,7 @@ public class BarDAOImpl implements BarDAO {
 
         } catch (SQLException e) {
             logger.error(String.format("Cant get beer list throws exception: %s", e));
+            throw new FeedUpdateException(e);
         } finally {
             close(connection);
             close(statement);

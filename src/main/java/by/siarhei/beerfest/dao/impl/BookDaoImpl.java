@@ -2,7 +2,7 @@ package by.siarhei.beerfest.dao.impl;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
-import by.siarhei.beerfest.dao.BookDAO;
+import by.siarhei.beerfest.dao.BookDao;
 import by.siarhei.beerfest.entity.Book;
 
 import java.sql.PreparedStatement;
@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BookDAOImpl implements BookDAO {
+public class BookDaoImpl implements BookDao {
     private static final String INSERT_BOOK_SQL = "INSERT INTO book (guest_id,bar_id,reserved_places,reservation_date) VALUES (?,?,?,?)";
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
     private static final String CHECK_BOOK_BY_LOGIN_SQL = String.format(

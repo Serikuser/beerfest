@@ -18,6 +18,10 @@
         <jsp:include page="/jsp/sidebarUser.jsp"/>
     </div>
 </aside>
+<aside class="sidebar_inner" style="width: 277.796px; margin-top: 0px;">
+    <jsp:include page="/jsp/sidebarLanguage.jsp"/>
+</aside>
+
 <script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>

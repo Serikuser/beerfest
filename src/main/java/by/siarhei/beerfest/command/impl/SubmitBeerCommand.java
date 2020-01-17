@@ -4,8 +4,8 @@ import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.BarService;
-import by.siarhei.beerfest.session.SessionRequestContent;
+import by.siarhei.beerfest.service.impl.BarService;
+import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -20,13 +20,14 @@ public class SubmitBeerCommand implements ActionCommand {
     private static final String SIGNUP_ERROR_JOKE = "ru.message.signup.error.joke";
 
     @Override
-    public String execute(SessionRequestContent content) throws IOException, ServletException {
+    public String execute(SessionRequestContent content){
         String page = ConfigurationManager.getProperty(JSP_MAIN);
+        BarService service = new BarService();
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) == RoleType.ADMIN) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
             page = ConfigurationManager.getProperty(roleType.getPage());
             String beerName = content.getParameter(PARAMETER_BEER_NAME);
-            if (BarService.submitBeer(beerName)) {
+            if (service.submitBeer(beerName)) {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BEER_SUCCESS));
             } else {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BEER_ERROR));

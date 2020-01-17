@@ -1,11 +1,10 @@
 package by.siarhei.beerfest.servlet;
 
 import by.siarhei.beerfest.command.ActionCommand;
+import by.siarhei.beerfest.command.CommandProvider;
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.factory.ArticleFactory;
 import by.siarhei.beerfest.factory.UserFactory;
-import by.siarhei.beerfest.service.CommandProvider;
-import by.siarhei.beerfest.session.SessionRequestContent;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -38,7 +37,7 @@ public class Controller extends HttpServlet {
     public void init() {
         ArticleFactory.getInstance();
         UserFactory.getInstance();
-        ConnectionPool.INSTANCE.init();
+        ConnectionPool connectionPool = ConnectionPool.INSTANCE;
     }
 
     @Override

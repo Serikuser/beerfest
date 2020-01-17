@@ -1,33 +1,35 @@
-package by.siarhei.beerfest.service;
+package by.siarhei.beerfest.service.impl;
 
-import by.siarhei.beerfest.dao.UserDAO;
-import by.siarhei.beerfest.dao.impl.UserDAOImpl;
+import by.siarhei.beerfest.dao.UserDao;
+import by.siarhei.beerfest.dao.impl.UserDaoImpl;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
 import by.siarhei.beerfest.factory.UserFactory;
 import by.siarhei.beerfest.manager.ConfigurationManager;
+import by.siarhei.beerfest.service.CommandService;
 
-// FIXME: 13.01.2020
-public class AccountService {
+public class AccountService implements CommandService {
     private static final String PROPERTIES_DEFAULT_AVATAR_URL = "user.data.avatar.default";
+    private UserDao dao;
 
-    public static User defineUserById(long id) {
-        UserDAOImpl dao = new UserDAOImpl();
+    public AccountService(){
+        dao = new UserDaoImpl();
+    }
+
+    public User defineUserById(long id) {
         return dao.findEntity(id);
     }
 
-    public static boolean changeUserPassword(String login, String eMail, String newPassword) {
+    public  boolean changeUserPassword(String login, String eMail, String newPassword) {
         boolean flag = false;
-        UserDAOImpl dao = new UserDAOImpl();
         if (dao.isExist(login, eMail)) {
             return dao.updatePassword(login, newPassword);
         }
         return flag;
     }
 
-    public static boolean signupUser(String login, String eMail, String password, RoleType role, StatusType active) {
-        UserDAO dao = new UserDAOImpl();
+    public  boolean signupUser(String login, String eMail, String password, RoleType role, StatusType active) {
         UserFactory factory = UserFactory.getInstance();
         String avatarUrl = ConfigurationManager.getProperty(PROPERTIES_DEFAULT_AVATAR_URL);
         if (!dao.isExist(login, eMail)) {
@@ -37,20 +39,18 @@ public class AccountService {
         return false;
     }
 
-    public static boolean checkUserByLoginPassword(String login, String password) {
-        UserDAOImpl dao = new UserDAOImpl();
+    public  boolean checkUserByLoginPassword(String login, String password) {
         return dao.isLoginPasswordMatch(login, password);
     }
 
-    public static User defineUserByLogin(String login) {
-        UserDAOImpl dao = new UserDAOImpl();
+    public  User defineUserByLogin(String login) {
         return dao.findUserByLogin(login);
     }
 
-    public static boolean chageAvatar(String login, String uploadedFilePath) {
+    public boolean chageAvatar(String login, String uploadedFilePath) {
         boolean flag = false;
         if (!uploadedFilePath.isEmpty()) {
-            UserDAOImpl dao = new UserDAOImpl();
+            UserDaoImpl dao = new UserDaoImpl();
             flag = dao.updateAvatar(login, uploadedFilePath);
         }
         return flag;

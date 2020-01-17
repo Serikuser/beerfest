@@ -1,4 +1,4 @@
-package by.siarhei.beerfest.session;
+package by.siarhei.beerfest.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

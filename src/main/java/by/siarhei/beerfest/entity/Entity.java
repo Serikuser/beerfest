@@ -1,5 +1,12 @@
 package by.siarhei.beerfest.entity;
 
 public abstract class Entity implements Cloneable {
-    // TODO: 10.01.2020 ADD ID FIELD
+    protected long id;
+
+    public void setId(long id){
+        this.id = id;
+    }
+    public long getId(){
+        return id;
+    }
 }

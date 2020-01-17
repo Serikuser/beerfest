@@ -2,8 +2,9 @@ package by.siarhei.beerfest.dao.impl;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
-import by.siarhei.beerfest.dao.FeedDAO;
-import by.siarhei.beerfest.entity.Entity;
+import by.siarhei.beerfest.dao.FeedDao;
+import by.siarhei.beerfest.entity.Article;
+import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.factory.ArticleFactory;
 
 import java.sql.ResultSet;
@@ -12,15 +13,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedDAOImpl implements FeedDAO {
+public class FeedDaoImpl implements FeedDao {
 
     private static final String SQL_SELECT_ALL_FEED =
             "SELECT id, news_title, news_text, news_img_src " +
             "FROM feed";
 
     @Override
-    public List findAll() {
-        List<Entity> list = new ArrayList<>();
+    public List<Article> findAll() throws FeedUpdateException {
+        List<Article> list = new ArrayList<>();
         ProxyConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -40,6 +41,7 @@ public class FeedDAOImpl implements FeedDAO {
 
         } catch (SQLException e) {
             logger.error(String.format("Feed cant be updated throws exception: %s", e));
+            throw new FeedUpdateException(e);
         } finally {
             close(connection);
             close(statement);
@@ -49,27 +51,27 @@ public class FeedDAOImpl implements FeedDAO {
     }
 
     @Override
-    public Entity findEntity(Object id) {
+    public Article findEntity(Long id) {
         return null;
     }
 
     @Override
-    public boolean delete(Entity entity) {
+    public boolean delete(Article article) {
         return false;
     }
 
     @Override
-    public boolean delete(Object id) {
+    public boolean delete(Long id) {
         return false;
     }
 
     @Override
-    public boolean create(Entity entity) {
+    public boolean create(Article article) {
         return false;
     }
 
     @Override
-    public Entity update(Entity entity) {
+    public Article update(Article article) {
         return null;
     }
 }
