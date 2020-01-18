@@ -23,12 +23,8 @@ public class BarDaoImpl implements BarDao {
     private static final String INSERT_FOOD_SQL = "INSERT INTO food (name) VALUES (?)";
     private static final String SELECT_BEER_ID_BY_NAME = "SELECT id FROM beer WHERE name=?";
     private static final String SELECT_FOOD_ID_BY_NAME = "SELECT id FROM food WHERE name=?";
-    private static final String SELECT_ALL_FOOD =
-            "SELECT food.id,food.name " +
-                    "FROM food ";
-    private static final String SELECT_ALL_BEER =
-            "SELECT beer.id,beer.name\n" +
-                    "FROM beer ";
+    private static final String SELECT_ALL_FOOD ="SELECT food.id,food.name FROM food ";
+    private static final String SELECT_ALL_BEER = "SELECT beer.id,beer.name FROM beer ";
     private static final String CHECK_BAR_BY_USER_LOGIN = String.format(
             "SELECT count(*) as %s " +
                     "FROM bar " +

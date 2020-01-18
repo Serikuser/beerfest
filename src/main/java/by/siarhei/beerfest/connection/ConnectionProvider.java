@@ -35,5 +35,4 @@ public class ConnectionProvider {
         return new ProxyConnection(
                 DriverManager.getConnection(databaseUrl, userName, userPassword));
     }
-
 }

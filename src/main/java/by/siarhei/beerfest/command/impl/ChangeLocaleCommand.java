@@ -16,4 +16,5 @@ public class ChangeLocaleCommand implements ActionCommand {
         content.setSessionAttribute(ATTRIBUTE_LOCALE, locale);
         return page;
     }
+    
 }

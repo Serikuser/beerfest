@@ -67,7 +67,7 @@ public class MakeBookCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(ERROR_JOKE));
         }
-        // TODO: 17.01.2020 remove it to session listener
+        // TODO: 17.01.2020 remove it to listener
         BarService barService = new BarService();
         List<Bar> list = new ArrayList<>();
         try {

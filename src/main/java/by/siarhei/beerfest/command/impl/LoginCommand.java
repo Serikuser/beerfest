@@ -60,6 +60,7 @@ public class LoginCommand implements ActionCommand {
 
     private void fillRequest(SessionRequestContent content, User user) {
         RoleType roleType = user.getRole();
+        // TODO: 18.01.2020 remove it to listener
         if (roleType == RoleType.PARTICIPANT) {
             BarService barService = new BarService();
             Map<Long, String> beerList = new HashMap<>();

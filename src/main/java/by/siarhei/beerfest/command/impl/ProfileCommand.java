@@ -31,6 +31,7 @@ public class ProfileCommand implements ActionCommand {
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
             page = ConfigurationManager.getProperty(roleType.getPage());
+            // TODO: 18.01.2020 remove it to listener 
             if (roleType == RoleType.PARTICIPANT) {
                 Map<Long, String> beerList = new HashMap<>();
                 Map<Long, String> foodList = new HashMap<>();

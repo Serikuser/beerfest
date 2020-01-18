@@ -2,9 +2,6 @@ package by.siarhei.beerfest.servlet;
 
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.CommandProvider;
-import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.factory.ArticleFactory;
-import by.siarhei.beerfest.factory.UserFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -31,18 +28,6 @@ public class Controller extends HttpServlet {
             , HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
-
-    @Override
-    public void init() {
-        ArticleFactory.getInstance();
-        UserFactory.getInstance();
-        ConnectionPool connectionPool = ConnectionPool.INSTANCE;
-    }
-
-    @Override
-    public void destroy() {
-        ConnectionPool.INSTANCE.destroyPool();
     }
 
     private void processRequest(HttpServletRequest request

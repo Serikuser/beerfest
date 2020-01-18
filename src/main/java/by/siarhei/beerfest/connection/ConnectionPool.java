@@ -19,7 +19,7 @@ public enum ConnectionPool {
 
     private BlockingQueue<Connection> freeConnections;
     private Queue<Connection> occupiedConnections;
-    private static final int DEFAULT_POOL_SIZE = 48;
+    private static final int POOL_SIZE = 48;
 
     ConnectionPool() {
         init();
@@ -44,7 +44,7 @@ public enum ConnectionPool {
     }
 
     public void destroyPool() {
-        for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
+        for (int i = 0; i < POOL_SIZE; i++) {
             try {
                 ((ProxyConnection) freeConnections.take()).reallyClose();
             } catch (InterruptedException e) {
@@ -52,7 +52,7 @@ public enum ConnectionPool {
             }
         }
         deregisterDrivers();
-        logger.info("Poll destroyed");
+        logger.info(String.format("Poll: %s destroyed", this.toString()));
     }
 
     private void deregisterDrivers() {
@@ -66,9 +66,9 @@ public enum ConnectionPool {
     }
 
     private void init() {
-        freeConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);
+        freeConnections = new LinkedBlockingDeque<>(POOL_SIZE);
         occupiedConnections = new ArrayDeque<>();
-        for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
+        for (int i = 0; i < POOL_SIZE; i++) {
             try {
                 ProxyConnection connection = ConnectionProvider.getConnection();
                 freeConnections.offer(connection);
@@ -76,5 +76,10 @@ public enum ConnectionPool {
                 logger.fatal(String.format("Poll cant be filled throws exception: %s", e));
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Custom pool on %s: connections", POOL_SIZE);
     }
 }
