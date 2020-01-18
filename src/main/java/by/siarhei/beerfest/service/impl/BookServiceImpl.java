@@ -3,23 +3,23 @@ package by.siarhei.beerfest.service.impl;
 import by.siarhei.beerfest.dao.BookDao;
 import by.siarhei.beerfest.dao.impl.BookDaoImpl;
 import by.siarhei.beerfest.entity.Book;
-import by.siarhei.beerfest.service.CommandService;
+import by.siarhei.beerfest.service.BookService;
 
 import java.sql.Date;
 
 
-public class BookService implements CommandService {
+public class BookServiceImpl implements BookService {
     private BookDao dao;
 
-    public BookService() {
+    public BookServiceImpl() {
         dao = new BookDaoImpl();
     }
-
+    @Override
     public boolean checkUserBook(String login) {
         dao = new BookDaoImpl();
         return dao.isUsersBookingFull(login);
     }
-
+    @Override
     public boolean makeBook(long accountId, long barId, int places, Date date) {
         dao = new BookDaoImpl();
         Book book = new Book();

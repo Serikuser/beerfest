@@ -80,6 +80,6 @@ public enum ConnectionPool {
 
     @Override
     public String toString() {
-        return String.format("Custom pool on %s: connections", POOL_SIZE);
+        return String.format("Custom pool on %s connections", POOL_SIZE);
     }
 }

@@ -6,8 +6,8 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.BarService;
-import by.siarhei.beerfest.service.impl.BookService;
+import by.siarhei.beerfest.service.impl.BarServiceImpl;
+import by.siarhei.beerfest.service.impl.BookServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +41,7 @@ public class MakeBookCommand implements ActionCommand {
     // FIXME: 14.01.2020 validation
     @Override
     public String execute(SessionRequestContent content){
-        BookService service = new BookService();
+        BookServiceImpl service = new BookServiceImpl();
         String page = ConfigurationManager.getProperty(JSP_MAIN);
         String login = (String) content.getSessionAttribute(ATTRIBUTE_USER_LOGIN);
         if (isEnterDataExist(content) && content.getSessionAttribute(ATTRIBUTE_USER_ROLE) == RoleType.GUEST) {
@@ -68,10 +68,10 @@ public class MakeBookCommand implements ActionCommand {
             content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(ERROR_JOKE));
         }
         // TODO: 17.01.2020 remove it to listener
-        BarService barService = new BarService();
+        BarServiceImpl barServiceImpl = new BarServiceImpl();
         List<Bar> list = new ArrayList<>();
         try {
-            list = barService.updateParticipants();
+            list = barServiceImpl.updateParticipants();
         } catch (FeedUpdateException e) {
             logger.error(String.format("Cant update beer/food list throws exception: %s", e));
             content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE));

@@ -6,8 +6,8 @@ import by.siarhei.beerfest.entity.User;
 import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.AccountService;
-import by.siarhei.beerfest.service.impl.BarService;
+import by.siarhei.beerfest.service.impl.AccountServiceImpl;
+import by.siarhei.beerfest.service.impl.BarServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +42,7 @@ public class LoginCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content) {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        AccountService service = new AccountService();
+        AccountServiceImpl service = new AccountServiceImpl();
         String login = content.getParameter(PARAMETER_USERNAME);
         String password = content.getParameter(PARAMETER_PASSWORD);
         if (service.checkUserByLoginPassword(login, password)) {
@@ -62,12 +62,12 @@ public class LoginCommand implements ActionCommand {
         RoleType roleType = user.getRole();
         // TODO: 18.01.2020 remove it to listener
         if (roleType == RoleType.PARTICIPANT) {
-            BarService barService = new BarService();
+            BarServiceImpl barServiceImpl = new BarServiceImpl();
             Map<Long, String> beerList = new HashMap<>();
             Map<Long, String> foodList = new HashMap<>();
             try {
-                beerList = barService.updateBeerList();
-                foodList = barService.updateFoodList();
+                beerList = barServiceImpl.updateBeerList();
+                foodList = barServiceImpl.updateFoodList();
             } catch (FeedUpdateException e) {
                 logger.error(String.format("Cant update beer/food list throws exception: %s", e));
                 content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE));

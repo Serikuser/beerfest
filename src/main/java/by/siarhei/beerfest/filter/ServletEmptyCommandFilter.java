@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 @WebFilter(urlPatterns = {"/controller"}, servletNames = {"Controller"})
 public class ServletEmptyCommandFilter implements Filter {
@@ -34,9 +35,7 @@ public class ServletEmptyCommandFilter implements Filter {
             dispatcher.forward(request, response);
             return;
         }
-        try {
-            CommandType.valueOf(action.toUpperCase());
-        } catch (IllegalArgumentException e) {
+        if (Stream.of(CommandType.values()).noneMatch(commandType -> commandType.name().equals(action.toUpperCase()))) {
             String page = ConfigurationManager.getProperty(JSP_MAIN);
             request.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE));
             RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher(page);

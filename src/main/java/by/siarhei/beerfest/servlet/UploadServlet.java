@@ -4,7 +4,7 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.UploadType;
-import by.siarhei.beerfest.service.impl.AccountService;
+import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +45,7 @@ public class UploadServlet extends HttpServlet {
             , HttpServletResponse response)
             throws ServletException, IOException {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        AccountService service = new AccountService();
+        AccountServiceImpl service = new AccountServiceImpl();
         RoleType roleType = (RoleType) request.getSession().getAttribute(ATTRIBUTE_USER_ROLE);
         if (roleType != RoleType.UNAUTHORIZED) {
             page = ConfigurationManager.getProperty(roleType.getPage());

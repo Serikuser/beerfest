@@ -5,7 +5,7 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.BarService;
+import by.siarhei.beerfest.service.impl.BarServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +27,7 @@ public class ProfileCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content){
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        BarService service = new BarService();
+        BarServiceImpl service = new BarServiceImpl();
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
             page = ConfigurationManager.getProperty(roleType.getPage());

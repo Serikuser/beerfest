@@ -6,7 +6,7 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.AccountService;
+import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 public class SignupCommand implements ActionCommand {
@@ -24,7 +24,7 @@ public class SignupCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content){
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        AccountService service = new AccountService();
+        AccountServiceImpl service = new AccountServiceImpl();
         if (isEnterDataExist(content)) {
             String name = content.getParameter(PARAMETER_USERNAME);
             String eMail = content.getParameter(PARAMETER_EMAIL);

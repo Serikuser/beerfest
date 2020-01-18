@@ -5,7 +5,7 @@ import by.siarhei.beerfest.entity.Article;
 import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.FeedUpdateService;
+import by.siarhei.beerfest.service.impl.FeedUpdateServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +25,7 @@ public class FeedUpdateCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content) {
         String page = ConfigurationManager.getProperty(JSP_FEED);
-        FeedUpdateService service = new FeedUpdateService();
+        FeedUpdateServiceImpl service = new FeedUpdateServiceImpl();
         List<Article> list = new ArrayList<>();
         try {
             list = service.updateNews();

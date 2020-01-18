@@ -5,7 +5,7 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.FeedUpdateException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.BarService;
+import by.siarhei.beerfest.service.impl.BarServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +38,7 @@ public class SubmitBarCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content) {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        BarService service = new BarService();
+        BarServiceImpl service = new BarServiceImpl();
         String login = (String) content.getSessionAttribute(ATTRIBUTE_USER_LOGIN);
         if (isEnterDataExist(content) && content.getSessionAttribute(ATTRIBUTE_USER_ROLE) == RoleType.PARTICIPANT) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
@@ -59,12 +59,12 @@ public class SubmitBarCommand implements ActionCommand {
             content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE));
         }
         // TODO: 17.01.2020 remove it to session listener
-        BarService barService = new BarService();
+        BarServiceImpl barServiceImpl = new BarServiceImpl();
         Map<Long, String> beerList = new HashMap<>();
         Map<Long, String> foodList = new HashMap<>();
         try {
-            beerList = barService.updateBeerList();
-            foodList = barService.updateFoodList();
+            beerList = barServiceImpl.updateBeerList();
+            foodList = barServiceImpl.updateFoodList();
         } catch (FeedUpdateException e) {
             logger.error(String.format("Cant update beer/food list throws exception: %s", e));
             content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE));

@@ -4,7 +4,7 @@ import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
-import by.siarhei.beerfest.service.impl.AccountService;
+import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 public class ChangePasswordCommand implements ActionCommand {
@@ -20,7 +20,7 @@ public class ChangePasswordCommand implements ActionCommand {
     @Override
     public String execute(SessionRequestContent content){
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        AccountService service = new AccountService();
+        AccountServiceImpl service = new AccountServiceImpl();
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             String newPassword = content.getParameter(PARAMETER_NEW_PASSWORD);
             String login = content.getSessionAttribute(ATTRIBUTE_USER_LOGIN).toString();

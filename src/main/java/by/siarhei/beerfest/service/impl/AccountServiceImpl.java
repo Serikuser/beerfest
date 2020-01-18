@@ -7,21 +7,23 @@ import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
 import by.siarhei.beerfest.factory.UserFactory;
 import by.siarhei.beerfest.manager.ConfigurationManager;
-import by.siarhei.beerfest.service.CommandService;
+import by.siarhei.beerfest.service.AccountService;
 
-public class AccountService implements CommandService {
+public class AccountServiceImpl implements AccountService {
     private static final String PROPERTIES_DEFAULT_AVATAR_URL = "user.data.avatar.default";
     private UserDao dao;
 
-    public AccountService(){
+    public AccountServiceImpl() {
         dao = new UserDaoImpl();
     }
 
+    @Override
     public User defineUserById(long id) {
         return dao.findEntity(id);
     }
 
-    public  boolean changeUserPassword(String login, String eMail, String newPassword) {
+    @Override
+    public boolean changeUserPassword(String login, String eMail, String newPassword) {
         boolean flag = false;
         if (dao.isExist(login, eMail)) {
             return dao.updatePassword(login, newPassword);
@@ -29,7 +31,8 @@ public class AccountService implements CommandService {
         return flag;
     }
 
-    public  boolean signupUser(String login, String eMail, String password, RoleType role, StatusType active) {
+    @Override
+    public boolean signupUser(String login, String eMail, String password, RoleType role, StatusType active) {
         UserFactory factory = UserFactory.getInstance();
         String avatarUrl = ConfigurationManager.getProperty(PROPERTIES_DEFAULT_AVATAR_URL);
         if (!dao.isExist(login, eMail)) {
@@ -39,14 +42,17 @@ public class AccountService implements CommandService {
         return false;
     }
 
-    public  boolean checkUserByLoginPassword(String login, String password) {
+    @Override
+    public boolean checkUserByLoginPassword(String login, String password) {
         return dao.isLoginPasswordMatch(login, password);
     }
 
-    public  User defineUserByLogin(String login) {
+    @Override
+    public User defineUserByLogin(String login) {
         return dao.findUserByLogin(login);
     }
 
+    @Override
     public boolean chageAvatar(String login, String uploadedFilePath) {
         boolean flag = false;
         if (!uploadedFilePath.isEmpty()) {
