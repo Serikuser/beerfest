@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @WebFilter(urlPatterns = {"/controller"}, servletNames = {"Controller"})
-public class ServletEmptyCommandFilter implements Filter {
+public class CommandFilter implements Filter {
     private static final String JSP_MAIN = "path.page.main";
     private static final String PARAMETER_COMMAND = "command";
     private static final String ATTRIBUTE_ERROR_MESSAGE = "errorMessage";
