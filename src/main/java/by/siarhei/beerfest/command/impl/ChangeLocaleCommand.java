@@ -9,6 +9,7 @@ public class ChangeLocaleCommand implements ActionCommand {
     private static final String PARAMETER_LOCALE = "locale";
     private static final String ATTRIBUTE_LOCALE = "locale";
 
+    // TODO: 18.01.2020 validation
     @Override
     public String execute(SessionRequestContent content) {
         String page = ConfigurationManager.getProperty(JSP_MAIN);

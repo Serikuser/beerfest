@@ -5,6 +5,7 @@ import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.UploadType;
 import by.siarhei.beerfest.service.impl.AccountServiceImpl;
+import by.siarhei.beerfest.validator.UploadFileValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,35 +41,28 @@ public class UploadServlet extends HttpServlet {
     private static final String MESSAGE_UPLOAD_AVATAR_SUCCESS = "ru.message.upload.avatar.success";
     private static final String MESSAGE_UPLOAD_AVATAR_ERROR = "ru.message.upload.avatar.error";
 
+    // FIXME: 19.01.2020
     @Override
     protected void doPost(HttpServletRequest request
             , HttpServletResponse response)
             throws ServletException, IOException {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        AccountServiceImpl service = new AccountServiceImpl();
         RoleType roleType = (RoleType) request.getSession().getAttribute(ATTRIBUTE_USER_ROLE);
         if (roleType != RoleType.UNAUTHORIZED) {
             page = ConfigurationManager.getProperty(roleType.getPage());
             Part filePart = request.getPart(REQUEST_ATTRIBUTE_FILE);
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            UploadFileValidator validator = new UploadFileValidator();
             UploadType uploadType = UploadType.valueOf(request.getParameter(PARAMETER_UPLOAD_TYPE).toUpperCase());
             if (uploadType == UploadType.AVATAR) {
-                String login = (String) request.getSession().getAttribute(ATTRIBUTE_USER_LOGIN);
-                String uploadPath = getServletContext().getRealPath("") + File.separator + ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR);
-                String randFilename = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf(EXTENSION_SPLIT_CHAR));
-                String uploadedFilePath = "";
-                try {
-                    uploadFile(uploadPath, randFilename, request);
-                    uploadedFilePath = ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR) + randFilename;
-                } catch (IOException e) {
-                    logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
-                }
-                if (service.chageAvatar(login, uploadedFilePath)) {
-                    request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SUCCESS));
-                    request.getSession().setAttribute(ATTRIBUTE_USER_AVATAR_URL,uploadedFilePath);
+                if (validator.isAvatar(fileName, filePart)) {
+                    uploadAvatar(fileName, request);
                 } else {
                     request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR));
                 }
+            }
+            if (uploadType == UploadType.FEED || validator.isFeedImage(fileName, filePart)) {
+                uploadFeedImage(fileName, request);
             }
         } else {
             request.setAttribute(ATTRIBUTE_ERROR_MESSAGE_MAIN, MessageManager.getProperty(SIGNUP_ERROR_JOKE));
@@ -84,5 +78,29 @@ public class UploadServlet extends HttpServlet {
         for (Part part : request.getParts()) {
             part.write(uploadedFilePath);
         }
+    }
+
+    private void uploadAvatar(String fileName, HttpServletRequest request) throws ServletException {
+        String login = (String) request.getSession().getAttribute(ATTRIBUTE_USER_LOGIN);
+        String uploadPath = getServletContext().getRealPath("") + File.separator + ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR);
+        String randFilename = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf(EXTENSION_SPLIT_CHAR));
+        String uploadedFilePath = "";
+        AccountServiceImpl service = new AccountServiceImpl();
+        try {
+            uploadFile(uploadPath, randFilename, request);
+            uploadedFilePath = ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR) + randFilename;
+        } catch (IOException e) {
+            logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
+        }
+        if (service.chageAvatar(login, uploadedFilePath)) {
+            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SUCCESS));
+            request.getSession().setAttribute(ATTRIBUTE_USER_AVATAR_URL, uploadedFilePath);
+        } else {
+            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR));
+        }
+    }
+
+    private void uploadFeedImage(String fileName, HttpServletRequest request) {
+        // TODO: 19.01.2020
     }
 }

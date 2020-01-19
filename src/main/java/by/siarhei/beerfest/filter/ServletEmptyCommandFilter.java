@@ -35,7 +35,7 @@ public class ServletEmptyCommandFilter implements Filter {
             dispatcher.forward(request, response);
             return;
         }
-        if (Stream.of(CommandType.values()).noneMatch(commandType -> commandType.name().equals(action.toUpperCase()))) {
+        if (Stream.of(CommandType.values()).noneMatch(commandType -> commandType.name().equalsIgnoreCase(action))) {
             String page = ConfigurationManager.getProperty(JSP_MAIN);
             request.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE));
             RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher(page);
