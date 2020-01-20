@@ -2,9 +2,9 @@ package by.siarhei.beerfest.dao.impl;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
-import by.siarhei.beerfest.dao.BarDao;
+import by.siarhei.beerfest.dao.BarDAO;
 import by.siarhei.beerfest.entity.Bar;
-import by.siarhei.beerfest.exception.FeedUpdateException;
+import by.siarhei.beerfest.entity.Entity;
 import by.siarhei.beerfest.factory.BarFactory;
 
 import java.sql.PreparedStatement;
@@ -16,15 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BarDaoImpl implements BarDao {
+public class BarDAOImpl implements BarDAO {
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
     private static final String INSERT_BAR_SQL = "INSERT INTO bar (account_id,name,description,food_id,beer_id ,places) VALUES (?,?,?,?,?,?)";
     private static final String INSERT_BEER_SQL = "INSERT INTO beer (name) VALUES (?)";
     private static final String INSERT_FOOD_SQL = "INSERT INTO food (name) VALUES (?)";
     private static final String SELECT_BEER_ID_BY_NAME = "SELECT id FROM beer WHERE name=?";
     private static final String SELECT_FOOD_ID_BY_NAME = "SELECT id FROM food WHERE name=?";
-    private static final String SELECT_ALL_FOOD ="SELECT food.id,food.name FROM food ";
-    private static final String SELECT_ALL_BEER = "SELECT beer.id,beer.name FROM beer ";
+    private static final String SELECT_ALL_FOOD =            "SELECT food.id,food.name FROM food ";
+    private static final String SELECT_ALL_BEER =
+            "SELECT beer.id,beer.name\n" +
+                    "FROM beer ";
     private static final String CHECK_BAR_BY_USER_LOGIN = String.format(
             "SELECT count(*) as %s " +
                     "FROM bar " +
@@ -40,7 +42,7 @@ public class BarDaoImpl implements BarDao {
                     "ON bar.food_id = food.id ";
 
     @Override
-    public List<Bar> findAll() throws FeedUpdateException {
+    public List<Bar> findAll() {
         List<Bar> list = new ArrayList<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -53,20 +55,20 @@ public class BarDaoImpl implements BarDao {
             while (resultSet.next()) {
                 int index = 0;
                 long barId = resultSet.getLong(++index);
-                long accountId = resultSet.getLong(++index);
-                String name = resultSet.getString(++index);
-                String description = resultSet.getString(++index);
-                long foodId = resultSet.getLong(++index);
-                String foodName = resultSet.getString(++index);
-                long beerId = resultSet.getLong(++index);
-                String beerName = resultSet.getString(++index);
-                int places = resultSet.getInt(++index);
+                long accountId = resultSet.getLong(index++);
+                String name = resultSet.getString(index++);
+                String description = resultSet.getString(index++);
+                long foodId = resultSet.getLong(index++);
+                String foodName = resultSet.getString(index++);
+                long beerId = resultSet.getLong(index++);
+                String beerName = resultSet.getString(index++);
+                int places = resultSet.getInt(index);
                 list.add(factory.create(barId, accountId, name, description, foodId, foodName, beerId, beerName, places));
             }
 
         } catch (SQLException e) {
             logger.error(String.format("Bar list cant be updated throws exception: %s", e));
-            throw new FeedUpdateException(e);
+            // TODO: 16.01.2020
         } finally {
             close(connection);
             close(statement);
@@ -196,7 +198,7 @@ public class BarDaoImpl implements BarDao {
     }
 
     @Override
-    public Map<Long, String> findAllFoodType() throws FeedUpdateException {
+    public Map<Long, String> getFoodList() {
         Map<Long, String> foodList = new HashMap<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -214,7 +216,6 @@ public class BarDaoImpl implements BarDao {
 
         } catch (SQLException e) {
             logger.error(String.format("Cant get food list throws exception: %s", e));
-            throw new FeedUpdateException(e);
         } finally {
             close(connection);
             close(statement);
@@ -224,7 +225,7 @@ public class BarDaoImpl implements BarDao {
     }
 
     @Override
-    public Map<Long, String> findnAllBeerType() throws FeedUpdateException {
+    public Map<Long, String> getBeerList() {
         Map<Long, String> beerList = new HashMap<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -242,7 +243,6 @@ public class BarDaoImpl implements BarDao {
 
         } catch (SQLException e) {
             logger.error(String.format("Cant get beer list throws exception: %s", e));
-            throw new FeedUpdateException(e);
         } finally {
             close(connection);
             close(statement);
