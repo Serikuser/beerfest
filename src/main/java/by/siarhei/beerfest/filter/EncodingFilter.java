@@ -22,6 +22,7 @@ public class EncodingFilter implements Filter {
         String codeRequest = servletRequest.getCharacterEncoding();
         if (code != null && !code.equalsIgnoreCase(codeRequest)) {
             servletRequest.setCharacterEncoding(code);
+            servletResponse.setContentType("text/html; charset=UTF-8");
             servletResponse.setCharacterEncoding(code);
             filterChain.doFilter(servletRequest, servletResponse);
         }

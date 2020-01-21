@@ -1,7 +1,7 @@
 package by.siarhei.beerfest.dao;
 
 import by.siarhei.beerfest.entity.Entity;
-import by.siarhei.beerfest.exception.FeedUpdateException;
+import by.siarhei.beerfest.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,17 +14,17 @@ import java.util.List;
 public interface BaseDao<K, T extends Entity> {
     Logger logger = LogManager.getLogger();
 
-    List<T> findAll() throws FeedUpdateException;
+    List<T> findAll() throws DaoException;
 
-    T findEntity(K id);
+    T findEntity(K id) throws DaoException;
 
-    boolean delete(T t);
+    boolean delete(T t) throws DaoException;
 
-    boolean delete(K id);
+    void delete(K id) throws DaoException;
 
-    boolean create(T t);
+    void create(T t) throws DaoException;
 
-    T update(T t);
+    T update(T t) throws DaoException;
 
     default void close(Statement statement) {
         try {

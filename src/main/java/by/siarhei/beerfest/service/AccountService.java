@@ -3,17 +3,20 @@ package by.siarhei.beerfest.service;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
+import by.siarhei.beerfest.exception.ServiceException;
 
 public interface AccountService {
-    User defineUserById(long id);
+    User defineUserById(long id) throws ServiceException;
 
-    boolean changeUserPassword(String login, String eMail, String newPassword);
+    void changeUserPassword(String login, String eMail, String newPassword) throws ServiceException;
 
-    boolean signupUser(String login, String eMail, String password, RoleType role, StatusType active);
+    void signupUser(String login, String eMail, String password, RoleType role, StatusType active) throws ServiceException;
 
-    boolean checkUserByLoginPassword(String login, String password);
+    boolean checkUserByLoginEmail(String login, String eMail) throws ServiceException;
 
-    User defineUserByLogin(String login);
+    boolean checkUserByLoginPassword(String login, String password) throws ServiceException;
 
-    boolean chageAvatar(String login, String uploadedFilePath);
+    User defineUserByLogin(String login) throws ServiceException;
+
+    void changeAvatar(String login, String uploadedFilePath) throws ServiceException;
 }

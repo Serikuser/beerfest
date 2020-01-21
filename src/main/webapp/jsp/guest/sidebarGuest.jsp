@@ -16,27 +16,15 @@
 </div>
 <div class="sidebar-block_content profile-info">
     <div class="profile-info_item">
-        <form action="controller" class="needs-validation" onsubmit="return cryptChange()" novalidate>
+        <form action="controller" class="needs-validation">
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <input type="hidden" name="command" value="bookUser"/>
+                        <input type="hidden" name="command" value="book_user"/>
                     </div>
                 </div>
             </div>
             <button type="submit" class="button_success button_width_100"><fmt:message key="panel.guest.button.books"/></button>
-        </form>
-    </div>
-    <div class="profile-info_item">
-        <form action="controller" class="needs-validation" onsubmit="return cryptChange()" novalidate>
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <input type="hidden" name="command" value="commentsUser"/>
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="button_success button_width_100"><fmt:message key="panel.guest.button.comments"/></button>
         </form>
     </div>
 </div>

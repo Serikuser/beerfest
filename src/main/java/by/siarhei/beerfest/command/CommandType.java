@@ -13,6 +13,8 @@ public enum CommandType {
     SUBMIT_BEER(new SubmitBeerCommand()),
     SUBMIT_FOOD(new SubmitFoodCommand()),
     MAKE_BOOK(new MakeBookCommand()),
+    BOOK_USER(new UserBookCommand()),
+    BOOK_DELETE(new BookDeleteCommand()),
     CHANGE_LOCALE(new ChangeLocaleCommand()),
     FEED_UPDATE(new FeedUpdateCommand());
 

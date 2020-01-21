@@ -1,25 +1,25 @@
 package by.siarhei.beerfest.service;
 
 import by.siarhei.beerfest.entity.Bar;
-import by.siarhei.beerfest.exception.FeedUpdateException;
+import by.siarhei.beerfest.exception.ServiceException;
 
 import java.util.List;
 import java.util.Map;
 
 public interface BarService {
     // TODO: 11.01.2020
-    void submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, int places);
+    boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, int places) throws ServiceException;
 
-    boolean checkUserSubmission(String login);
+    boolean checkUserSubmission(String login) throws ServiceException;
 
-    boolean submitBeer(String beerName);
+    void submitBeer(String beerName) throws ServiceException;
 
-    boolean submitFood(String foodName);
+    void submitFood(String foodName) throws ServiceException;
 
-    List<Bar> updateParticipants() throws FeedUpdateException;
+    List<Bar> updateParticipants() throws ServiceException;
 
-    // TODO: 18.01.2020 make entity
-    Map<Long, String> updateFoodList() throws FeedUpdateException;
+    Map<Long, String> updateFoodList() throws ServiceException;
 
-    Map<Long, String> updateBeerList() throws FeedUpdateException;
+    Map<Long, String> updateBeerList() throws ServiceException;
+
 }
