@@ -29,6 +29,7 @@ public class MakeBookCommand implements ActionCommand {
     private static final String ATTRIBUTE_USER_LOGIN = "userLogin";
     private static final String ATTRIBUTE_USER_ROLE = "userRole";
     private static final String ATTRIBUTE_MESSAGE = "bookErrorMessage";
+    private static final String ATTRIBUTE_INDEX_MESSAGE = "errorMessage";
     private static final String ATTRIBUTE_ACCOUNT_ID = "accountId";
     private static final String ATTRIBUTE_PARTICIPANTS = "participants";
     private static final String ATTRIBUTE_BOOK_ERROR_MESSAGE = "bookErrorMessage";
@@ -45,7 +46,7 @@ public class MakeBookCommand implements ActionCommand {
     private BookService bookService;
     private BarService barService;
 
-    public MakeBookCommand(){
+    public MakeBookCommand() {
         languageService = new LanguageServiceImpl();
         bookService = new BookServiceImpl();
         barService = new BarServiceImpl();
@@ -78,18 +79,19 @@ public class MakeBookCommand implements ActionCommand {
             } catch (ServiceException e) {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_ERROR, localeType));
             }
+            // TODO: 17.01.2020 remove it to listener
+            List<Bar> list = new ArrayList<>();
+            try {
+                list = barService.updateParticipants();
+            } catch (ServiceException e) {
+                logger.error(String.format("Cant update beer/food list throws exception: %s", e));
+                content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
+            }
+            content.setAttribute(ATTRIBUTE_PARTICIPANTS, list);
         } else {
-            content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(ERROR_JOKE, localeType));
+            content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_JOKE, localeType));
         }
-        // TODO: 17.01.2020 remove it to listener
-        List<Bar> list = new ArrayList<>();
-        try {
-            list = barService.updateParticipants();
-        } catch (ServiceException e) {
-            logger.error(String.format("Cant update beer/food list throws exception: %s", e));
-            content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
-        }
-        content.setAttribute(ATTRIBUTE_PARTICIPANTS, list);
+
         return page;
     }
 

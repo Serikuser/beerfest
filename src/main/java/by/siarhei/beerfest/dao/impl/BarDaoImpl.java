@@ -85,8 +85,8 @@ public class BarDaoImpl implements BarDao {
     }
 
     @Override
-    public boolean delete(Long id) {
-        return false;
+    public void delete(Long id) {
+
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.sql.Date;
 public class Book extends Entity {
     long userId;
     long barId;
+    String barName;
     int places;
     Date date;
 
@@ -52,6 +53,14 @@ public class Book extends Entity {
         this.date = date;
     }
 
+    public void setBarName(String barName) {
+        this.barName = barName;
+    }
+
+    public String getbarName() {
+        return barName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,4 +98,6 @@ public class Book extends Entity {
         return String.format(
                 "user with id: %s, bar with id: %s, reserved places: %s, on date: %s", userId, barId, places, date);
     }
+
+
 }

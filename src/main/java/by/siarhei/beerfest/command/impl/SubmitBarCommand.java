@@ -30,6 +30,7 @@ public class SubmitBarCommand implements ActionCommand {
     private static final String ATTRIBUTE_FOOD_LIST = "foodMap";
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
     private static final String SUBMIT_BAR_ERROR = "message.submit.bar.error";
+    private static final String SUBMIT_BAR_ERROR_DATA = "message.submit.bar.data.error";
     private static final String SUBMIT_BAR_SERVER_ERROR = "message.submit.bar.error.server";
     private static final String SUBMIT_BAR_SUCCESS = "message.submit.bar.success";
     private static final String PARAMETER_BAR_NAME = "barName";
@@ -41,7 +42,7 @@ public class SubmitBarCommand implements ActionCommand {
     private LanguageService languageService;
     private BarService barService;
 
-    public SubmitBarCommand(){
+    public SubmitBarCommand() {
         languageService = new LanguageServiceImpl();
         barService = new BarServiceImpl();
     }
@@ -56,22 +57,25 @@ public class SubmitBarCommand implements ActionCommand {
             page = ConfigurationManager.getProperty(roleType.getPage());
             try {
                 if (barService.checkUserSubmission(login)) {
+                    int places = Integer.parseInt(content.getParameter(PARAMETER_PLACES));
                     String barName = content.getParameter(PARAMETER_BAR_NAME);
                     long beerType = Long.parseLong(content.getParameter(PARAMETER_BEER_TYPE));
                     long foodType = Long.parseLong(content.getParameter(PARAMETER_FOOD_TYPE));
                     String barDescription = content.getParameter(PARAMETER_BAR_DESCRIPTION);
-                    int places = Integer.parseInt(content.getParameter(PARAMETER_PLACES));
                     long accountId = (long) content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID);
-                    barService.submitBar(accountId, barName, beerType, foodType, barDescription, places);
-                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_SUCCESS,localeType));
+                    if (barService.submitBar(accountId, barName, beerType, foodType, barDescription, places)) {
+                        content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_SUCCESS, localeType));
+                    } else {
+                        content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_ERROR_DATA, localeType));
+                    }
                 } else {
-                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_ERROR,localeType));
+                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_ERROR, localeType));
                 }
             } catch (ServiceException e) {
-                content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_SERVER_ERROR,localeType));
+                content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUBMIT_BAR_SERVER_ERROR, localeType));
             }
         } else {
-            content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE,localeType));
+            content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE, localeType));
         }
         // TODO: 17.01.2020 remove it to session listener
         Map<Long, String> beerList = new HashMap<>();
@@ -81,7 +85,7 @@ public class SubmitBarCommand implements ActionCommand {
             foodList = barService.updateFoodList();
         } catch (ServiceException e) {
             logger.error(String.format("Cant update beer/food list throws exception: %s", e));
-            content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE,localeType));
+            content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
         }
         content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
         content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
@@ -91,6 +95,7 @@ public class SubmitBarCommand implements ActionCommand {
 
     private boolean isEnterDataExist(SessionRequestContent content) {
         return content.getParameter(PARAMETER_BAR_NAME) != null
+                && content.getParameter(PARAMETER_PLACES) != null
                 && content.getParameter(PARAMETER_BEER_TYPE) != null
                 && content.getParameter(PARAMETER_FOOD_TYPE) != null
                 && content.getParameter(PARAMETER_BAR_DESCRIPTION) != null;

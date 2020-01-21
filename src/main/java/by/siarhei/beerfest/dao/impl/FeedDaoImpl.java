@@ -60,8 +60,7 @@ public class FeedDaoImpl implements FeedDao {
     }
 
     @Override
-    public boolean delete(Long id) {
-        return false;
+    public void delete(Long id) {
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
+import java.util.List;
 
 
 public class BookServiceImpl implements BookService {
@@ -43,7 +44,28 @@ public class BookServiceImpl implements BookService {
         try {
             dao.create(book);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot make ooks throws exception: %s", e));
+            logger.error(String.format("Cannot make book throws exception: %s", e));
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<Book> findUserBook(Long id) throws ServiceException {
+        try {
+            return dao.findUserBook(id);
+        } catch (DaoException e) {
+            logger.error(String.format("Cannot find book throws exception: %s", e));
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void deleteBook(long bookId) throws ServiceException {
+        try {
+            dao.delete(bookId);
+        }
+        catch (DaoException e){
+            logger.error(String.format("Cannot delete book throws exception: %s", e));
             throw new ServiceException(e);
         }
     }

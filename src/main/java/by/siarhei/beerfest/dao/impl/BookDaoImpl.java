@@ -6,9 +6,8 @@ import by.siarhei.beerfest.dao.BookDao;
 import by.siarhei.beerfest.entity.Book;
 import by.siarhei.beerfest.exception.DaoException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookDaoImpl implements BookDao {
@@ -16,10 +15,19 @@ public class BookDaoImpl implements BookDao {
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
     private static final String CHECK_BOOK_BY_LOGIN_SQL = String.format(
             "SELECT count(*) as %s " +
-            "FROM book " +
-            "INNER JOIN account " +
-            "ON book.guest_id = account.id " +
-            "WHERE account.login= ?", COINCIDENCES_RESULT_INDEX);
+                    "FROM book " +
+                    "INNER JOIN account " +
+                    "ON book.guest_id = account.id " +
+                    "WHERE account.login= ?", COINCIDENCES_RESULT_INDEX);
+    private static final String SELECT_BOOK_BY_USER_ID_SQL =
+            "SELECT book.id,bar.name, book.reserved_places, reservation_date " +
+                    "FROM book " +
+                    "INNER JOIN account " +
+                    "ON book.guest_id = account.id " +
+                    "INNER JOIN bar " +
+                    "ON book.bar_id = bar.id " +
+                    "where guest_id = ? ";
+    private static final String DELETE_BOOK_BY_ID_SQL = "DELETE FROM book WHERE book.id = %s";
 
     @Override
     public List<Book> findAll() {
@@ -37,8 +45,55 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public boolean delete(Long id) {
-        return false;
+    public void delete(Long id) throws DaoException {
+        ProxyConnection connection = null;
+        Statement statement = null;
+        try {
+            connection = ConnectionPool.INSTANCE.getConnection();
+            statement = connection.createStatement();
+            statement.execute(String.format(DELETE_BOOK_BY_ID_SQL,id));
+        }
+        catch (SQLException e){
+            throw new DaoException("Cannot delete book",e);
+        }
+        finally {
+            close(connection);
+            close(statement);
+        }
+    }
+
+    @Override
+    public List<Book> findUserBook(Long id) throws DaoException {
+        List<Book> list = new ArrayList<>();
+        ProxyConnection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.INSTANCE.getConnection();
+            statement = connection.prepareStatement(SELECT_BOOK_BY_USER_ID_SQL);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Book book = new Book();
+                int columnIndex = 0;
+                long bookId = resultSet.getLong(++columnIndex);
+                book.setId(bookId);
+                String barName = resultSet.getString(++columnIndex);
+                book.setBarName(barName);
+                int reservedPlaces = resultSet.getInt(++columnIndex);
+                book.setPlaces(reservedPlaces);
+                Date date = resultSet.getDate(++columnIndex);
+                book.setDate(date);
+                list.add(book);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Cannot find user book ", e);
+        } finally {
+            close(statement);
+            close(connection);
+            close(resultSet);
+        }
+        return list;
     }
 
     @Override
