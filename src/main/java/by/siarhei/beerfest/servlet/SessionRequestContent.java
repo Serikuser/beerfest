@@ -50,8 +50,9 @@ public class SessionRequestContent {
         String[] strings = requestParameters.get(name);
         if (strings != null) {
             return strings[FIRST_PARAMETER_INDEX];
+        } else {
+            return null;
         }
-        else return null;
     }
 
     public String[] getParametersValue(String name) {
