@@ -1,6 +1,7 @@
 package by.siarhei.beerfest.command.impl;
 
 import by.siarhei.beerfest.command.ActionCommand;
+import by.siarhei.beerfest.command.LocaleType;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
@@ -15,7 +16,12 @@ public class ChangeLocaleCommand implements ActionCommand {
         String locale;
         if (content.getParameter(PARAMETER_LOCALE) != null) {
             locale = content.getParameter(PARAMETER_LOCALE);
-            content.setSessionAttribute(ATTRIBUTE_LOCALE, locale);
+            try {
+                LocaleType localeType = LocaleType.valueOf(locale.toUpperCase());
+                content.setSessionAttribute(ATTRIBUTE_LOCALE, localeType.name());
+            } catch (IllegalArgumentException e) {
+                content.setSessionAttribute(ATTRIBUTE_LOCALE, LocaleType.RU.name());
+            }
         }
         return page;
     }

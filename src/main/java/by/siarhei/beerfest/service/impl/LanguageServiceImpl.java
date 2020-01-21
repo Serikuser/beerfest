@@ -20,7 +20,7 @@ public class LanguageServiceImpl implements LanguageService {
             String locale = content.getSessionAttribute(ATTRIBUTE_LOCALE).toString();
             try {
                 localeType = LocaleType.valueOf(locale.toUpperCase());
-            } catch (EnumConstantNotPresentException e) {
+            } catch (IllegalArgumentException e) {
                 logger.error(String.format("Cannot define locale for value %s",locale));
                 localeType = LocaleType.RU;
             }
@@ -38,7 +38,7 @@ public class LanguageServiceImpl implements LanguageService {
             String locale = request.getSession().getAttribute(ATTRIBUTE_LOCALE).toString();
             try {
                 localeType = LocaleType.valueOf(locale.toUpperCase());
-            } catch (EnumConstantNotPresentException e) {
+            } catch (IllegalArgumentException e) {
                 logger.error(String.format("Cannot define locale for value %s",locale));
                 localeType = LocaleType.RU;
             }
