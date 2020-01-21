@@ -1,6 +1,8 @@
 package by.siarhei.beerfest.servlet;
 
+import by.siarhei.beerfest.command.LocaleType;
 import by.siarhei.beerfest.entity.RoleType;
+import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.UploadType;
@@ -33,13 +35,14 @@ public class UploadServlet extends HttpServlet {
     private static final String ATTRIBUTE_USER_LOGIN = "userLogin";
     private static final String ATTRIBUTE_USER_AVATAR_URL = "userAvatarUrl";
     private static final String ATTRIBUTE_ERROR_MESSAGE_MAIN = "errorMessage";
-    private static final String SIGNUP_ERROR_JOKE = "ru.message.signup.error.joke";
+    private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
     private static final char EXTENSION_SPLIT_CHAR = '.';
     private static final String UPLOAD_PATH_AVATAR = "path.upload.avatar";
     private static final String PARAMETER_UPLOAD_TYPE = "uploadType";
     private static final String ATTRIBUTE_UPLOAD_FILE_MESSAGE = "uploadFileMessage";
-    private static final String MESSAGE_UPLOAD_AVATAR_SUCCESS = "ru.message.upload.avatar.success";
-    private static final String MESSAGE_UPLOAD_AVATAR_ERROR = "ru.message.upload.avatar.error";
+    private static final String MESSAGE_UPLOAD_AVATAR_SUCCESS = "message.upload.avatar.success";
+    private static final String MESSAGE_UPLOAD_AVATAR_ERROR = "message.upload.avatar.error";
+    private static final String MESSAGE_UPLOAD_AVATAR_SERVER_ERROR = "message.upload.avatar.error.server";
 
     // FIXME: 19.01.2020
     @Override
@@ -47,6 +50,7 @@ public class UploadServlet extends HttpServlet {
             , HttpServletResponse response)
             throws ServletException, IOException {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
+        LocaleType localeType = LocaleType.valueOf(request.getSession().getAttribute("locale").toString().toUpperCase());
         RoleType roleType = (RoleType) request.getSession().getAttribute(ATTRIBUTE_USER_ROLE);
         if (roleType != RoleType.UNAUTHORIZED) {
             page = ConfigurationManager.getProperty(roleType.getPage());
@@ -58,14 +62,14 @@ public class UploadServlet extends HttpServlet {
                 if (validator.isAvatar(fileName, filePart)) {
                     uploadAvatar(fileName, request);
                 } else {
-                    request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR));
+                    request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR,localeType));
                 }
             }
             if (uploadType == UploadType.FEED || validator.isFeedImage(fileName, filePart)) {
                 uploadFeedImage(fileName, request);
             }
         } else {
-            request.setAttribute(ATTRIBUTE_ERROR_MESSAGE_MAIN, MessageManager.getProperty(SIGNUP_ERROR_JOKE));
+            request.setAttribute(ATTRIBUTE_ERROR_MESSAGE_MAIN, MessageManager.getProperty(SIGNUP_ERROR_JOKE,localeType));
         }
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
         dispatcher.forward(request, response);
@@ -82,6 +86,7 @@ public class UploadServlet extends HttpServlet {
 
     private void uploadAvatar(String fileName, HttpServletRequest request) throws ServletException {
         String login = (String) request.getSession().getAttribute(ATTRIBUTE_USER_LOGIN);
+        LocaleType localeType = LocaleType.valueOf(request.getSession().getAttribute("locale").toString().toUpperCase());
         String uploadPath = getServletContext().getRealPath("") + File.separator + ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR);
         String randFilename = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf(EXTENSION_SPLIT_CHAR));
         String uploadedFilePath = "";
@@ -92,11 +97,12 @@ public class UploadServlet extends HttpServlet {
         } catch (IOException e) {
             logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
         }
-        if (service.chageAvatar(login, uploadedFilePath)) {
-            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SUCCESS));
+        try {
+            service.changeAvatar(login, uploadedFilePath);
+            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SUCCESS,localeType));
             request.getSession().setAttribute(ATTRIBUTE_USER_AVATAR_URL, uploadedFilePath);
-        } else {
-            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR));
+        } catch (ServiceException e) {
+            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SERVER_ERROR,localeType));
         }
     }
 

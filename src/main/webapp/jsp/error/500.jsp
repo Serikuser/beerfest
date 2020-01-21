@@ -10,6 +10,6 @@
 <body>
 HTTP Status 500 – Internal Server Error
 
-<%= exception.printStackTrace() %>
+<%= exception %>
 </body>
 </html>

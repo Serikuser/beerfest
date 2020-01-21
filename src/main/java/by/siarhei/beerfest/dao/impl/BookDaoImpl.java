@@ -4,6 +4,7 @@ import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.BookDao;
 import by.siarhei.beerfest.entity.Book;
+import by.siarhei.beerfest.exception.DaoException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,8 +42,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public boolean create(Book book) {
-        boolean flag = false;
+    public void create(Book book) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
         try {
@@ -54,14 +54,12 @@ public class BookDaoImpl implements BookDao {
             statement.setDate(4, book.getDate());
             statement.executeUpdate();
             logger.info(String.format("Created book: %s", book));
-            flag = true;
         } catch (SQLException e) {
-            logger.error(String.format("Cannot insert new book throws exception: %s", e));
+            throw new DaoException(String.format("Cannot insert new book: %s", book), e);
         } finally {
             close(statement);
             close(connection);
         }
-        return flag;
     }
 
     @Override
@@ -70,7 +68,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public boolean isUsersBookingFull(String login) {
+    public boolean isUsersBookingFull(String login) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -84,8 +82,7 @@ public class BookDaoImpl implements BookDao {
                 flag = resultSet.getInt(COINCIDENCES_RESULT_INDEX) < 2;
             }
         } catch (SQLException e) {
-            logger.error(String.format("Cannot check book exists throws exception: %s", e));
-            flag = true;
+            throw new DaoException(String.format("Cannot check users book exists: %s", login), e);
         } finally {
             close(statement);
             close(connection);

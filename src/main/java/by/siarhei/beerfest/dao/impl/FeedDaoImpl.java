@@ -4,7 +4,7 @@ import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.FeedDao;
 import by.siarhei.beerfest.entity.Article;
-import by.siarhei.beerfest.exception.FeedUpdateException;
+import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.factory.ArticleFactory;
 
 import java.sql.ResultSet;
@@ -17,10 +17,10 @@ public class FeedDaoImpl implements FeedDao {
 
     private static final String SQL_SELECT_ALL_FEED =
             "SELECT id, news_title, news_text, news_img_src " +
-            "FROM feed";
+                    "FROM feed";
 
     @Override
-    public List<Article> findAll() throws FeedUpdateException {
+    public List<Article> findAll() throws DaoException {
         List<Article> list = new ArrayList<>();
         ProxyConnection connection = null;
         Statement statement = null;
@@ -40,8 +40,7 @@ public class FeedDaoImpl implements FeedDao {
             }
 
         } catch (SQLException e) {
-            logger.error(String.format("Feed cant be updated throws exception: %s", e));
-            throw new FeedUpdateException(e);
+            throw new DaoException("Cant update new list", e);
         } finally {
             close(connection);
             close(statement);
@@ -66,8 +65,8 @@ public class FeedDaoImpl implements FeedDao {
     }
 
     @Override
-    public boolean create(Article article) {
-        return false;
+    public void create(Article article) {
+
     }
 
     @Override

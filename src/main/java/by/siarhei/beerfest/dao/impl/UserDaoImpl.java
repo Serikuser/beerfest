@@ -6,6 +6,7 @@ import by.siarhei.beerfest.dao.UserDao;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
+import by.siarhei.beerfest.exception.DaoException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,22 +20,22 @@ public class UserDaoImpl implements UserDao {
     private static final String CHECK_USER_BY_LOGIN_EMAIL_SQL = String.format("SELECT count(*) as %s FROM account WHERE login= ? or email= ?", COINCIDENCES_RESULT_INDEX);
     private static final String CHECK_USER_BY_LOGIN_PASSWORD_SQL = String.format("SELECT count(*) as %s FROM account WHERE login= ? and password= ?", COINCIDENCES_RESULT_INDEX);
     private static final String SELECT_USER_BY_LOGIN_SQL =
-                    "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
+            "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
                     "FROM account " +
                     "INNER JOIN role " +
                     "ON account.role = role.id " +
                     "INNER JOIN status " +
                     "ON account.status = status.id WHERE login=?";
     private static final String UPDATE_PASSWORD_BY_LOGIN_SQL =
-                    "UPDATE account " +
+            "UPDATE account " +
                     "SET password=? " +
                     "WHERE login=?";
     private static final String UPDATE_AVATAR_BY_LOGIN_SQL =
-                    "UPDATE account " +
+            "UPDATE account " +
                     "SET avatar_url=? " +
                     "WHERE login=?";
     private static final String SELECT_USER_BY_ID_SQL =
-                    "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
+            "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
                     "FROM account " +
                     "INNER JOIN role " +
                     "ON account.role = role.id " +
@@ -45,7 +46,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findUserByLogin(String login) {
+    public User findUserByLogin(String login) throws DaoException {
         User user = new User();
         ProxyConnection connection = null;
         PreparedStatement statement = null;
@@ -56,22 +57,24 @@ public class UserDaoImpl implements UserDao {
             statement.setString(1, login);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt(1);
+                int columnIndex = 0;
+                int id = resultSet.getInt(++columnIndex);
                 user.setId(id);
-                user.setLogin(login);
-                String password = resultSet.getString(3);
+                String userLogin = resultSet.getString(++columnIndex);
+                user.setLogin(userLogin);
+                String password = resultSet.getString(++columnIndex);
                 user.setPassword(password);
-                String eMail = resultSet.getString(4);
+                String eMail = resultSet.getString(++columnIndex);
                 user.setEmail(eMail);
-                String avatarUrl = resultSet.getString(5);
+                String avatarUrl = resultSet.getString(++columnIndex);
                 user.setAvatarUrl(avatarUrl);
-                String role = resultSet.getString(6);
+                String role = resultSet.getString(++columnIndex);
                 user.setRole(RoleType.valueOf(role.toUpperCase()));
-                String status = resultSet.getString(7);
+                String status = resultSet.getString(++columnIndex);
                 user.setStatus(StatusType.valueOf(status.toUpperCase()));
             }
         } catch (SQLException e) {
-            logger.error(String.format("Cannot get user by login throws exception: %s", e));
+            throw new DaoException(String.format("Cannot find user by login: %s", login), e);
         } finally {
             close(statement);
             close(connection);
@@ -79,8 +82,9 @@ public class UserDaoImpl implements UserDao {
         }
         return user;
     }
+
     @Override
-    public boolean isLoginPasswordMatch(String login, String password) {
+    public boolean isLoginPasswordMatch(String login, String password) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -88,16 +92,15 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(CHECK_USER_BY_LOGIN_PASSWORD_SQL);
-            int index = 1;
-            statement.setString(index++, login);
-            statement.setString(index, password);
+            int columnIndex = 0;
+            statement.setString(++columnIndex, login);
+            statement.setString(++columnIndex, password);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 flag = resultSet.getInt(COINCIDENCES_RESULT_INDEX) != 0;
             }
         } catch (SQLException e) {
-            logger.error(String.format("Cannot check login/password exists throws exception: %s", e));
-            flag = true;
+            throw new DaoException(String.format("Cannot check login/password exists: %s", login), e);
         } finally {
             close(statement);
             close(connection);
@@ -107,7 +110,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean isExist(String login, String email) {
+    public boolean isExist(String login, String email) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -123,8 +126,7 @@ public class UserDaoImpl implements UserDao {
                 flag = resultSet.getInt(COINCIDENCES_RESULT_INDEX) != 0;
             }
         } catch (SQLException e) {
-            logger.error(String.format("Cannot check login/eMail exists throws exception: %s", e));
-            flag = true;
+            throw new DaoException(String.format("Cannot check login/eMail exists exists: %s", login), e);
         } finally {
             close(statement);
             close(connection);
@@ -134,47 +136,39 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean updatePassword(String login,String newPassword) {
+    public void updatePassword(String login, String newPassword) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
-        boolean flag;
         try {
             connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(UPDATE_PASSWORD_BY_LOGIN_SQL);
             statement.setString(1, newPassword);
             statement.setString(2, login);
             statement.execute();
-            flag = true;
         } catch (SQLException e) {
-            logger.error(String.format("Cannot change password throws exception: %s", e));
-            flag = false;
+            throw new DaoException(String.format("Cannot change password: %s", login), e);
         } finally {
             close(statement);
             close(connection);
         }
-        return flag;
     }
 
     @Override
-    public boolean updateAvatar(String login, String uploadedFilePath) {
+    public void updateAvatar(String login, String uploadedFilePath) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
-        boolean flag;
         try {
             connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(UPDATE_AVATAR_BY_LOGIN_SQL);
             statement.setString(1, uploadedFilePath);
             statement.setString(2, login);
             statement.execute();
-            flag = true;
         } catch (SQLException e) {
-            logger.error(String.format("Cannot avatar throws exception: %s", e));
-            flag = false;
+            throw new DaoException(String.format("Cannot change avatar: %s", login), e);
         } finally {
             close(statement);
             close(connection);
         }
-        return flag;
     }
 
     @Override
@@ -183,7 +177,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findEntity(Long id) {
+    public User findEntity(Long id) throws DaoException {
         User user = new User();
         ProxyConnection connection = null;
         PreparedStatement statement = null;
@@ -210,7 +204,7 @@ public class UserDaoImpl implements UserDao {
                 user.setStatus(StatusType.valueOf(status.toUpperCase()));
             }
         } catch (SQLException e) {
-            logger.error(String.format("Cannot get user by login throws exception: %s", e));
+            throw new DaoException(String.format("Cannot find user by id: %s", id), e);
         } finally {
             close(statement);
             close(connection);
@@ -230,8 +224,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean create(User user) {
-        boolean flag = false;
+    public void create(User user) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
         try {
@@ -245,14 +238,12 @@ public class UserDaoImpl implements UserDao {
             statement.setInt(6, user.getStatus().getValue());
             statement.executeUpdate();
             logger.info(String.format("Created account: %s", user));
-            flag = true;
         } catch (SQLException e) {
-            logger.error(String.format("Cannot insert new user throws exception: %s", e));
+            throw new DaoException(String.format("Cannot insert new user: %s", user), e);
         } finally {
             close(statement);
             close(connection);
         }
-        return flag;
     }
 
     @Override

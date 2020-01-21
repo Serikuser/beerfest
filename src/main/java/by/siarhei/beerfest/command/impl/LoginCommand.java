@@ -1,13 +1,18 @@
 package by.siarhei.beerfest.command.impl;
 
 import by.siarhei.beerfest.command.ActionCommand;
+import by.siarhei.beerfest.command.LocaleType;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.User;
-import by.siarhei.beerfest.exception.FeedUpdateException;
+import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
+import by.siarhei.beerfest.service.AccountService;
+import by.siarhei.beerfest.service.BarService;
+import by.siarhei.beerfest.service.LanguageService;
 import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import by.siarhei.beerfest.service.impl.BarServiceImpl;
+import by.siarhei.beerfest.service.impl.LanguageServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,8 +34,10 @@ public class LoginCommand implements ActionCommand {
     private static final String ATTRIBUTE_USER_STATUS = "userStatus";
     private static final String ATTRIBUTE_ERROR_MESSAGE = "errorMessage";
     private static final String ATTRIBUTE_BAR_ERROR_MESSAGE = "baRErrorMessage";
-    private static final String ERROR_MESSAGE = "ru.message.login.error";
-    private static final String ERROR_UPDATE_MESSAGE = "ru.message.update.error";
+    private static final String ERROR_MESSAGE = "message.login.error";
+    private static final String ERROR_SERVER_MESSAGE = "message.login.error.server";
+    private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
+    private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
     private static final String ATTRIBUTE_DISPLAY_FOR_UNAUTHORIZED = "displayGuest";
     private static final String ATTRIBUTE_DISPLAY_FOR_AUTHORIZED = "displayUser";
     private static final String ATTRIBUTE_STYLE_NONE = "none";
@@ -38,39 +45,60 @@ public class LoginCommand implements ActionCommand {
     private static final String ATTRIBUTE_BEER_LIST = "beerMap";
     private static final String ATTRIBUTE_FOOD_LIST = "foodMap";
     private static final String ATTRIBUTE_SIGNET_GUEST_VISIBLE = "signetGuestVisible";
+    private LanguageService languageService;
+    private AccountService accountService;
+    private BarService barService;
+
+    public LoginCommand() {
+        languageService = new LanguageServiceImpl();
+        accountService = new AccountServiceImpl();
+        barService = new BarServiceImpl();
+    }
 
     @Override
     public String execute(SessionRequestContent content) {
         String page = ConfigurationManager.getProperty(JSP_MAIN);
-        AccountServiceImpl service = new AccountServiceImpl();
-        String login = content.getParameter(PARAMETER_USERNAME);
-        String password = content.getParameter(PARAMETER_PASSWORD);
-        if (service.checkUserByLoginPassword(login, password)) {
-            User user = service.defineUserByLogin(login);
-            fillSession(content, user);
-            fillRequest(content, user);
-            RoleType roleType = (RoleType) content.getAttribute(ATTRIBUTE_USER_ROLE);
-            page = ConfigurationManager.getProperty(roleType.getPage());
-            logger.info(String.format("User: %s has logged in", user));
+        LocaleType localeType = languageService.defineLocale(content);
+        if (isEnterDataExist(content)) {
+            String login = content.getParameter(PARAMETER_USERNAME);
+            String password = content.getParameter(PARAMETER_PASSWORD);
+            try {
+                if (accountService.checkUserByLoginPassword(login, password)) {
+                    User user = accountService.defineUserByLogin(login);
+                    fillSession(content, user);
+                    fillRequest(content, user, localeType);
+                    RoleType roleType = (RoleType) content.getAttribute(ATTRIBUTE_USER_ROLE);
+                    page = ConfigurationManager.getProperty(roleType.getPage());
+                    logger.info(String.format("User: %s has logged in", user));
+                } else {
+                    content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE, localeType));
+                }
+            } catch (ServiceException e) {
+                content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_SERVER_MESSAGE, localeType));
+            }
         } else {
-            content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE));
+            content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE, localeType));
         }
         return page;
     }
 
-    private void fillRequest(SessionRequestContent content, User user) {
+    private boolean isEnterDataExist(SessionRequestContent content) {
+        return content.getParameter(PARAMETER_USERNAME) != null
+                && content.getParameter(PARAMETER_PASSWORD) != null;
+    }
+
+    private void fillRequest(SessionRequestContent content, User user, LocaleType localeType) {
         RoleType roleType = user.getRole();
         // TODO: 18.01.2020 remove it to listener
         if (roleType == RoleType.PARTICIPANT) {
-            BarServiceImpl barServiceImpl = new BarServiceImpl();
             Map<Long, String> beerList = new HashMap<>();
             Map<Long, String> foodList = new HashMap<>();
             try {
-                beerList = barServiceImpl.updateBeerList();
-                foodList = barServiceImpl.updateFoodList();
-            } catch (FeedUpdateException e) {
+                beerList = barService.updateBeerList();
+                foodList = barService.updateFoodList();
+            } catch (ServiceException e) {
                 logger.error(String.format("Cant update beer/food list throws exception: %s", e));
-                content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE));
+                content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
             }
             content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
             content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);

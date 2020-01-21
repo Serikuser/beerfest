@@ -31,5 +31,31 @@ public class Article extends Entity {
     public void setImgSrc(String imgSrc) {
         this.imgSrc = imgSrc;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Article article = (Article) o;
+        if (title != null ? !title.equals(article.title) : article.title != null) {
+            return false;
+        }
+        if (text != null ? !text.equals(article.text) : article.text != null) {
+            return false;
+        }
+        return imgSrc != null ? imgSrc.equals(article.imgSrc) : article.imgSrc == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title != null ? title.hashCode() : 0;
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (imgSrc != null ? imgSrc.hashCode() : 0);
+        return result;
+    }
 }
 
