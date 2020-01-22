@@ -16,6 +16,7 @@ public enum CommandType {
     BOOK_USER(new UserBookCommand()),
     BOOK_DELETE(new BookDeleteCommand()),
     CHANGE_LOCALE(new ChangeLocaleCommand()),
+    CONTINUE_REGISTRATION(new ContinueRegistrationCommand()),
     FEED_UPDATE(new FeedUpdateCommand());
 
     CommandType(ActionCommand command) {

@@ -16,7 +16,6 @@ public class ServletSecurityFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
     }
 
     @Override
@@ -25,7 +24,7 @@ public class ServletSecurityFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
         RoleType roleType = (RoleType) session.getAttribute(ATTRIBUTE_USER_ROLE);
-        if (roleType == null ) {
+        if (roleType == null) {
             roleType = RoleType.UNAUTHORIZED;
             session.setAttribute(ATTRIBUTE_USER_ROLE, roleType);
             RequestDispatcher dispatcher = request.getServletContext()
@@ -33,7 +32,6 @@ public class ServletSecurityFilter implements Filter {
             dispatcher.forward(request, response);
             return;
         }
-
         filterChain.doFilter(request, response);
     }
 

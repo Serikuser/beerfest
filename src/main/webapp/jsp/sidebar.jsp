@@ -4,6 +4,7 @@
 <%@ page isELIgnored="false" %>
 <html>
 <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="<c:url value="/css/style.css" />" rel="stylesheet">
     <link href="<c:url value="/css/main.css" />" rel="stylesheet">
