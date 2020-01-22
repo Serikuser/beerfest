@@ -7,6 +7,7 @@
 <fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
     <title>Beer Festival</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="<c:url value="/css/style.css" />" rel="stylesheet">

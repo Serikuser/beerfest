@@ -3,6 +3,7 @@ package by.siarhei.beerfest.command.impl;
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
 import by.siarhei.beerfest.entity.RoleType;
+import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.User;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
@@ -35,6 +36,7 @@ public class LoginCommand implements ActionCommand {
     private static final String ATTRIBUTE_ERROR_MESSAGE = "errorMessage";
     private static final String ATTRIBUTE_BAR_ERROR_MESSAGE = "baRErrorMessage";
     private static final String ERROR_MESSAGE = "message.login.error";
+    private static final String ERROR_CONFIRM_MESSAGE = "message.login.confirm.error";
     private static final String ERROR_SERVER_MESSAGE = "message.login.error.server";
     private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
@@ -65,11 +67,15 @@ public class LoginCommand implements ActionCommand {
             try {
                 if (accountService.checkUserByLoginPassword(login, password)) {
                     User user = accountService.defineUserByLogin(login);
-                    fillSession(content, user);
-                    fillRequest(content, user, localeType);
-                    RoleType roleType = (RoleType) content.getAttribute(ATTRIBUTE_USER_ROLE);
-                    page = ConfigurationManager.getProperty(roleType.getPage());
-                    logger.info(String.format("User: %s has logged in", user));
+                    if (StatusType.ACTIVE.equals(user.getStatus())) {
+                        fillSession(content, user);
+                        fillRequest(content, user, localeType);
+                        RoleType roleType = (RoleType) content.getAttribute(ATTRIBUTE_USER_ROLE);
+                        page = ConfigurationManager.getProperty(roleType.getPage());
+                        logger.info(String.format("User: %s has logged in", user));
+                    } else {
+                        content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_CONFIRM_MESSAGE, localeType));
+                    }
                 } else {
                     content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE, localeType));
                 }

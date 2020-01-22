@@ -34,6 +34,10 @@ public class UserDaoImpl implements UserDao {
             "UPDATE account " +
                     "SET avatar_url=? " +
                     "WHERE login=?";
+    private static final String UPDATE_STATUS_BY_LOGIN_SQL =
+            "UPDATE account " +
+                    "SET status=? " +
+                    "WHERE login=?";
     private static final String SELECT_USER_BY_ID_SQL =
             "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
                     "FROM account " +
@@ -165,6 +169,24 @@ public class UserDaoImpl implements UserDao {
             statement.execute();
         } catch (SQLException e) {
             throw new DaoException(String.format("Cannot change avatar: %s", login), e);
+        } finally {
+            close(statement);
+            close(connection);
+        }
+    }
+
+    @Override
+    public void updateStatus(String login, int status) throws DaoException{
+        ProxyConnection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = ConnectionPool.INSTANCE.getConnection();
+            statement = connection.prepareStatement(UPDATE_STATUS_BY_LOGIN_SQL);
+            statement.setInt(1, status);
+            statement.setString(2, login);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DaoException(String.format("Cannot change status login: %s", login), e);
         } finally {
             close(statement);
             close(connection);

@@ -13,4 +13,6 @@ public interface UserDao extends BaseDao<Long, User> {
     void updatePassword(String login, String newPassword) throws DaoException;
 
     void updateAvatar(String login, String uploadedFilePath) throws DaoException;
+
+    void updateStatus(String login, int status) throws DaoException;
 }

@@ -46,11 +46,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void signupUser(String login, String eMail, String password, RoleType role, StatusType active) throws ServiceException {
+    public void signupUser(String login, String eMail, String password, RoleType role, StatusType inactive) throws ServiceException {
         String avatarUrl = ConfigurationManager.getProperty(PROPERTIES_DEFAULT_AVATAR_URL);
         try {
             if (!dao.isExist(login, eMail)) {
-                User user = UserFactory.getInstance().create(login, password, eMail, avatarUrl, role, active);
+                User user = UserFactory.getInstance().create(login, password, eMail, avatarUrl, role, inactive);
                 dao.create(user);
             }
         } catch (DaoException e) {

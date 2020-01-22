@@ -10,8 +10,10 @@ import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.AccountService;
 import by.siarhei.beerfest.service.LanguageService;
+import by.siarhei.beerfest.service.RegistrationService;
 import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import by.siarhei.beerfest.service.impl.LanguageServiceImpl;
+import by.siarhei.beerfest.service.impl.RegistrationServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 public class SignupCommand implements ActionCommand {
@@ -28,10 +30,12 @@ public class SignupCommand implements ActionCommand {
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
     private LanguageService languageService;
     private AccountService accountService;
+    private RegistrationService registrationService;
 
     public SignupCommand(){
         languageService = new LanguageServiceImpl();
         accountService = new AccountServiceImpl();
+        registrationService = RegistrationServiceImpl.getInstance();
     }
 
     @Override
@@ -45,7 +49,8 @@ public class SignupCommand implements ActionCommand {
             RoleType role = RoleType.valueOf(content.getParameter(PARAMETER_ROLE).toUpperCase());
             try {
                 if (accountService.checkUserByLoginEmail(login, eMail)) {
-                    accountService.signupUser(login, eMail, password, role, StatusType.ACTIVE);
+                    accountService.signupUser(login, eMail, password, role, StatusType.INACTIVE);
+                    registrationService.addRegistrationToken(login,eMail);
                     content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_SUCCESS,localeType));
                 } else {
                     content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR,localeType));
