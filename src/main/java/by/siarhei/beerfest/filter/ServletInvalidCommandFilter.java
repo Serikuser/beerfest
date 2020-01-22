@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 @WebFilter(urlPatterns = {"/controller"}, servletNames = {"Controller"})
 public class ServletInvalidCommandFilter implements Filter {
-    private static final String URL_CONTROLLER = "/";
+    private static final String URL = "/";
     private static final String PARAMETER_COMMAND = "command";
     private static final String ATTRIBUTE_ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_MESSAGE = "message.signup.error.joke";
@@ -35,7 +35,7 @@ public class ServletInvalidCommandFilter implements Filter {
         if (Stream.of(CommandType.values()).noneMatch(commandType -> commandType.name().equalsIgnoreCase(action))) {
             request.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE, localeType));
             RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher(URL_CONTROLLER);
+                    .getRequestDispatcher(URL);
             dispatcher.forward(request, response);
             return;
         }
