@@ -1,5 +1,6 @@
 package by.siarhei.beerfest.filter;
 
+import by.siarhei.beerfest.command.CommandType;
 import by.siarhei.beerfest.command.LocaleType;
 import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.LanguageService;
@@ -10,9 +11,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 @WebFilter(urlPatterns = {"/controller"}, servletNames = {"Controller"})
-public class ServletEmptyActionFilter implements Filter {
+public class ServletInvalidCommandFilter implements Filter {
     private static final String URL_CONTROLLER = "/";
     private static final String PARAMETER_COMMAND = "command";
     private static final String ATTRIBUTE_ERROR_MESSAGE = "errorMessage";
@@ -30,7 +32,7 @@ public class ServletEmptyActionFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         LocaleType localeType = languageService.defineLocale(request);
         String action = request.getParameter(PARAMETER_COMMAND);
-        if (action == null || action.isBlank()) {
+        if (Stream.of(CommandType.values()).noneMatch(commandType -> commandType.name().equalsIgnoreCase(action))) {
             request.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE, localeType));
             RequestDispatcher dispatcher = request.getServletContext()
                     .getRequestDispatcher(URL_CONTROLLER);
