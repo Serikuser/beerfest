@@ -1,6 +1,6 @@
 package by.siarhei.beerfest.service;
 
-import by.siarhei.beerfest.entity.Book;
+import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.ServiceException;
 
 import java.sql.Date;

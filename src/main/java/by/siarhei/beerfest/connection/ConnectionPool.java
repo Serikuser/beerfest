@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -16,13 +18,15 @@ public enum ConnectionPool {
     INSTANCE;
 
     private static final Logger logger = LogManager.getLogger();
-
+    private static final long MINUTES_10 = 600000L;
+    private TimerTask poolConsistencyObserver;
     private BlockingQueue<Connection> freeConnections;
     private Queue<Connection> occupiedConnections;
     private static final int POOL_SIZE = 48;
 
     ConnectionPool() {
         init();
+        checkPoolConsistency();
     }
 
     public ProxyConnection getConnection() {
@@ -73,8 +77,28 @@ public enum ConnectionPool {
                 ProxyConnection connection = ConnectionProvider.getConnection();
                 freeConnections.offer(connection);
             } catch (SQLException e) {
-                logger.fatal(String.format("Poll cant be filled throws exception: %s", e));
+                throw new ExceptionInInitializerError(String.format("Poll cant be filled with reason %s", e));
             }
+        }
+    }
+
+    private void checkPoolConsistency() {
+        if (poolConsistencyObserver == null) {
+            poolConsistencyObserver = new TimerTask() {
+                @Override
+                public void run() {
+                    while ((occupiedConnections.size() + freeConnections.size()) < POOL_SIZE) {
+                        try {
+                            Connection connection = ConnectionProvider.getConnection();
+                            freeConnections.offer(connection);
+                        } catch (SQLException e) {
+                            throw new ExceptionInInitializerError(String.format("Poll cant be filled with reason %s", e));
+                        }
+                    }
+                }
+            };
+            Timer timer = new Timer("Pool Consistency Observer");
+            timer.scheduleAtFixedRate(poolConsistencyObserver, MINUTES_10, MINUTES_10);
         }
     }
 

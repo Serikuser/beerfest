@@ -2,18 +2,20 @@ package by.siarhei.beerfest.dao.impl;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
+import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.dao.UserDao;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
-import by.siarhei.beerfest.entity.User;
+import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     private static final String INSERT_LOGIN_SQL = "INSERT INTO account (login,password,email,avatar_url,role,status) VALUES (?,?,?,?,?,?)";
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
@@ -38,6 +40,10 @@ public class UserDaoImpl implements UserDao {
             "UPDATE account " +
                     "SET status=? " +
                     "WHERE login=?";
+    private static final String UPDATE_STATUS_BY_ID_SQL =
+            "UPDATE account " +
+                    "SET status=? " +
+                    "WHERE id=?";
     private static final String SELECT_USER_BY_ID_SQL =
             "SELECT account.id,login,password,email,avatar_url,role.name,status.name " +
                     "FROM account " +
@@ -176,7 +182,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateStatus(String login, int status) throws DaoException{
+    public void updateStatus(String login, int status) throws DaoException {
         ProxyConnection connection = null;
         PreparedStatement statement = null;
         try {
@@ -190,6 +196,32 @@ public class UserDaoImpl implements UserDao {
         } finally {
             close(statement);
             close(connection);
+        }
+    }
+
+    @Override
+    public void updateStatusById(long id, int status) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        boolean isInTransaction = false;
+        try {
+            if (this.connection == null) {
+                connection = ConnectionPool.INSTANCE.getConnection();
+            } else {
+                connection = this.connection;
+                isInTransaction = true;
+            }
+            statement = connection.prepareStatement(UPDATE_STATUS_BY_ID_SQL);
+            statement.setInt(1, status);
+            statement.setLong(2, id);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DaoException(String.format("Cannot change status id: %s", id), e);
+        } finally {
+            close(statement);
+            if (!isInTransaction) {
+                close(connection);
+            }
         }
     }
 

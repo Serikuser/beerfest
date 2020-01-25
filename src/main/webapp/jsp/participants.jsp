@@ -31,11 +31,11 @@
                     <c:forEach items="${participants}" var="bar">
                         <article class="news news_main">
                             <div class="container">
-                                <h1><i class="fas fa-utensils"></i> ${bar.name}</h1>
+                                <h1><i class="fas fa-utensils"></i> <c:out value="${bar.name}"/></h1>
                                 <hr>
                                 <h5><fmt:message key="participants.description"/></h5>
                                 <div class="well">
-                                        ${bar.description}
+                                       <c:out value="${bar.description}"/>
                                 </div>
                                 <i class="fas fa-hamburger"></i>${bar.foodName}
                                 <i class="fas fa-beer"></i>${bar.beerName}

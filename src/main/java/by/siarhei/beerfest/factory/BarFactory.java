@@ -1,6 +1,6 @@
 package by.siarhei.beerfest.factory;
 
-import by.siarhei.beerfest.entity.Bar;
+import by.siarhei.beerfest.entity.impl.Bar;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;

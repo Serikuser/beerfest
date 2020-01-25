@@ -1,4 +1,8 @@
-package by.siarhei.beerfest.entity;
+package by.siarhei.beerfest.entity.impl;
+
+import by.siarhei.beerfest.entity.Entity;
+import by.siarhei.beerfest.entity.RoleType;
+import by.siarhei.beerfest.entity.StatusType;
 
 public class User extends Entity {
     private String login;

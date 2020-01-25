@@ -57,7 +57,7 @@ public class SubmitBarCommand implements ActionCommand {
             page = ConfigurationManager.getProperty(roleType.getPage());
             try {
                 if (barService.checkUserSubmission(login)) {
-                    int places = Integer.parseInt(content.getParameter(PARAMETER_PLACES));
+                    String places = content.getParameter(PARAMETER_PLACES);
                     String barName = content.getParameter(PARAMETER_BAR_NAME);
                     long beerType = Long.parseLong(content.getParameter(PARAMETER_BEER_TYPE));
                     long foodType = Long.parseLong(content.getParameter(PARAMETER_FOOD_TYPE));

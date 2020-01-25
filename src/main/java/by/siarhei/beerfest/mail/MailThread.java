@@ -1,5 +1,6 @@
 package by.siarhei.beerfest.mail;
 
+import by.siarhei.beerfest.manager.MailConfigurationManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +15,9 @@ import javax.mail.internet.MimeMessage;
 public class MailThread extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final String REGISTRATION_MESSAGE = "To continue registration, follow the link: http://178.127.80.102:8089/Beerfest/controller?command=continue_registration&token=%s \nIf you have not registered on the beer festival website, simply ignore this message.";
+    private static final String REGISTRATION_MESSAGE = "mail.registration.message";
+    private static final String TEXT_HTML_TYPE = "text/html";
+    private static final String SUBJECT = "Registration confirm";
     private String token;
     private String eMail;
     private MimeMessage message;
@@ -29,8 +32,9 @@ public class MailThread extends Thread {
         mailSession.setDebug(true);
         message = new MimeMessage(mailSession);
         try {
-            message.setSubject("Registration confirm");
-            message.setContent(String.format(REGISTRATION_MESSAGE, token), "text/html");
+            message.setSubject(SUBJECT);
+            String registrationMessage = MailConfigurationManager.getProperty(REGISTRATION_MESSAGE);
+            message.setContent(String.format(registrationMessage, token), TEXT_HTML_TYPE);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(eMail));
         } catch (AddressException e) {
             logger.error(String.format("Wrong address: %s throws exception: %s", eMail,e));

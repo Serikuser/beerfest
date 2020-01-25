@@ -1,6 +1,6 @@
 package by.siarhei.beerfest.dao;
 
-import by.siarhei.beerfest.entity.Bar;
+import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.DaoException;
 
 import java.util.Map;
