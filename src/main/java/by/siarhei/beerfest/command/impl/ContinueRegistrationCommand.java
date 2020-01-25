@@ -23,7 +23,7 @@ public class ContinueRegistrationCommand implements ActionCommand {
 
     public ContinueRegistrationCommand() {
         languageService = new LanguageServiceImpl();
-        registrationService = new RegistrationServiceImpl();
+        registrationService = RegistrationServiceImpl.getInstance();
     }
 
     @Override

@@ -3,8 +3,8 @@ package by.siarhei.beerfest.service.impl;
 import by.siarhei.beerfest.dao.TransactionManager;
 import by.siarhei.beerfest.dao.impl.RegistrationDaoImpl;
 import by.siarhei.beerfest.dao.impl.UserDaoImpl;
-import by.siarhei.beerfest.entity.impl.Registration;
 import by.siarhei.beerfest.entity.StatusType;
+import by.siarhei.beerfest.entity.impl.Registration;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.mail.MailThread;
@@ -20,6 +20,7 @@ import java.util.UUID;
 public class RegistrationServiceImpl implements RegistrationService {
     private static final Logger logger = LogManager.getLogger();
 
+    private static RegistrationServiceImpl instance;
     private static final long MINUTES_15 = 900000L;
     private static final long HOURS_2 = 7200000000000L;
     private TimerTask expiredTokenObserver;
@@ -27,11 +28,18 @@ public class RegistrationServiceImpl implements RegistrationService {
     private UserDaoImpl userDao;
     private RegistrationDaoImpl registrationDao;
 
-    public RegistrationServiceImpl() {
+    private RegistrationServiceImpl() {
         userDao = new UserDaoImpl();
         registrationDao = new RegistrationDaoImpl();
         checkExpiredTokens();
         checkExpiredDate();
+    }
+
+    public static RegistrationServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new RegistrationServiceImpl();
+        }
+        return instance;
     }
 
     @Override
@@ -98,6 +106,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                     }
                 }
             };
+            logger.info("Expired tokens observer started. Clean up every two hours");
             Timer timer = new Timer("Expired tokens observer");
             timer.scheduleAtFixedRate(expiredTokenObserver, HOURS_2, HOURS_2);
         }
@@ -110,10 +119,12 @@ public class RegistrationServiceImpl implements RegistrationService {
                 public void run() {
                     try {
                         List<Registration> list = registrationDao.findAllNotExpiredTokens();
-                        for (Registration registration : list) {
-                            if (registration.getDate() + MINUTES_15 < System.currentTimeMillis()) {
-                                long id = registration.getId();
-                                registrationDao.updateExpiredByToken(id, true);
+                        if (!list.isEmpty()) {
+                            for (Registration registration : list) {
+                                if (registration.getDate() + MINUTES_15 < System.currentTimeMillis()) {
+                                    long id = registration.getId();
+                                    registrationDao.updateExpiredByToken(id, true);
+                                }
                             }
                         }
                     } catch (DaoException e) {
@@ -121,6 +132,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                     }
                 }
             };
+            logger.info("Expired date observer started. Clean up every fifteen minutes");
             Timer timer = new Timer("Expired date observer");
             timer.scheduleAtFixedRate(expiredDateObserver, MINUTES_15, MINUTES_15);
         }
