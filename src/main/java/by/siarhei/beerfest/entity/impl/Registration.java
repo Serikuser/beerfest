@@ -2,11 +2,13 @@ package by.siarhei.beerfest.entity.impl;
 
 import by.siarhei.beerfest.entity.Entity;
 
+import java.sql.Timestamp;
+
 public class Registration extends Entity {
     long accountId;
     String token;
     boolean expired;
-    long date;
+    Timestamp date;
 
     public long getAccountId() {
         return accountId;
@@ -32,11 +34,11 @@ public class Registration extends Entity {
         this.expired = expired;
     }
 
-    public long getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(long date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

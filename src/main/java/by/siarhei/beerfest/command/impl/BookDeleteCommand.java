@@ -2,8 +2,8 @@ package by.siarhei.beerfest.command.impl;
 
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
-import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.entity.RoleType;
+import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;

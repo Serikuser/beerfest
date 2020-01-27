@@ -41,7 +41,14 @@ public enum ConnectionPool {
     }
 
     public void releaseConnection(Connection connection) throws NotProxyConnectionException {
-        if (connection.getClass() == ProxyConnection.class) {
+        if (connection instanceof ProxyConnection) {
+            try {
+                if (!connection.getAutoCommit()) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                logger.error(String.format("Cant set auto commit mode to true on connection: %s", connection));
+            }
             occupiedConnections.remove(connection);
             freeConnections.offer(connection);
         } else throw new NotProxyConnectionException("Connection not from pool");
