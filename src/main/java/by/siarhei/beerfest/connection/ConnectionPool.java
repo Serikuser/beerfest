@@ -18,7 +18,7 @@ public enum ConnectionPool {
     INSTANCE;
 
     private static final Logger logger = LogManager.getLogger();
-    private static final long MINUTES_10 = 600000L;
+    private static final long MINUTES_10 = 600_000L;
     private TimerTask poolConsistencyObserver;
     private BlockingQueue<Connection> freeConnections;
     private Queue<Connection> occupiedConnections;
