@@ -2,7 +2,7 @@ package by.siarhei.beerfest.service.impl;
 
 import by.siarhei.beerfest.dao.BookDao;
 import by.siarhei.beerfest.dao.impl.BookDaoImpl;
-import by.siarhei.beerfest.entity.Book;
+import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.service.BookService;

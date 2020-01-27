@@ -15,6 +15,7 @@ public class ContinueRegistrationCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String ATTRIBUTE_MESSAGE = "errorMessage";
     private static final String ERROR_MESSAGE_COMPLETE_REGISTRATION = "message.change.registration.token.error";
+    private static final String SERVER_ERROR_MESSAGE_COMPLETE_REGISTRATION = "message.change.registration.server.error";
     private static final String SUCCESS_MESSAGE_COMPLETE_REGISTRATION = "message.change.registration.token.success";
     private static final String PARAMETER_TOKEN = "token";
     private LanguageService languageService;
@@ -32,10 +33,13 @@ public class ContinueRegistrationCommand implements ActionCommand {
         if (content.getParameter(PARAMETER_TOKEN) != null) {
             String token = content.getParameter(PARAMETER_TOKEN);
             try {
-                registrationService.completeRegistration(token);
-                content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUCCESS_MESSAGE_COMPLETE_REGISTRATION,localeType));
+                if (registrationService.completeRegistration(token)) {
+                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUCCESS_MESSAGE_COMPLETE_REGISTRATION, localeType));
+                } else {
+                    content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_COMPLETE_REGISTRATION, localeType));
+                }
             } catch (ServiceException e) {
-                content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_COMPLETE_REGISTRATION,localeType));
+                content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SERVER_ERROR_MESSAGE_COMPLETE_REGISTRATION, localeType));
             }
         }
         return page;

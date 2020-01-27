@@ -1,4 +1,6 @@
-package by.siarhei.beerfest.entity;
+package by.siarhei.beerfest.entity.impl;
+
+import by.siarhei.beerfest.entity.Entity;
 
 public class Bar extends Entity {
     private long accountId;

@@ -3,7 +3,7 @@ package by.siarhei.beerfest.dao.impl;
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.FeedDao;
-import by.siarhei.beerfest.entity.Article;
+import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.factory.ArticleFactory;
 

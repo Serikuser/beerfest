@@ -1,5 +1,7 @@
-package by.siarhei.beerfest.entity;
+package by.siarhei.beerfest.entity.impl;
 
+
+import by.siarhei.beerfest.entity.Entity;
 
 import java.sql.Date;
 

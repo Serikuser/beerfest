@@ -1,4 +1,6 @@
-package by.siarhei.beerfest.entity;
+package by.siarhei.beerfest.entity.impl;
+
+import by.siarhei.beerfest.entity.Entity;
 
 public class Article extends Entity {
     private String title;

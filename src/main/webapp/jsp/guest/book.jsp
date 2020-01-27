@@ -33,7 +33,7 @@
                                 <div class="container">
                                         <input type="hidden" name="command" value="book_delete"/>
                                         <input type="hidden" name="bookId" value="${book.id}"/>
-                                        <h1><i class="fas fa-utensils"></i> ${book.barName}</h1>
+                                        <h1><i class="fas fa-utensils"></i> <c:out value="${book.barName}"/></h1>
                                         <hr>
                                         <i class="fas fa-chair"></i>${book.places}
                                         <i class="fas fa-clock"></i>${book.date}

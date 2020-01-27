@@ -1,6 +1,6 @@
 package by.siarhei.beerfest.service;
 
-import by.siarhei.beerfest.entity.Bar;
+import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.ServiceException;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface BarService {
     // TODO: 11.01.2020
-    boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, int places) throws ServiceException;
+    boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, String places) throws ServiceException;
 
     boolean checkUserSubmission(String login) throws ServiceException;
 

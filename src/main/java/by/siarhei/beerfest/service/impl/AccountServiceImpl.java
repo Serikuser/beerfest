@@ -4,7 +4,7 @@ import by.siarhei.beerfest.dao.UserDao;
 import by.siarhei.beerfest.dao.impl.UserDaoImpl;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
-import by.siarhei.beerfest.entity.User;
+import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.factory.UserFactory;

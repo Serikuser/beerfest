@@ -2,7 +2,7 @@ package by.siarhei.beerfest.factory;
 
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
-import by.siarhei.beerfest.entity.User;
+import by.siarhei.beerfest.entity.impl.User;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;

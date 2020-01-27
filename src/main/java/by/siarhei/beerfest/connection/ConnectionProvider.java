@@ -22,6 +22,7 @@ public class ConnectionProvider {
             Class.forName(databaseDriverUrl);
         } catch (ClassNotFoundException e) {
             logger.fatal(String.format("Poll cant register drivers throws exception: %s", e));
+            throw new ExceptionInInitializerError("Cant install database drivers");
         }
     }
 

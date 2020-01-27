@@ -3,7 +3,7 @@ package by.siarhei.beerfest.dao.impl;
 import by.siarhei.beerfest.connection.ConnectionPool;
 import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.BookDao;
-import by.siarhei.beerfest.entity.Book;
+import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.DaoException;
 
 import java.sql.*;

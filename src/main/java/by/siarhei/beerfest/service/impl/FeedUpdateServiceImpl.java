@@ -2,7 +2,7 @@ package by.siarhei.beerfest.service.impl;
 
 import by.siarhei.beerfest.dao.FeedDao;
 import by.siarhei.beerfest.dao.impl.FeedDaoImpl;
-import by.siarhei.beerfest.entity.Article;
+import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.service.FeedUpdateService;

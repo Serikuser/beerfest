@@ -74,7 +74,6 @@
 
 .avatar_default {
     display: inline-block;
-    background-image: url(http://localhost:8089/Beerfest/avatars/default.jpg);
     width: 36px;
     height: 36px;
     border-radius: 100%;

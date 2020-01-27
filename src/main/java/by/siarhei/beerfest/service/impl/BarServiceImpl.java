@@ -2,7 +2,7 @@ package by.siarhei.beerfest.service.impl;
 
 import by.siarhei.beerfest.dao.BarDao;
 import by.siarhei.beerfest.dao.impl.BarDaoImpl;
-import by.siarhei.beerfest.entity.Bar;
+import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.service.BarService;
@@ -26,14 +26,15 @@ public class BarServiceImpl implements BarService {
 
     // TODO: 11.01.2020
     @Override
-    public boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, int places) throws ServiceException {
-        if (isValidData(accountId, barName, beerType, foodType, barDescription, places)) {
+    public boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, String places) throws ServiceException {
+        if (isValidData(barName, barDescription, places)) {
             Bar bar = new Bar();
             bar.setAccountId(accountId);
             bar.setName(barName);
             bar.setBeerId(beerType);
             bar.setFoodId(foodType);
-            bar.setPlaces(places);
+            int numberOfPlaces = Integer.parseInt(places);
+            bar.setPlaces(numberOfPlaces);
             bar.setDescription(barDescription);
             try {
                 dao.create(bar);
@@ -108,13 +109,25 @@ public class BarServiceImpl implements BarService {
         }
     }
 
-    private boolean isValidData(long accountId, String barName, long beerType, long foodType, String barDescription, int places) {
-        return places > 0 && isNumeric(places);
+    private boolean isValidData(String barName, String barDescription, String places) {
+        return isValidPlaces(places) && isInputTextValid(barName, barDescription);
     }
 
-    private boolean isNumeric(Integer places) {
+    private boolean isInputTextValid(String barName, String barDescription) {
+        return !barName.isBlank() && !barDescription.isBlank();
+    }
+
+    private boolean isValidPlaces(String places) {
+        if (!places.isBlank() && isNumeric(places)) {
+            return Integer.parseInt(places) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isNumeric(String places) {
         Pattern pattern = Pattern.compile(REGEX_NON_NUMERIC);
-        Matcher matcher = pattern.matcher(places.toString());
+        Matcher matcher = pattern.matcher(places);
         return !matcher.find();
     }
 

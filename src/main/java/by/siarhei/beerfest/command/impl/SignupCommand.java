@@ -5,6 +5,7 @@ import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
+import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
@@ -50,7 +51,9 @@ public class SignupCommand implements ActionCommand {
             try {
                 if (accountService.checkUserByLoginEmail(login, eMail)) {
                     accountService.signupUser(login, eMail, password, role, StatusType.INACTIVE);
-                    registrationService.addRegistrationToken(login,eMail);
+                    User user = accountService.defineUserByLogin(login);
+                    long id = user.getId();
+                    registrationService.addRegistrationToken(id,eMail);
                     content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_SUCCESS,localeType));
                 } else {
                     content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR,localeType));

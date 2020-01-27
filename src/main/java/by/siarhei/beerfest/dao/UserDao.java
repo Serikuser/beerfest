@@ -1,6 +1,6 @@
 package by.siarhei.beerfest.dao;
 
-import by.siarhei.beerfest.entity.User;
+import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 
 public interface UserDao extends BaseDao<Long, User> {
@@ -15,4 +15,6 @@ public interface UserDao extends BaseDao<Long, User> {
     void updateAvatar(String login, String uploadedFilePath) throws DaoException;
 
     void updateStatus(String login, int status) throws DaoException;
+
+    void updateStatusById(long id, int status) throws DaoException;
 }

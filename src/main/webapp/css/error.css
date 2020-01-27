@@ -18,7 +18,7 @@ body {
 }
 
 * > body {
-    background: url(http://localhost:8089/Beerfest/img/404.png) 65% 5px no-repeat;
+    background: url(http://37.45.246.116:8089/Beerfest/img/404.png) 65% 5px no-repeat;
     padding-right: 205px;
 }
 
