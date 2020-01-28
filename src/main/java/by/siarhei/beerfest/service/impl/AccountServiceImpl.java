@@ -7,7 +7,7 @@ import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
-import by.siarhei.beerfest.factory.UserFactory;
+import by.siarhei.beerfest.provider.UserProviderImpl;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.service.AccountService;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
         String avatarUrl = ConfigurationManager.getProperty(PROPERTIES_DEFAULT_AVATAR_URL);
         try {
             if (!dao.isExist(login, eMail)) {
-                User user = UserFactory.getInstance().create(login, password, eMail, avatarUrl, role, inactive);
+                User user = UserProviderImpl.getInstance().create(login, password, eMail, avatarUrl, role, inactive);
                 dao.create(user);
             }
         } catch (DaoException e) {

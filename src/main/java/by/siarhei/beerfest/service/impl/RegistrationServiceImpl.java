@@ -24,7 +24,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private static RegistrationServiceImpl instance;
     private static final long MINUTES_15 = 900_000L;
-    private static final long HOURS_2 = 7_200_000_000_000L;
+    private static final long HOURS_2 = 7_200_000L;
     private TimerTask expiredTokenObserver;
     private TimerTask expiredDateObserver;
     private RegistrationDao registrationDao;
