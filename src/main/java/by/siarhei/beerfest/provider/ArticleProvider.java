@@ -2,15 +2,15 @@ package by.siarhei.beerfest.provider;
 
 import by.siarhei.beerfest.entity.impl.Article;
 
-public class ArticleProviderImpl {
-    private static ArticleProviderImpl instance;
+public class ArticleProvider {
+    private static ArticleProvider instance;
 
-    private ArticleProviderImpl() {
+    private ArticleProvider() {
     }
 
-    public static ArticleProviderImpl getInstance() {
+    public static ArticleProvider getInstance() {
         if (instance == null) {
-            instance = new ArticleProviderImpl();
+            instance = new ArticleProvider();
         }
         return instance;
     }

@@ -4,7 +4,7 @@ import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.dao.FeedDao;
 import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.DaoException;
-import by.siarhei.beerfest.provider.ArticleProviderImpl;
+import by.siarhei.beerfest.provider.ArticleProvider;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,7 +25,7 @@ public class FeedDaoImpl extends DaoTransaction implements FeedDao {
         Connection connection = getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
-        ArticleProviderImpl factory = ArticleProviderImpl.getInstance();
+        ArticleProvider factory = ArticleProvider.getInstance();
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SQL_SELECT_ALL_FEED);

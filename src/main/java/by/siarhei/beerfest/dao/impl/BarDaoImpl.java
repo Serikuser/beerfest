@@ -4,7 +4,7 @@ import by.siarhei.beerfest.dao.BarDao;
 import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.DaoException;
-import by.siarhei.beerfest.provider.BarProviderImpl;
+import by.siarhei.beerfest.provider.BarProvider;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class BarDaoImpl extends DaoTransaction implements  BarDao {
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SELECT_ALL_BAR_SQL);
-            BarProviderImpl factory = BarProviderImpl.getInstance();
+            BarProvider factory = BarProvider.getInstance();
             while (resultSet.next()) {
                 int index = 0;
                 long barId = resultSet.getLong(++index);

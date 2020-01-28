@@ -4,15 +4,15 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
 
-public class UserProviderImpl {
-    private static UserProviderImpl instance;
+public class UserProvider {
+    private static UserProvider instance;
 
-    private UserProviderImpl() {
+    private UserProvider() {
     }
 
-    public static UserProviderImpl getInstance() {
+    public static UserProvider getInstance() {
         if (instance == null) {
-            instance = new UserProviderImpl();
+            instance = new UserProvider();
         }
         return instance;
     }
