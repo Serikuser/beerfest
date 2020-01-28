@@ -62,6 +62,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             }
         } catch (DaoException e) {
             transactionManager.rollback();
+            logger.error("Cannot complete registration to id: %s ", e);
             throw new ServiceException(e);
         } finally {
             transactionManager.closeTransaction();
@@ -82,7 +83,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             registrationDao.create(registration);
             sendEmail(token, eMail);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot create registration to id: %s throws exception: %s", id, e));
+            logger.error("Cannot create registration to id: %s ", e);
             throw new ServiceException(e);
         }
     }
@@ -100,7 +101,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                     try {
                         registrationDao.deleteExpired();
                     } catch (DaoException e) {
-                        logger.error(String.format("Cannot delete expired tokens throws exception: %s", e));
+                        logger.error("Cannot delete expired tokens ", e);
                     }
                 }
             };
@@ -126,7 +127,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                             }
                         }
                     } catch (DaoException e) {
-                        logger.error(String.format("Cannot update tokens throws exception: %s", e));
+                        logger.error("Cannot update tokens ", e);
                     }
                 }
             };

@@ -9,5 +9,7 @@ public interface BookDao extends BaseDao<Long, Book> {
 
     List<Book> findUserBook(Long id) throws DaoException;
 
+    List<Book> findBarBook(Long id) throws DaoException;
+
     boolean isUsersBookingFull(String login) throws DaoException;
 }

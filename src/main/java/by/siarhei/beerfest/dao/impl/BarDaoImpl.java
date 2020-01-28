@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BarDaoImpl extends DaoTransaction implements  BarDao {
+public class BarDaoImpl extends DaoTransaction implements BarDao {
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
     private static final String INSERT_BAR_SQL = "INSERT INTO bar (account_id,name,description,food_id,beer_id ,places) VALUES (?,?,?,?,?,?)";
     private static final String INSERT_BEER_SQL = "INSERT INTO beer (name) VALUES (?)";
@@ -34,6 +34,12 @@ public class BarDaoImpl extends DaoTransaction implements  BarDao {
                     "ON bar.beer_id = beer.id " +
                     "INNER JOIN food " +
                     "ON bar.food_id = food.id ";
+    private static final String SELECT_BAR_ID_BY_USER_ID_SQL =
+            "SELECT bar.id " +
+                    "FROM bar " +
+                    "INNER JOIN account " +
+                    "ON account.id = bar.account_id " +
+                    "WHERE account.id = ?";
 
     @Override
     public List<Bar> findAll() throws DaoException {
@@ -285,5 +291,30 @@ public class BarDaoImpl extends DaoTransaction implements  BarDao {
                 close(connection);
             }
         }
+    }
+
+    @Override
+    public long findBarByUserId(long userId) throws DaoException {
+        long id = 0;
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement(SELECT_BAR_ID_BY_USER_ID_SQL);
+            statement.setLong(1, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                id = resultSet.getLong(1);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(String.format("Cant find bar id by user id %s", userId), e);
+        } finally {
+            close(statement);
+            if (!isInTransaction()) {
+                close(connection);
+            }
+            close(resultSet);
+        }
+        return id;
     }
 }

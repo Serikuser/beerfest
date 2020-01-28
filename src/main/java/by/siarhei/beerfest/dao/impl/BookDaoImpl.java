@@ -26,6 +26,14 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
                     "INNER JOIN bar " +
                     "ON book.bar_id = bar.id " +
                     "where guest_id = ? ";
+    private static final String SELECT_BOOK_BY_BAR_ID_SQL =
+            "SELECT account.login,book.reservation_date,book.reserved_places " +
+                    "FROM book " +
+                    "INNER JOIN account " +
+                    "ON book.guest_id = account.id " +
+                    "INNER JOIN bar " +
+                    "ON book.bar_id = bar.id " +
+                    "WHERE bar.id = ? ";
     private static final String DELETE_BOOK_BY_ID_SQL = "DELETE FROM book WHERE book.id = %s";
 
     @Override
@@ -85,6 +93,39 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
             }
         } catch (SQLException e) {
             throw new DaoException("Cannot find user book ", e);
+        } finally {
+            close(statement);
+            if (!isInTransaction()) {
+                close(connection);
+            }
+            close(resultSet);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Book> findBarBook(Long id) throws DaoException {
+        List<Book> list = new ArrayList<>();
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement(SELECT_BOOK_BY_BAR_ID_SQL);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Book book = new Book();
+                int columnIndex = 0;
+                String userName = resultSet.getString(++columnIndex);
+                book.setUserName(userName);
+                Date date = resultSet.getDate(++columnIndex);
+                book.setDate(date);
+                int reservedPlaces = resultSet.getInt(++columnIndex);
+                book.setPlaces(reservedPlaces);
+                list.add(book);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Cannot find bar book ", e);
         } finally {
             close(statement);
             if (!isInTransaction()) {

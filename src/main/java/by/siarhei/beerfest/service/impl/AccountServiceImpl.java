@@ -7,9 +7,10 @@ import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
-import by.siarhei.beerfest.provider.UserProvider;
 import by.siarhei.beerfest.manager.ConfigurationManager;
+import by.siarhei.beerfest.provider.UserProvider;
 import by.siarhei.beerfest.service.AccountService;
+import by.siarhei.beerfest.validator.InputDataValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,8 +19,10 @@ public class AccountServiceImpl implements AccountService {
 
     private static final String PROPERTIES_DEFAULT_AVATAR_URL = "user.data.avatar.default";
     private UserDao dao;
+    private InputDataValidator validator;
 
     public AccountServiceImpl() {
+        validator = new InputDataValidator();
         dao = new UserDaoImpl();
     }
 
@@ -28,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             return dao.findEntity(id);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot find user by id: %s throws exception: %s", id, e));
+            logger.error("Cannot find user by id ", e);
             throw new ServiceException(e);
         }
     }
@@ -40,7 +43,7 @@ public class AccountServiceImpl implements AccountService {
                 dao.updatePassword(login, newPassword);
             }
         } catch (DaoException e) {
-            logger.error(String.format("Cannot change user password: %s throws exception: %s", login, e));
+            logger.error("Cannot change user password", e);
             throw new ServiceException(e);
         }
     }
@@ -54,18 +57,22 @@ public class AccountServiceImpl implements AccountService {
                 dao.create(user);
             }
         } catch (DaoException e) {
-            logger.error(String.format("Cannot signup new user: %s throws exception: %s", login, e));
+            logger.error("Cannot signup new user", e);
             throw new ServiceException(e);
         }
     }
 
     @Override
     public boolean checkUserByLoginEmail(String login, String eMail) throws ServiceException {
-        try {
-            return !dao.isExist(login, eMail);
-        } catch (DaoException e) {
-            logger.error(String.format("Cannot check login/password throws exception: %s", e));
-            throw new ServiceException(e);
+        if (isInputDataValid(login, eMail)) {
+            try {
+                return !dao.isExist(login, eMail);
+            } catch (DaoException e) {
+                logger.error("Cannot check login/email", e);
+                throw new ServiceException(e);
+            }
+        } else {
+            return false;
         }
     }
 
@@ -74,7 +81,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             return dao.isLoginPasswordMatch(login, password);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot change password to user: %s throws exception: %s", login, e));
+            logger.error("Cannot check login/password", e);
             throw new ServiceException(e);
         }
     }
@@ -84,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             return dao.findUserByLogin(login);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot define user: %s throws exception: %s", login, e));
+            logger.error("Cannot define user", e);
             throw new ServiceException(e);
         }
     }
@@ -95,9 +102,13 @@ public class AccountServiceImpl implements AccountService {
             try {
                 dao.updateAvatar(login, uploadedFilePath);
             } catch (DaoException e) {
-                logger.error(String.format("Cannot change avatar to user: %s throws exception: %s", login, e));
+                logger.error("Cannot change avatar to user", e);
                 throw new ServiceException(e);
             }
         }
+    }
+
+    private boolean isInputDataValid(String login, String eMail) {
+        return validator.isLoginValid(login) && validator.isEMailValid(eMail);
     }
 }

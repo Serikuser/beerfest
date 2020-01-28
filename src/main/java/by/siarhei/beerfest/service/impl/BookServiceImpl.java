@@ -28,7 +28,7 @@ public class BookServiceImpl implements BookService {
         try {
             return dao.isUsersBookingFull(login);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot check user: %s books throws exception: %s", login, e));
+            logger.error("Cannot check user: %s books throws exception: %s", e);
             throw new ServiceException(e);
         }
     }
@@ -44,7 +44,7 @@ public class BookServiceImpl implements BookService {
         try {
             dao.create(book);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot make book throws exception: %s", e));
+            logger.error("Cannot make book", e);
             throw new ServiceException(e);
         }
     }
@@ -54,7 +54,17 @@ public class BookServiceImpl implements BookService {
         try {
             return dao.findUserBook(id);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot find book throws exception: %s", e));
+            logger.error("Cannot find book ", e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<Book> finBarBook(Long id) throws ServiceException {
+        try {
+            return dao.findBarBook(id);
+        } catch (DaoException e) {
+            logger.error("Cannot find book", e);
             throw new ServiceException(e);
         }
     }
@@ -65,7 +75,7 @@ public class BookServiceImpl implements BookService {
             dao.delete(bookId);
         }
         catch (DaoException e){
-            logger.error(String.format("Cannot delete book throws exception: %s", e));
+            logger.error("Cannot delete book ", e);
             throw new ServiceException(e);
         }
     }

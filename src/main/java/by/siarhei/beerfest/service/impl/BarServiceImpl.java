@@ -6,28 +6,27 @@ import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.service.BarService;
+import by.siarhei.beerfest.validator.InputDataValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BarServiceImpl implements BarService {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final String REGEX_NON_NUMERIC = "[^\\d. +-]+";
-    private BarDao dao;
+    private BarDao barDao;
+    private InputDataValidator validator;
 
     public BarServiceImpl() {
-        dao = new BarDaoImpl();
+        validator = new InputDataValidator();
+        barDao = new BarDaoImpl();
     }
 
-    // TODO: 11.01.2020
     @Override
     public boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, String places) throws ServiceException {
-        if (isValidData(barName, barDescription, places)) {
+        if (isValidInputData(barName, barDescription, places)) {
             Bar bar = new Bar();
             bar.setAccountId(accountId);
             bar.setName(barName);
@@ -37,10 +36,10 @@ public class BarServiceImpl implements BarService {
             bar.setPlaces(numberOfPlaces);
             bar.setDescription(barDescription);
             try {
-                dao.create(bar);
+                this.barDao.create(bar);
                 return true;
             } catch (DaoException e) {
-                logger.error(String.format("Cannot submit new bar: %s throws exception: %s", barName, e));
+                logger.error("Cannot submit new bar", e);
                 throw new ServiceException(e);
             }
         } else {
@@ -52,9 +51,9 @@ public class BarServiceImpl implements BarService {
     @Override
     public boolean checkUserSubmission(String login) throws ServiceException {
         try {
-            return !dao.isUserSubmittedBar(login);
+            return !barDao.isUserSubmittedBar(login);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot check user bar submissions: %s throws exception: %s", login, e));
+            logger.error("Cannot check user bar submissions", e);
             throw new ServiceException(e);
         }
     }
@@ -62,9 +61,9 @@ public class BarServiceImpl implements BarService {
     @Override
     public void submitBeer(String beerName) throws ServiceException {
         try {
-            dao.submitBeer(beerName);
+            barDao.submitBeer(beerName);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot submit new beer type: %s throws exception: %s", beerName, e));
+            logger.error("Cannot submit new beer type", e);
             throw new ServiceException(e);
         }
     }
@@ -72,9 +71,9 @@ public class BarServiceImpl implements BarService {
     @Override
     public void submitFood(String foodName) throws ServiceException {
         try {
-            dao.submitFood(foodName);
+            barDao.submitFood(foodName);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot submit new food type: %s throws exception: %s", foodName, e));
+            logger.error("Cannot submit new food type", e);
             throw new ServiceException(e);
         }
     }
@@ -82,9 +81,9 @@ public class BarServiceImpl implements BarService {
     @Override
     public List<Bar> updateParticipants() throws ServiceException {
         try {
-            return dao.findAll();
+            return barDao.findAll();
         } catch (DaoException e) {
-            logger.error(String.format("Cannot update participants list throws exception: %s", e));
+            logger.error("Cannot update participants list", e);
             throw new ServiceException(e);
         }
     }
@@ -92,9 +91,9 @@ public class BarServiceImpl implements BarService {
     @Override
     public Map<Long, String> updateFoodList() throws ServiceException {
         try {
-            return dao.findAllFoodType();
+            return barDao.findAllFoodType();
         } catch (DaoException e) {
-            logger.error(String.format("Cannot update food list throws exception: %s", e));
+            logger.error("Cannot update food list ", e);
             throw new ServiceException(e);
         }
     }
@@ -102,33 +101,27 @@ public class BarServiceImpl implements BarService {
     @Override
     public Map<Long, String> updateBeerList() throws ServiceException {
         try {
-            return dao.findnAllBeerType();
+            return barDao.findnAllBeerType();
         } catch (DaoException e) {
-            logger.error(String.format("Cannot update beer list throws exception: %s", e));
+            logger.error("Cannot update beer list", e);
             throw new ServiceException(e);
         }
     }
 
-    private boolean isValidData(String barName, String barDescription, String places) {
-        return isValidPlaces(places) && isInputTextValid(barName, barDescription);
-    }
-
-    private boolean isInputTextValid(String barName, String barDescription) {
-        return !barName.isBlank() && !barDescription.isBlank();
-    }
-
-    private boolean isValidPlaces(String places) {
-        if (!places.isBlank() && isNumeric(places)) {
-            return Integer.parseInt(places) > 0;
-        } else {
-            return false;
+    @Override
+    public long findUserByBarId(long userId) {
+        long barId = 0;
+        try {
+            barId = barDao.findBarByUserId(userId);
+        } catch (DaoException e) {
+            logger.error("Cannot find bar by user id", e);
         }
+        return barId;
     }
 
-    private boolean isNumeric(String places) {
-        Pattern pattern = Pattern.compile(REGEX_NON_NUMERIC);
-        Matcher matcher = pattern.matcher(places);
-        return !matcher.find();
+    private boolean isValidInputData(String barName, String barDescription, String places) {
+        return validator.isValidPlaces(places)
+                && validator.isBarDescriptionValid(barDescription)
+                && validator.isBarNameValid(barName);
     }
-
 }

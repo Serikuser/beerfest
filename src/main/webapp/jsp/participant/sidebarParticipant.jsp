@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <input type="hidden" name="command" value="bookBar"/>
+                        <input type="hidden" name="command" value="book_user"/>
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         </form>
     </div>
     <div class="profile-info_item">
-        <form action="controller" class="needs-validation" onsubmit="return cryptChange()" novalidate>
+        <form action="controller" class="needs-validation" novalidate>
             <div class="row">
                 <div class="col">
                     <div class="form-group">

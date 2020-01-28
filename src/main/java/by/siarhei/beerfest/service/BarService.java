@@ -21,4 +21,5 @@ public interface BarService {
 
     Map<Long, String> updateBeerList() throws ServiceException;
 
+    long findUserByBarId(long userId);
 }
