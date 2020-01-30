@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <input type="hidden" name="command" value="allUsers"/>
+                        <input type="hidden" name="command" value="select_users"/>
                     </div>
                 </div>
             </div>
@@ -28,11 +28,11 @@
         </form>
     </div>
     <div class="profile-info_item">
-        <form action="controller" class="needs-validation" onsubmit="return cryptChange()" novalidate>
+        <form action="controller" class="needs-validation" novalidate>
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <input type="hidden" name="command" value="allUsers"/>
+                        <input type="hidden" name="command" value="etc"/>
                     </div>
                 </div>
             </div>

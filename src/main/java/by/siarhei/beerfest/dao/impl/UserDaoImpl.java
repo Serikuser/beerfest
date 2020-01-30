@@ -7,10 +7,8 @@ import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoImpl extends DaoTransaction implements UserDao {
@@ -49,6 +47,17 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
                     "ON account.role = role.id " +
                     "INNER JOIN status " +
                     "ON account.status = status.id WHERE account.id=?";
+    private static final String SELECT_ALL_USER_SQL =
+            "SELECT account.id,login,email,role.name,status.name " +
+                    "FROM account  " +
+                    "INNER JOIN role " +
+                    "ON account.role = role.id " +
+                    "INNER JOIN status " +
+                    "ON account.status = status.id " +
+                    "ORDER BY role.id,account.login " +
+                    "OFFSET ? " +
+                    "LIMIT 5";
+    private static final String COUNT_USER_SQL = "SELECT count(*) as count FROM account";
 
     public UserDaoImpl() {
     }
@@ -127,9 +136,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
         boolean flag = false;
         try {
             statement = connection.prepareStatement(CHECK_USER_BY_LOGIN_EMAIL_SQL);
-            int index = 1;
-            statement.setString(index++, login);
-            statement.setString(index, email);
+            int index = 0;
+            statement.setString(++index, login);
+            statement.setString(++index, email);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 flag = resultSet.getInt(COINCIDENCES_RESULT_INDEX) != 0;
@@ -223,7 +232,68 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
+    public int countUsers() throws DaoException {
+        int count = 0;
+        Connection connection = getConnection();
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(COUNT_USER_SQL);
+            while (resultSet.next()) {
+                count = resultSet.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Cannot count users", e);
+        } finally {
+            close(statement);
+            close(resultSet);
+            if (!isInTransaction()) {
+                close(connection);
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public List<User> findAll(long offset) throws DaoException {
+        List<User> list = new ArrayList<>();
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement(SELECT_ALL_USER_SQL);
+            statement.setLong(1, offset);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                int index = 0;
+                long id = resultSet.getLong(++index);
+                user.setId(id);
+                String login = resultSet.getString(++index);
+                user.setLogin(login);
+                String eMail = resultSet.getString(++index);
+                user.setEmail(eMail);
+                String role = resultSet.getString(++index);
+                user.setRole(RoleType.valueOf(role.toUpperCase()));
+                String status = resultSet.getString(++index);
+                user.setStatus(StatusType.valueOf(status.toUpperCase()));
+                list.add(user);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Cannot find users", e);
+        } finally {
+            close(statement);
+            if (!isInTransaction()) {
+                close(connection);
+            }
+            close(resultSet);
+        }
+        return list;
+    }
+
+    @Override
+    public List<User> findAll() throws DaoException {
         return null;
     }
 
