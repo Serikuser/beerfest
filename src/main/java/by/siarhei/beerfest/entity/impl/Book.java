@@ -7,6 +7,7 @@ import java.sql.Date;
 
 public class Book extends Entity {
     long userId;
+    String userName;
     long barId;
     String barName;
     int places;
@@ -61,6 +62,14 @@ public class Book extends Entity {
 
     public String getbarName() {
         return barName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override

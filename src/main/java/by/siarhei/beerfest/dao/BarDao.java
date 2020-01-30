@@ -20,4 +20,6 @@ public interface BarDao extends BaseDao<Long, Bar> {
     void submitBeer(String beerName) throws DaoException;
 
     void submitFood(String beerName) throws DaoException;
+
+    long findBarByUserId(long userId) throws DaoException;
 }

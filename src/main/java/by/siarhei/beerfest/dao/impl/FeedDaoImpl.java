@@ -1,19 +1,19 @@
 package by.siarhei.beerfest.dao.impl;
 
-import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.connection.ProxyConnection;
+import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.dao.FeedDao;
 import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.DaoException;
-import by.siarhei.beerfest.factory.ArticleFactory;
+import by.siarhei.beerfest.provider.ArticleProvider;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedDaoImpl implements FeedDao {
+public class FeedDaoImpl extends DaoTransaction implements FeedDao {
 
     private static final String SQL_SELECT_ALL_FEED =
             "SELECT id, news_title, news_text, news_img_src " +
@@ -22,12 +22,11 @@ public class FeedDaoImpl implements FeedDao {
     @Override
     public List<Article> findAll() throws DaoException {
         List<Article> list = new ArrayList<>();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
-        ArticleFactory factory = ArticleFactory.getInstance();
+        ArticleProvider factory = ArticleProvider.getInstance();
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SQL_SELECT_ALL_FEED);
             while (resultSet.next()) {
@@ -42,7 +41,9 @@ public class FeedDaoImpl implements FeedDao {
         } catch (SQLException e) {
             throw new DaoException("Cant update new list", e);
         } finally {
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(statement);
             close(resultSet);
         }

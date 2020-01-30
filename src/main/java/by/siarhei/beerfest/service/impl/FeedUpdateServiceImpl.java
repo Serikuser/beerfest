@@ -25,7 +25,7 @@ public class FeedUpdateServiceImpl implements FeedUpdateService {
         try {
             return dao.findAll();
         } catch (DaoException e) {
-            logger.error(String.format("Cannot update news throws exception: %s", e));
+            logger.error("Cannot update news ", e);
             throw new ServiceException(e);
         }
     }

@@ -1,7 +1,5 @@
 package by.siarhei.beerfest.dao.impl;
 
-import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.dao.RegistrationDao;
 import by.siarhei.beerfest.entity.impl.Registration;
@@ -37,16 +35,9 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
 
     @Override
     public void updateExpiredByToken(long id, boolean status) throws DaoException {
-        Connection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
-        boolean isInTransaction = false;
         try {
-            if (this.connection == null) {
-                connection = ConnectionPool.INSTANCE.getConnection();
-            } else {
-                connection = this.connection;
-                isInTransaction = true;
-            }
             statement = connection.prepareStatement(UPDATE_EXPIRED_BY_ID_SQL);
             statement.setBoolean(1, status);
             statement.setLong(2, id);
@@ -55,7 +46,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException(String.format("Cannot change status id: %s", id), e);
         } finally {
             close(statement);
-            if (!isInTransaction) {
+            if (!isInTransaction()) {
                 close(connection);
             }
         }
@@ -64,11 +55,10 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
     @Override
     public Registration findRegistrationByToken(String token) throws DaoException {
         Registration registration = new Registration();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(FIND_REGISTRATION_BY_TOKEN_SQL);
             statement.setString(1, token);
             resultSet = statement.executeQuery();
@@ -87,7 +77,9 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException(String.format("Cannot find registration by token: %s", token), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return registration;
@@ -96,11 +88,10 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
     @Override
     public List<Registration> findAllNotExpiredTokens() throws DaoException {
         List<Registration> list = new ArrayList<>();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SELECT_NOT_EXPIRED_TOKENS_ID_SQL);
             while (resultSet.next()) {
@@ -108,7 +99,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
                 int columnIndex = 0;
                 long id = resultSet.getLong(++columnIndex);
                 registration.setId(id);
-                long date = resultSet.getLong(++columnIndex);
+                Timestamp date = resultSet.getTimestamp(++columnIndex);
                 registration.setDate(date);
                 list.add(registration);
             }
@@ -116,7 +107,9 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException("Cannot select expired tokens throws excpetion", e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return list;
@@ -129,55 +122,58 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
 
     @Override
     public void deleteExpired() throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             statement.execute(DELETE_EXPIRED_REGISTRATIONS_SQL);
         } catch (SQLException e) {
             throw new DaoException("Cannot delete registration", e);
         } finally {
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(statement);
         }
     }
 
     @Override
     public void delete(Long id) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             statement.execute(String.format(DELETE_REGISTRATION_BY_ID_SQL, id));
             logger.error(String.format("Token with id: %s deleted", id));
         } catch (SQLException e) {
             throw new DaoException("Cannot delete registration", e);
         } finally {
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(statement);
         }
     }
 
     @Override
     public void create(Registration registration) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             long accountId = registration.getAccountId();
             String token = registration.getToken();
             boolean expired = registration.isExpired();
-            long date = registration.getDate();
+            Timestamp date = registration.getDate();
             statement.execute(String.format(INSERT_REGISTRATION_SQL, accountId, token, expired, date));
             logger.info(String.format("Created registration:%s", registration));
         } catch (SQLException e) {
             throw new DaoException(String.format("Cannot insert new registration: %s", registration), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 

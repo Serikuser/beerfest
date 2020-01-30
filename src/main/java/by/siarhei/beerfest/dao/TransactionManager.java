@@ -22,8 +22,10 @@ public class TransactionManager {
             logger.error(String.format("Auto commit cannot be turned off throws exception: %s", e));
         }
         dao.setConnection(connection);
+        dao.setInTransaction();
         for (DaoTransaction daoElement : daos) {
             daoElement.setConnection(connection);
+            daoElement.setInTransaction();
         }
     }
 
@@ -31,11 +33,15 @@ public class TransactionManager {
         if (connection != null) {
             try {
                 connection.setAutoCommit(true);
-                connection.close();
-                connection = null;
             } catch (SQLException e) {
                 logger.error(String.format("Auto commit cannot be turned on throws exception: %s", e));
             }
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.error(String.format("Connection cant be closed throws exception: %s", e));
+            }
+            connection = null;
         }
     }
 

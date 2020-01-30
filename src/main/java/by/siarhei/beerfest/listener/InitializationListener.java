@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.listener;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.service.RegistrationService;
 import by.siarhei.beerfest.service.impl.RegistrationServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

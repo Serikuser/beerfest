@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface BarService {
-    // TODO: 11.01.2020
     boolean submitBar(long accountId, String barName, long beerType, long foodType, String barDescription, String places) throws ServiceException;
 
     boolean checkUserSubmission(String login) throws ServiceException;
@@ -22,4 +21,5 @@ public interface BarService {
 
     Map<Long, String> updateBeerList() throws ServiceException;
 
+    long findUserByBarId(long userId);
 }

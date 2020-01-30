@@ -1,7 +1,5 @@
 package by.siarhei.beerfest.dao.impl;
 
-import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.dao.UserDao;
 import by.siarhei.beerfest.entity.RoleType;
@@ -58,11 +56,10 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
     @Override
     public User findUserByLogin(String login) throws DaoException {
         User user = new User();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(SELECT_USER_BY_LOGIN_SQL);
             statement.setString(1, login);
             resultSet = statement.executeQuery();
@@ -87,7 +84,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot find user by login: %s", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return user;
@@ -95,12 +94,11 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public boolean isLoginPasswordMatch(String login, String password) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         boolean flag = false;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(CHECK_USER_BY_LOGIN_PASSWORD_SQL);
             int columnIndex = 0;
             statement.setString(++columnIndex, login);
@@ -113,7 +111,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot check login/password exists: %s", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return flag;
@@ -121,12 +121,11 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public boolean isExist(String login, String email) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         boolean flag = false;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(CHECK_USER_BY_LOGIN_EMAIL_SQL);
             int index = 1;
             statement.setString(index++, login);
@@ -139,7 +138,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot check login/eMail exists exists: %s", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return flag;
@@ -147,10 +148,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public void updatePassword(String login, String newPassword) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(UPDATE_PASSWORD_BY_LOGIN_SQL);
             statement.setString(1, newPassword);
             statement.setString(2, login);
@@ -159,16 +159,17 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change password: %s", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 
     @Override
     public void updateAvatar(String login, String uploadedFilePath) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(UPDATE_AVATAR_BY_LOGIN_SQL);
             statement.setString(1, uploadedFilePath);
             statement.setString(2, login);
@@ -177,16 +178,17 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change avatar: %s", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 
     @Override
     public void updateStatus(String login, int status) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(UPDATE_STATUS_BY_LOGIN_SQL);
             statement.setInt(1, status);
             statement.setString(2, login);
@@ -195,22 +197,17 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change status login: %s", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 
     @Override
     public void updateStatusById(long id, int status) throws DaoException {
-        Connection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
-        boolean isInTransaction = false;
         try {
-            if (this.connection == null) {
-                connection = ConnectionPool.INSTANCE.getConnection();
-            } else {
-                connection = this.connection;
-                isInTransaction = true;
-            }
             statement = connection.prepareStatement(UPDATE_STATUS_BY_ID_SQL);
             statement.setInt(1, status);
             statement.setLong(2, id);
@@ -219,7 +216,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change status id: %s", id), e);
         } finally {
             close(statement);
-            if (!isInTransaction) {
+            if (!isInTransaction()) {
                 close(connection);
             }
         }
@@ -233,11 +230,10 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
     @Override
     public User findEntity(Long id) throws DaoException {
         User user = new User();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(SELECT_USER_BY_ID_SQL);
             statement.setLong(1, id);
             resultSet = statement.executeQuery();
@@ -261,7 +257,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot find user by id: %s", id), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return user;
@@ -278,10 +276,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public void create(User user) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(INSERT_LOGIN_SQL);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
@@ -295,7 +292,9 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot insert new user: %s", user), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 

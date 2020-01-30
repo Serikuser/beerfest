@@ -1,5 +1,6 @@
 package by.siarhei.beerfest.service.impl;
 
+import by.siarhei.beerfest.dao.RegistrationDao;
 import by.siarhei.beerfest.dao.TransactionManager;
 import by.siarhei.beerfest.dao.impl.RegistrationDaoImpl;
 import by.siarhei.beerfest.dao.impl.UserDaoImpl;
@@ -12,6 +13,7 @@ import by.siarhei.beerfest.service.RegistrationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,15 +23,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     private static final Logger logger = LogManager.getLogger();
 
     private static RegistrationServiceImpl instance;
-    private static final long MINUTES_15 = 900000L;
-    private static final long HOURS_2 = 7200000000000L;
+    private static final long MINUTES_15 = 900_000L;
+    private static final long HOURS_2 = 7_200_000L;
     private TimerTask expiredTokenObserver;
     private TimerTask expiredDateObserver;
-    private UserDaoImpl userDao;
-    private RegistrationDaoImpl registrationDao;
+    private RegistrationDao registrationDao;
 
     private RegistrationServiceImpl() {
-        userDao = new UserDaoImpl();
         registrationDao = new RegistrationDaoImpl();
         checkExpiredTokens();
         checkExpiredDate();
@@ -44,38 +44,37 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public boolean completeRegistration(String token) throws ServiceException {
+        boolean isCompleted = false;
+        TransactionManager transactionManager = new TransactionManager();
+        UserDaoImpl transactionUser = new UserDaoImpl();
+        RegistrationDaoImpl transactionRegistration = new RegistrationDaoImpl();
         try {
             Registration registration = registrationDao.findRegistrationByToken(token);
             if (!registration.isExpired() && registration.getToken() != null) {
                 int status = StatusType.ACTIVE.getValue();
                 long accountId = registration.getAccountId();
                 long registrationId = registration.getId();
-                TransactionManager transactionManager = new TransactionManager();
-                transactionManager.openTransaction(userDao, registrationDao);
-                try {
-                    userDao.updateStatusById(accountId, status);
-                    registrationDao.updateExpiredByToken(registrationId, true);
-                    transactionManager.commit();
-                } catch (DaoException e) {
-                    transactionManager.rollback();
-                    throw new ServiceException("Transaction cannot be completed");
-                } finally {
-                    transactionManager.closeTransaction();
-                }
-                return true;
-            } else {
-                return false;
+                transactionManager.openTransaction(transactionUser, transactionRegistration);
+                transactionUser.updateStatusById(accountId, status);
+                transactionRegistration.updateExpiredByToken(registrationId, true);
+                transactionManager.commit();
+                isCompleted = true;
             }
         } catch (DaoException e) {
+            transactionManager.rollback();
+            logger.error("Cannot complete registration to id: %s ", e);
             throw new ServiceException(e);
+        } finally {
+            transactionManager.closeTransaction();
         }
+        return isCompleted;
     }
 
     @Override
     public void addRegistrationToken(long id, String eMail) throws ServiceException {
         String token = UUID.randomUUID().toString();
         Registration registration = new Registration();
-        long date = System.currentTimeMillis();
+        Timestamp date = new Timestamp(System.currentTimeMillis());
         registration.setDate(date);
         registration.setAccountId(id);
         registration.setToken(token);
@@ -84,7 +83,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             registrationDao.create(registration);
             sendEmail(token, eMail);
         } catch (DaoException e) {
-            logger.error(String.format("Cannot create registration to id: %s throws exception: %s", id, e));
+            logger.error("Cannot create registration to id: %s ", e);
             throw new ServiceException(e);
         }
     }
@@ -102,7 +101,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                     try {
                         registrationDao.deleteExpired();
                     } catch (DaoException e) {
-                        logger.error(String.format("Cannot delete expired tokens throws exception: %s", e));
+                        logger.error("Cannot delete expired tokens ", e);
                     }
                 }
             };
@@ -121,14 +120,14 @@ public class RegistrationServiceImpl implements RegistrationService {
                         List<Registration> list = registrationDao.findAllNotExpiredTokens();
                         if (!list.isEmpty()) {
                             for (Registration registration : list) {
-                                if (registration.getDate() + MINUTES_15 < System.currentTimeMillis()) {
+                                if (registration.getDate().getTime() + MINUTES_15 < System.currentTimeMillis()) {
                                     long id = registration.getId();
                                     registrationDao.updateExpiredByToken(id, true);
                                 }
                             }
                         }
                     } catch (DaoException e) {
-                        logger.error(String.format("Cannot update tokens throws exception: %s", e));
+                        logger.error("Cannot update tokens ", e);
                     }
                 }
             };

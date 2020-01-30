@@ -13,5 +13,7 @@ public interface BookService {
 
     List<Book> findUserBook(Long id) throws ServiceException;
 
+    List<Book> finBarBook(Long id) throws ServiceException;
+
     void deleteBook(long bookId) throws ServiceException;
 }

@@ -37,18 +37,19 @@ public class MailThread extends Thread {
             message.setContent(String.format(registrationMessage, token), TEXT_HTML_TYPE);
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(eMail));
         } catch (AddressException e) {
-            logger.error(String.format("Wrong address: %s throws exception: %s", eMail,e));
+            logger.error(String.format("Wrong address: %s throws exception: %s", eMail, e));
         } catch (MessagingException e) {
-            logger.error(String.format("Cant form message throws exception: %s",e));
+            logger.error(String.format("Cant form message throws exception: %s", e));
         }
     }
 
+    @Override
     public void run() {
         init();
         try {
             Transport.send(message);
         } catch (MessagingException e) {
-            logger.error(String.format("Cant send message throws exception: %s",e));
+            logger.error(String.format("Cant send message throws exception: %s", e));
         }
     }
 }

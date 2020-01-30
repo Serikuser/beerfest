@@ -1,22 +1,18 @@
 package by.siarhei.beerfest.dao.impl;
 
-import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.connection.ProxyConnection;
 import by.siarhei.beerfest.dao.BarDao;
+import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.DaoException;
-import by.siarhei.beerfest.factory.BarFactory;
+import by.siarhei.beerfest.provider.BarProvider;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BarDaoImpl implements BarDao {
+public class BarDaoImpl extends DaoTransaction implements BarDao {
     private static final String COINCIDENCES_RESULT_INDEX = "coincidences";
     private static final String INSERT_BAR_SQL = "INSERT INTO bar (account_id,name,description,food_id,beer_id ,places) VALUES (?,?,?,?,?,?)";
     private static final String INSERT_BEER_SQL = "INSERT INTO beer (name) VALUES (?)";
@@ -38,18 +34,23 @@ public class BarDaoImpl implements BarDao {
                     "ON bar.beer_id = beer.id " +
                     "INNER JOIN food " +
                     "ON bar.food_id = food.id ";
+    private static final String SELECT_BAR_ID_BY_USER_ID_SQL =
+            "SELECT bar.id " +
+                    "FROM bar " +
+                    "INNER JOIN account " +
+                    "ON account.id = bar.account_id " +
+                    "WHERE account.id = ?";
 
     @Override
     public List<Bar> findAll() throws DaoException {
         List<Bar> list = new ArrayList<>();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SELECT_ALL_BAR_SQL);
-            BarFactory factory = BarFactory.getInstance();
+            BarProvider factory = BarProvider.getInstance();
             while (resultSet.next()) {
                 int index = 0;
                 long barId = resultSet.getLong(++index);
@@ -67,7 +68,9 @@ public class BarDaoImpl implements BarDao {
         } catch (SQLException e) {
             throw new DaoException("Bar list cant be updated", e);
         } finally {
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(statement);
             close(resultSet);
         }
@@ -97,11 +100,10 @@ public class BarDaoImpl implements BarDao {
     @Override
     public int findBeerIdByName(String name) throws DaoException {
         int id = 0;
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(SELECT_BEER_ID_BY_NAME);
             statement.setString(1, name);
             resultSet = statement.executeQuery();
@@ -112,7 +114,9 @@ public class BarDaoImpl implements BarDao {
             throw new DaoException(String.format("Cannot find beer id by name: %s", name), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return id;
@@ -121,11 +125,10 @@ public class BarDaoImpl implements BarDao {
     @Override
     public int findFoodIdByName(String name) throws DaoException {
         int id = 0;
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(SELECT_FOOD_ID_BY_NAME);
             statement.setString(1, name);
             resultSet = statement.executeQuery();
@@ -136,7 +139,9 @@ public class BarDaoImpl implements BarDao {
             throw new DaoException(String.format("Cannot find food id by name: %s", name), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return id;
@@ -144,10 +149,9 @@ public class BarDaoImpl implements BarDao {
 
     @Override
     public void create(Bar bar) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(INSERT_BAR_SQL);
             int index = 1;
             statement.setLong(index++, bar.getAccountId());
@@ -162,18 +166,19 @@ public class BarDaoImpl implements BarDao {
             throw new DaoException(String.format("Cannot insert new bar: %s", bar), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 
     @Override
     public boolean isUserSubmittedBar(String login) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         boolean flag = false;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(CHECK_BAR_BY_USER_LOGIN);
             statement.setString(1, login);
             resultSet = statement.executeQuery();
@@ -184,7 +189,9 @@ public class BarDaoImpl implements BarDao {
             throw new DaoException(String.format("Cannot check is user : %s submission exists", login), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(resultSet);
         }
         return flag;
@@ -193,11 +200,10 @@ public class BarDaoImpl implements BarDao {
     @Override
     public Map<Long, String> findAllFoodType() throws DaoException {
         Map<Long, String> foodList = new HashMap<>();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SELECT_ALL_FOOD);
             while (resultSet.next()) {
@@ -210,7 +216,9 @@ public class BarDaoImpl implements BarDao {
         } catch (SQLException e) {
             throw new DaoException("Cant find food list ", e);
         } finally {
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(statement);
             close(resultSet);
         }
@@ -220,11 +228,10 @@ public class BarDaoImpl implements BarDao {
     @Override
     public Map<Long, String> findnAllBeerType() throws DaoException {
         Map<Long, String> beerList = new HashMap<>();
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(SELECT_ALL_BEER);
             while (resultSet.next()) {
@@ -237,7 +244,9 @@ public class BarDaoImpl implements BarDao {
         } catch (SQLException e) {
             throw new DaoException("Cant find beer list ", e);
         } finally {
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
             close(statement);
             close(resultSet);
         }
@@ -246,10 +255,9 @@ public class BarDaoImpl implements BarDao {
 
     @Override
     public void submitBeer(String beerName) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(INSERT_BEER_SQL);
             int index = 1;
             statement.setString(index, beerName);
@@ -259,16 +267,17 @@ public class BarDaoImpl implements BarDao {
             throw new DaoException(String.format("Cannot insert new beer: %s", beerName), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
     }
 
     @Override
     public void submitFood(String foodName) throws DaoException {
-        ProxyConnection connection = null;
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.INSTANCE.getConnection();
             statement = connection.prepareStatement(INSERT_FOOD_SQL);
             int index = 1;
             statement.setString(index, foodName);
@@ -278,7 +287,34 @@ public class BarDaoImpl implements BarDao {
             throw new DaoException(String.format("Cannot insert new food: %s", foodName), e);
         } finally {
             close(statement);
-            close(connection);
+            if (!isInTransaction()) {
+                close(connection);
+            }
         }
+    }
+
+    @Override
+    public long findBarByUserId(long userId) throws DaoException {
+        long id = 0;
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement(SELECT_BAR_ID_BY_USER_ID_SQL);
+            statement.setLong(1, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                id = resultSet.getLong(1);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(String.format("Cant find bar id by user id %s", userId), e);
+        } finally {
+            close(statement);
+            if (!isInTransaction()) {
+                close(connection);
+            }
+            close(resultSet);
+        }
+        return id;
     }
 }
