@@ -37,7 +37,7 @@ public class RoleTypeTag extends TagSupport {
                         color = COLOR_BLACK;
                         break;
                 }
-                pageContext.getOut().write("<div style=\"color: " + color + "\">" + role + "</div>");
+                pageContext.getOut().write(" <i class=\"fas fa-user-tag\"></i><b style=\"color: " + color + "\">" + role + "</b>");
             } catch (IOException e) {
                 throw new JspException(e);
             }

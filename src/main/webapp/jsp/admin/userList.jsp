@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="pagecontent"/>
 <html>
@@ -30,13 +31,10 @@
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
                                 <c:forEach begin="1" end="${maxValue}" varStatus="loop">
-                                    <form id="update" action="controller" method="POST">
+                                    <form class="page-item" id="update" action="controller" method="POST">
                                         <input type="hidden" name="pageNumber" value="${loop.count-1}"/>
                                         <input type="hidden" name="command" value="select_users"/>
-                                        <li class="page-item">
-                                            <button type="submit"
-                                                    class="button_success">${loop.count}</button>
-                                        </li>
+                                            <button type="submit" class="page-link button_success">${loop.count}</button>
                                     </form>
                                 </c:forEach>
                             </ul>
@@ -49,14 +47,13 @@
                                         <h3><i class="fas fa-address-card"></i> <c:out value="${user.login}"/></h3>
                                         <hr>
                                         <i class="fas fa-thermometer"></i> ${user.status}
-                                        <i class="fas fa-user-tag"></i>${user.role}
+                                       <ctg:role role="${user.role}"/>
                                         <i class="fas fa-at"></i>${user.email}
                                         <hr>
                                     </div>
                                 </article>
                             </form>
                         </c:forEach>
-
                     </div>
                 </div>
             </div>
