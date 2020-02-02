@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
@@ -27,8 +30,8 @@ public class ContinueRegistrationCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getParameter(PARAMETER_TOKEN) != null) {
             String token = content.getParameter(PARAMETER_TOKEN);
@@ -42,6 +45,6 @@ public class ContinueRegistrationCommand implements ActionCommand {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SERVER_ERROR_MESSAGE_COMPLETE_REGISTRATION, localeType));
             }
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 }

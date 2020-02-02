@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
@@ -36,12 +39,12 @@ public class ProfileCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content){
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content){
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
-            page = ConfigurationManager.getProperty(roleType.getPage());
+            uri = ConfigurationManager.getProperty(roleType.getPage());
             // TODO: 18.01.2020 remove it to listener 
             if (roleType == RoleType.PARTICIPANT) {
                 Map<Long, String> beerList = new HashMap<>();
@@ -59,6 +62,6 @@ public class ProfileCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE,localeType));
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 }

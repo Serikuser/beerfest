@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
@@ -48,13 +51,13 @@ public class SubmitBarCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         String login = (String) content.getSessionAttribute(ATTRIBUTE_USER_LOGIN);
         if (isEnterDataExist(content) && content.getSessionAttribute(ATTRIBUTE_USER_ROLE) == RoleType.PARTICIPANT) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
-            page = ConfigurationManager.getProperty(roleType.getPage());
+            uri = ConfigurationManager.getProperty(roleType.getPage());
             try {
                 if (barService.checkUserSubmission(login)) {
                     String places = content.getParameter(PARAMETER_PLACES);
@@ -89,7 +92,7 @@ public class SubmitBarCommand implements ActionCommand {
         }
         content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
         content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
-        return page;
+        return new Page(uri, FORWARD);
     }
 
 

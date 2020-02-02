@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
@@ -27,18 +30,19 @@ public class ChangePasswordCommand implements ActionCommand {
     public ChangePasswordCommand(){
         languageService = new LanguageServiceImpl();
         accountService = new AccountServiceImpl();
+
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             String newPassword = content.getParameter(PARAMETER_NEW_PASSWORD);
             String login = content.getSessionAttribute(ATTRIBUTE_USER_LOGIN).toString();
             String eMail = content.getSessionAttribute(ATTRIBUTE_USER_EMAIL).toString();
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
-            page = ConfigurationManager.getProperty(roleType.getPage());
+            uri = ConfigurationManager.getProperty(roleType.getPage());
             try {
                 accountService.changeUserPassword(login, eMail, newPassword);
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SUCCESS_MESSAGE,localeType));
@@ -46,6 +50,6 @@ public class ChangePasswordCommand implements ActionCommand {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE,localeType));
             }
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 }

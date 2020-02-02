@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.ServiceException;
@@ -41,14 +44,14 @@ public class UserBookCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             RoleType roleType = RoleType.valueOf(content.getSessionAttribute(ATTRIBUTE_USER_ROLE).toString().toUpperCase());
             switch (roleType) {
                 case GUEST:
-                    page = ConfigurationManager.getProperty(JSP_GUEST_BOOK);
+                    uri = ConfigurationManager.getProperty(JSP_GUEST_BOOK);
                     try {
                         long id = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
                         List<Book> list = bookService.findUserBook(id);
@@ -62,7 +65,7 @@ public class UserBookCommand implements ActionCommand {
                     }
                     break;
                 case PARTICIPANT:
-                    page = ConfigurationManager.getProperty(JSP_PARTICIPANT_BOOK);
+                    uri = ConfigurationManager.getProperty(JSP_PARTICIPANT_BOOK);
                     try {
                         long userId = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
                         long barId = barService.findUserByBarId(userId);
@@ -81,6 +84,6 @@ public class UserBookCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_JOKE, localeType));
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 }

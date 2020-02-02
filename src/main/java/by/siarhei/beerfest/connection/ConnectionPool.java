@@ -29,15 +29,16 @@ public enum ConnectionPool {
         checkPoolConsistency();
     }
 
-    public ProxyConnection getConnection() {
+    public Connection getConnection() {
         Connection connection = null;
         try {
             connection = freeConnections.take();
             occupiedConnections.offer(connection);
         } catch (InterruptedException e) {
             logger.error(String.format("Connections cant be taken from pool throws exception: %s", e));
+            Thread.currentThread().interrupt();
         }
-        return (ProxyConnection) connection;
+        return connection;
     }
 
     public void releaseConnection(Connection connection) throws NotProxyConnectionException {

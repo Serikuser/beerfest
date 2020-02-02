@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.ServiceException;
@@ -54,12 +57,12 @@ public class MakeBookCommand implements ActionCommand {
 
     // FIXME: 14.01.2020 validation
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         String login = (String) content.getSessionAttribute(ATTRIBUTE_USER_LOGIN);
         if (isEnterDataExist(content) && content.getSessionAttribute(ATTRIBUTE_USER_ROLE) == RoleType.GUEST) {
-            page = ConfigurationManager.getProperty(JSP_PARTICIPANTS);
+            uri = ConfigurationManager.getProperty(JSP_PARTICIPANTS);
             try {
                 if (bookService.checkUserBook(login)) {
                     long accountId = (long) content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID);
@@ -92,7 +95,7 @@ public class MakeBookCommand implements ActionCommand {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_JOKE, localeType));
         }
 
-        return page;
+        return new Page(uri, FORWARD);
     }
 
     private boolean isEnterDataExist(SessionRequestContent content) {

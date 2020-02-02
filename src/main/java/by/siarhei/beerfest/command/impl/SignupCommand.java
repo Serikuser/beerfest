@@ -1,8 +1,11 @@
 package by.siarhei.beerfest.command.impl;
 
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
@@ -40,8 +43,8 @@ public class SignupCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (isEnterDataExist(content)) {
             String login = content.getParameter(PARAMETER_USERNAME);
@@ -64,7 +67,7 @@ public class SignupCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE,localeType));
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 
     private boolean isEnterDataExist(SessionRequestContent content) {

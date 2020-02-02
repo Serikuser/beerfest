@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.ServiceException;
@@ -36,11 +39,11 @@ public class SelectUserListCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) == RoleType.ADMIN) {
-            page = ConfigurationManager.getProperty(JSP_ADMIN_USERS);
+            uri = ConfigurationManager.getProperty(JSP_ADMIN_USERS);
             try {
                 int pagesCount = accountService.countPages();
                 content.setAttribute(ATTRIBUTE_MAX_VALUE, pagesCount);
@@ -53,6 +56,6 @@ public class SelectUserListCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_JOKE, localeType));
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 }

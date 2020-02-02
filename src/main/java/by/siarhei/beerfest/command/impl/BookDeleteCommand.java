@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.ServiceException;
@@ -36,12 +39,13 @@ public class BookDeleteCommand implements ActionCommand {
         languageService = new LanguageServiceImpl();
         bookService = new BookServiceImpl();
     }
+
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
-            page = ConfigurationManager.getProperty(JSP_GUEST_BOOK);
+            uri = ConfigurationManager.getProperty(JSP_GUEST_BOOK);
             try{
                 long bookId = Long.parseLong(content.getParameter(ATTRIBUTE_BOOK_ID));
                 long id = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
@@ -60,6 +64,6 @@ public class BookDeleteCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_JOKE, localeType));
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 }

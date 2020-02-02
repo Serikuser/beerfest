@@ -9,7 +9,7 @@
         <location>/jsp/error/404.jsp</location>
     </error-page>
     <error-page>
-        <error-code>560</error-code>
+        <error-code>500</error-code>
         <location>/jsp/error/500.jsp</location>
     </error-page>
     <taglib>
