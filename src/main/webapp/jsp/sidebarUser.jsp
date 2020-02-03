@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="ctg" uri="customtags" %>
 <fmt:setLocale value="${locale}" scope="session" />
 <fmt:setBundle basename="pagecontent"/>
 <html>
@@ -31,10 +32,7 @@
         <div class="profile-info_label"> ${userEmail} </div>
     </div>
     <div class="profile-info_item">
-        <div class="profile-info_label"> ${userRole}</div>
-    </div>
-    <div class="profile-info_item">
-        <div class="profile-info_label"> ${userStatus} </div>
+        <div class="profile-info_label"> <ctg:role role="${userRole}"/></div>
     </div>
     <div class="profile-info_item">
         <form action="controller" method="POST" class="needs-validation" onsubmit="return cryptChange()" novalidate>

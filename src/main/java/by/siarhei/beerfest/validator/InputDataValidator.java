@@ -43,7 +43,7 @@ public class InputDataValidator {
                 && barName.length() < MAX_BAR_NAME_LENGTH;
     }
 
-    private boolean isNumeric(String places) {
+    public boolean isNumeric(String places) {
         Pattern pattern = Pattern.compile(REGEX_NON_NUMERIC);
         Matcher matcher = pattern.matcher(places);
         return !matcher.find();

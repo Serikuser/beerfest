@@ -1,7 +1,10 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
@@ -59,8 +62,8 @@ public class LoginCommand implements ActionCommand {
     }
 
     @Override
-    public String execute(SessionRequestContent content) {
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content) {
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (isEnterDataExist(content)) {
             String login = content.getParameter(PARAMETER_USERNAME);
@@ -74,7 +77,7 @@ public class LoginCommand implements ActionCommand {
                             fillSession(content, user);
                             fillRequest(content, user, localeType);
                             RoleType roleType = (RoleType) content.getAttribute(ATTRIBUTE_USER_ROLE);
-                            page = ConfigurationManager.getProperty(roleType.getPage());
+                            uri = ConfigurationManager.getProperty(roleType.getPage());
                             logger.info(String.format("User: %s has logged in", user));
                             break;
                         case BANNED:
@@ -93,7 +96,7 @@ public class LoginCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE, localeType));
         }
-        return page;
+        return new Page(uri, FORWARD);
     }
 
     private boolean isEnterDataExist(SessionRequestContent content) {

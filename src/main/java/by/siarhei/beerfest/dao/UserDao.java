@@ -3,6 +3,8 @@ package by.siarhei.beerfest.dao;
 import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 
+import java.util.List;
+
 public interface UserDao extends BaseDao<Long, User> {
     User findUserByLogin(String login) throws DaoException;
 
@@ -17,4 +19,8 @@ public interface UserDao extends BaseDao<Long, User> {
     void updateStatus(String login, int status) throws DaoException;
 
     void updateStatusById(long id, int status) throws DaoException;
+
+    int countUsers() throws DaoException;
+
+    List<User> findAll(long offset) throws DaoException;
 }

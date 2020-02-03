@@ -2,6 +2,7 @@ package by.siarhei.beerfest.servlet;
 
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.CommandProvider;
+import by.siarhei.beerfest.command.Page;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -32,12 +33,19 @@ public class Controller extends HttpServlet {
 
     private void processRequest(HttpServletRequest request
             , HttpServletResponse response) throws ServletException, IOException {
-        String page;
         ActionCommand command = CommandProvider.defineCommand(request);
         SessionRequestContent content = new SessionRequestContent(request);
-        page = command.execute(content);
+        Page page = command.execute(content);
+        String uri = page.getUri();
         content.insert(request);
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
-        dispatcher.forward(request, response);
+        Page.Router router = page.getType();
+        switch (router) {
+            case FORWARD:
+                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(uri);
+                dispatcher.forward(request, response);
+                break;
+            case REDIRECT:
+                response.sendRedirect(request.getContextPath() + uri);
+        }
     }
 }

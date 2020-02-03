@@ -1,6 +1,9 @@
 package by.siarhei.beerfest.command.impl;
 
+import static by.siarhei.beerfest.command.Page.Router.*;
+
 import by.siarhei.beerfest.command.ActionCommand;
+import by.siarhei.beerfest.command.Page;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
@@ -9,9 +12,9 @@ public class LogoutCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.index";
 
     @Override
-    public String execute(SessionRequestContent content){
-        String page = ConfigurationManager.getProperty(JSP_MAIN);
+    public Page execute(SessionRequestContent content){
+        String uri = ConfigurationManager.getProperty(JSP_MAIN);
         content.invalidateSession();
-        return page;
+        return new Page(uri, REDIRECT);
     }
 }
