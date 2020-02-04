@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <input type="hidden" name="command" value="etc"/>
+                        <input type="hidden" name="command" value="add_news"/>
                     </div>
                 </div>
             </div>

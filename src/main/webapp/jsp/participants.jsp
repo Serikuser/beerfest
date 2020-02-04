@@ -41,8 +41,8 @@
                                 <i class="fas fa-beer"></i>${bar.beerName}
                                 <hr>
                             </div>
-
-                            <div class="container" style="display: <c:if test="${signetGuestVisible == null}">none</c:if>">
+                            <c:if test="${userRole == 'GUEST'}">
+                            <div class="container">
                                 <form id="book" method="POST" action="controller" autocomplete="off">
                                     <input type="hidden" name="command" value="make_book"/>
                                     <input type="hidden" name="barId" value="${bar.id}"/>
@@ -87,6 +87,7 @@
                                     </script>
                                 </form>
                             </div>
+                            </c:if>
                         </article>
                     </c:forEach>
                 </div>

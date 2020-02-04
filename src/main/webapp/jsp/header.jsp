@@ -2,8 +2,8 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<fmt:setLocale value="${locale}" scope="session" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="pagecontent"/>
 <html>
 <body>
@@ -30,7 +30,8 @@
                         </form>
                     </div>
                     <div class="header-menu_item">
-                        <a href="javascript: void(0)" id="participants"><fmt:message key="header.label.participants"/></a>
+                        <a href="javascript: void(0)" id="participants"><fmt:message
+                                key="header.label.participants"/></a>
                         <form id="participantsOpen" action="controller" method="POST">
                             <input type="hidden" name="command" value="participant_list_update"/>
                         </form>
@@ -46,15 +47,17 @@
             </div>
             <div class="header_item">
                 <div class="header-right-menu" style="align-items: center">
-                    <div class="header-right_menu_item" style="display: <c:if test="${displayUser == null}">none</c:if>">
-                        <a href="javascript:void(0)" id="profile" class="user_avatar">
-                            <img data-src="${userAvatarUrl}" src="${userAvatarUrl}"
-                                 class="avatar avatar_medium" alt="...">
-                            <form id="profileOpen" action="controller" method="POST">
-                                <input type="hidden" name="command" value="profile"/>
-                            </form>
-                        </a>
-                    </div>
+                    <c:if test="${userRole != 'UNAUTHORIZED'}">
+                        <div class="header-right_menu_item">
+                            <a href="javascript:void(0)" id="profile" class="user_avatar">
+                                <img data-src="${userAvatarUrl}" src="${userAvatarUrl}"
+                                     class="avatar avatar_medium" alt="...">
+                                <form id="profileOpen" action="controller" method="POST">
+                                    <input type="hidden" name="command" value="profile"/>
+                                </form>
+                            </a>
+                        </div>
+                    </c:if>
                 </div>
             </div>
         </div>

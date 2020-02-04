@@ -2,6 +2,9 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <title>Beer Festival News</title>
@@ -35,6 +38,19 @@
                                     </div>
                                 </div>
                             </div>
+                        </article>
+                        <c:if test="${userRole == 'ADMIN'}">
+                            <div class="container">
+                                <form id="book" method="POST" action="controller" autocomplete="off">
+                                    <input type="hidden" name="command" value="delete_news"/>
+                                    <input type="hidden" name="feedId" value="${feed.id}"/>
+                                    <button type="submit" class="button_success button_width_100">
+                                        <fmt:message key="panel.guest.button.delete"/>
+                                    </button>
+                                    <hr>
+                                </form>
+                            </div>
+                        </c:if>
                         </article>
                     </c:forEach>
             </div>

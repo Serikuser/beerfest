@@ -1,10 +1,8 @@
 package by.siarhei.beerfest.command.impl;
 
-import static by.siarhei.beerfest.command.Page.Router.*;
-
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
-import by.siarhei.beerfest.command.Page;
+import by.siarhei.beerfest.command.Router;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.impl.Book;
 import by.siarhei.beerfest.exception.ServiceException;
@@ -44,7 +42,7 @@ public class UserBookCommand implements ActionCommand {
     }
 
     @Override
-    public Page execute(SessionRequestContent content) {
+    public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
@@ -84,6 +82,6 @@ public class UserBookCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_JOKE, localeType));
         }
-        return new Page(uri, FORWARD);
+        return new Router(uri);
     }
 }

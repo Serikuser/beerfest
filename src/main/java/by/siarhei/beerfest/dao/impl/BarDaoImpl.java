@@ -153,13 +153,13 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(INSERT_BAR_SQL);
-            int index = 1;
-            statement.setLong(index++, bar.getAccountId());
-            statement.setString(index++, bar.getName());
-            statement.setString(index++, bar.getDescription());
-            statement.setLong(index++, bar.getFoodId());
-            statement.setLong(index++, bar.getBeerId());
-            statement.setLong(index, bar.getPlaces());
+            int index = 0;
+            statement.setLong(++index, bar.getAccountId());
+            statement.setString(++index, bar.getName());
+            statement.setString(++index, bar.getDescription());
+            statement.setLong(++index, bar.getFoodId());
+            statement.setLong(++index, bar.getBeerId());
+            statement.setLong(++index, bar.getPlaces());
             statement.execute();
             logger.info(String.format("Created bar: %s", bar));
         } catch (SQLException e) {

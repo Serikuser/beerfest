@@ -23,4 +23,12 @@ public class ArticleProvider {
         article.setImgSrc(imgSrc);
         return article;
     }
+
+    public Article create(String title, String text, String imgSrc) {
+        Article article = new Article();
+        article.setTitle(title);
+        article.setText(text);
+        article.setImgSrc(imgSrc);
+        return article;
+    }
 }

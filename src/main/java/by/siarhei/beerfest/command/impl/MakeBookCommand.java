@@ -1,10 +1,8 @@
 package by.siarhei.beerfest.command.impl;
 
-import static by.siarhei.beerfest.command.Page.Router.*;
-
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
-import by.siarhei.beerfest.command.Page;
+import by.siarhei.beerfest.command.Router;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.impl.Bar;
 import by.siarhei.beerfest.exception.ServiceException;
@@ -57,7 +55,7 @@ public class MakeBookCommand implements ActionCommand {
 
     // FIXME: 14.01.2020 validation
     @Override
-    public Page execute(SessionRequestContent content) {
+    public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         String login = (String) content.getSessionAttribute(ATTRIBUTE_USER_LOGIN);
@@ -95,7 +93,7 @@ public class MakeBookCommand implements ActionCommand {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_JOKE, localeType));
         }
 
-        return new Page(uri, FORWARD);
+        return new Router(uri);
     }
 
     private boolean isEnterDataExist(SessionRequestContent content) {
