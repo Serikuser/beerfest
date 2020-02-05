@@ -75,13 +75,13 @@ public class UploadServlet extends HttpServlet {
             UploadFileValidator validator = new UploadFileValidator();
             UploadType uploadType = UploadType.valueOf(request.getParameter(PARAMETER_UPLOAD_TYPE).toUpperCase());
             if (uploadType == UploadType.AVATAR) {
-                if (validator.isAvatar(fileName, filePart)) {
+                if (validator.isAllowedAvatarImage(fileName, filePart)) {
                     uploadAvatar(fileName, request);
                 } else {
                     request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR, localeType));
                 }
             }
-            if (roleType == RoleType.ADMIN && uploadType == UploadType.FEED && validator.isFeedImage(fileName, filePart)) {
+            if (roleType == RoleType.ADMIN && uploadType == UploadType.FEED && validator.isAllowedFeedImage(fileName, filePart)) {
                 page = ConfigurationManager.getProperty(JSP_ADD_NEWS);
                 uploadFeed(fileName, request);
             }
