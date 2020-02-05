@@ -64,7 +64,6 @@ public class UploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request
             , HttpServletResponse response)
             throws ServletException, IOException {
-        languageService = new LanguageServiceImpl();
         String page = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(request);
         RoleType roleType = (RoleType) request.getSession().getAttribute(ATTRIBUTE_USER_ROLE);
