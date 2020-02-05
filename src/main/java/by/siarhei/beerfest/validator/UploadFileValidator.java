@@ -18,6 +18,6 @@ public class UploadFileValidator {
 
     public boolean isFeedImage(String fileName, Part filePart) {
         // TODO: 19.01.2020
-        return false;
+        return true;
     }
 }

@@ -81,7 +81,7 @@ public class UploadServlet extends HttpServlet {
                     request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR, localeType));
                 }
             }
-            if (roleType == RoleType.ADMIN || uploadType == UploadType.FEED || validator.isFeedImage(fileName, filePart)) {
+            if (roleType == RoleType.ADMIN && uploadType == UploadType.FEED && validator.isFeedImage(fileName, filePart)) {
                 page = ConfigurationManager.getProperty(JSP_ADD_NEWS);
                 uploadFeed(fileName, request);
             }
