@@ -1,10 +1,8 @@
 package by.siarhei.beerfest.command.impl;
 
-import static by.siarhei.beerfest.command.Page.Router.*;
-
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
-import by.siarhei.beerfest.command.Page;
+import by.siarhei.beerfest.command.Router;
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;
 import by.siarhei.beerfest.entity.impl.User;
@@ -44,13 +42,8 @@ public class LoginCommand implements ActionCommand {
     private static final String ERROR_SERVER_MESSAGE = "message.login.error.server";
     private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
-    private static final String ATTRIBUTE_DISPLAY_FOR_UNAUTHORIZED = "displayGuest";
-    private static final String ATTRIBUTE_DISPLAY_FOR_AUTHORIZED = "displayUser";
-    private static final String ATTRIBUTE_STYLE_NONE = "none";
-    private static final String ATTRIBUTE_STYLE_EMPTY = "";
     private static final String ATTRIBUTE_BEER_LIST = "beerMap";
     private static final String ATTRIBUTE_FOOD_LIST = "foodMap";
-    private static final String ATTRIBUTE_SIGNET_GUEST_VISIBLE = "signetGuestVisible";
     private LanguageService languageService;
     private AccountService accountService;
     private BarService barService;
@@ -62,7 +55,7 @@ public class LoginCommand implements ActionCommand {
     }
 
     @Override
-    public Page execute(SessionRequestContent content) {
+    public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (isEnterDataExist(content)) {
@@ -96,7 +89,7 @@ public class LoginCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE, localeType));
         }
-        return new Page(uri, FORWARD);
+        return new Router(uri);
     }
 
     private boolean isEnterDataExist(SessionRequestContent content) {
@@ -134,11 +127,6 @@ public class LoginCommand implements ActionCommand {
         content.setSessionAttribute(ATTRIBUTE_USER_EMAIL, user.getEmail());
         RoleType roleType = user.getRole();
         content.setSessionAttribute(ATTRIBUTE_USER_ROLE, roleType);
-        if (roleType == RoleType.GUEST) {
-            content.setSessionAttribute(ATTRIBUTE_SIGNET_GUEST_VISIBLE, ATTRIBUTE_STYLE_EMPTY);
-        }
         content.setSessionAttribute(ATTRIBUTE_USER_STATUS, user.getStatus());
-        content.setSessionAttribute(ATTRIBUTE_DISPLAY_FOR_UNAUTHORIZED, ATTRIBUTE_STYLE_NONE);
-        content.setSessionAttribute(ATTRIBUTE_DISPLAY_FOR_AUTHORIZED, ATTRIBUTE_STYLE_EMPTY);
     }
 }

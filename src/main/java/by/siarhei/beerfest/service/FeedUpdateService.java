@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface FeedUpdateService {
     List<Article> updateNews() throws ServiceException;
+
+    void addNews(String title, String text, String uploadedFilePath) throws ServiceException;
+
+    void deleteNews(long id) throws ServiceException;
 }

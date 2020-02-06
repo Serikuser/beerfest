@@ -5,9 +5,11 @@ import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
+import by.siarhei.beerfest.service.FeedUpdateService;
 import by.siarhei.beerfest.service.LanguageService;
 import by.siarhei.beerfest.service.UploadType;
 import by.siarhei.beerfest.service.impl.AccountServiceImpl;
+import by.siarhei.beerfest.service.impl.FeedUpdateServiceImpl;
 import by.siarhei.beerfest.service.impl.LanguageServiceImpl;
 import by.siarhei.beerfest.validator.UploadFileValidator;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +34,7 @@ public class UploadServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     private static final String JSP_MAIN = "path.page.main";
+    private static final String JSP_ADD_NEWS = "path.page.feed.add";
     private static final String REQUEST_ATTRIBUTE_FILE = "file";
     private static final String ATTRIBUTE_USER_ROLE = "userRole";
     private static final String ATTRIBUTE_USER_LOGIN = "userLogin";
@@ -40,11 +43,15 @@ public class UploadServlet extends HttpServlet {
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
     private static final char EXTENSION_SPLIT_CHAR = '.';
     private static final String UPLOAD_PATH_AVATAR = "path.upload.avatar";
+    private static final String UPLOAD_PATH_FEED_IMAGE = "path.upload.feed.image";
     private static final String PARAMETER_UPLOAD_TYPE = "uploadType";
     private static final String ATTRIBUTE_UPLOAD_FILE_MESSAGE = "uploadFileMessage";
     private static final String MESSAGE_UPLOAD_AVATAR_SUCCESS = "message.upload.avatar.success";
     private static final String MESSAGE_UPLOAD_AVATAR_ERROR = "message.upload.avatar.error";
     private static final String MESSAGE_UPLOAD_AVATAR_SERVER_ERROR = "message.upload.avatar.error.server";
+    private static final String MESSAGE_UPLOAD_NEWS_SUCCESS = "message.upload.news.success";
+    private static final String PARAMETER_TITLE = "newsTitle";
+    private static final String PARAMETER_TEXT = "newsText";
     private LanguageService languageService;
 
     @Override
@@ -67,14 +74,15 @@ public class UploadServlet extends HttpServlet {
             UploadFileValidator validator = new UploadFileValidator();
             UploadType uploadType = UploadType.valueOf(request.getParameter(PARAMETER_UPLOAD_TYPE).toUpperCase());
             if (uploadType == UploadType.AVATAR) {
-                if (validator.isAvatar(fileName, filePart)) {
+                if (validator.isAllowedAvatarImage(fileName, filePart)) {
                     uploadAvatar(fileName, request);
                 } else {
                     request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_ERROR, localeType));
                 }
             }
-            if (uploadType == UploadType.FEED || validator.isFeedImage(fileName, filePart)) {
-                uploadFeedImage(fileName, request);
+            if (roleType == RoleType.ADMIN && uploadType == UploadType.FEED && validator.isAllowedFeedImage(fileName, filePart)) {
+                page = ConfigurationManager.getProperty(JSP_ADD_NEWS);
+                uploadFeed(fileName, request);
             }
         } else {
             request.setAttribute(ATTRIBUTE_ERROR_MESSAGE_MAIN, MessageManager.getProperty(SIGNUP_ERROR_JOKE, localeType));
@@ -97,24 +105,36 @@ public class UploadServlet extends HttpServlet {
         LocaleType localeType = languageService.defineLocale(request);
         String uploadPath = getServletContext().getRealPath("") + File.separator + ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR);
         String randFilename = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf(EXTENSION_SPLIT_CHAR));
-        String uploadedFilePath = "";
+        String uploadedFilePath;
         AccountServiceImpl service = new AccountServiceImpl();
         try {
             uploadFile(uploadPath, randFilename, request);
             uploadedFilePath = ConfigurationManager.getProperty(UPLOAD_PATH_AVATAR) + randFilename;
-        } catch (IOException e) {
-            logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
-        }
-        try {
             service.changeAvatar(login, uploadedFilePath);
             request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SUCCESS, localeType));
             request.getSession().setAttribute(ATTRIBUTE_USER_AVATAR_URL, uploadedFilePath);
-        } catch (ServiceException e) {
+        } catch (IOException | ServiceException e) {
+            logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
             request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SERVER_ERROR, localeType));
         }
     }
 
-    private void uploadFeedImage(String fileName, HttpServletRequest request) {
-        // TODO: 19.01.2020
+    private void uploadFeed(String fileName, HttpServletRequest request) throws ServletException {
+        LocaleType localeType = languageService.defineLocale(request);
+        String uploadPath = getServletContext().getRealPath("") + File.separator + ConfigurationManager.getProperty(UPLOAD_PATH_FEED_IMAGE);
+        String randFilename = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf(EXTENSION_SPLIT_CHAR));
+        FeedUpdateService feedUpdateService = new FeedUpdateServiceImpl();
+        String title = request.getParameter(PARAMETER_TITLE);
+        String text = request.getParameter(PARAMETER_TEXT);
+        String uploadedFilePath;
+        try {
+            uploadFile(uploadPath, randFilename, request);
+            uploadedFilePath = ConfigurationManager.getProperty(UPLOAD_PATH_FEED_IMAGE) + randFilename;
+            feedUpdateService.addNews(title, text, uploadedFilePath);
+            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_NEWS_SUCCESS, localeType));
+        } catch (IOException | ServiceException e) {
+            logger.error(String.format("Cant upload the file %s throws exception: %s", fileName, e));
+            request.setAttribute(ATTRIBUTE_UPLOAD_FILE_MESSAGE, MessageManager.getProperty(MESSAGE_UPLOAD_AVATAR_SERVER_ERROR, localeType));
+        }
     }
 }

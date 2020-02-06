@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/controller"}, servletNames = {"Controller"})
+@WebFilter(urlPatterns = {"/*"})
 public class ServletSecurityFilter implements Filter {
     private static final String ATTRIBUTE_USER_ROLE = "userRole";
-    private static final String URL_CONTROLLER = "/controller";
+    private static final String URL = "/";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -28,7 +28,7 @@ public class ServletSecurityFilter implements Filter {
             roleType = RoleType.UNAUTHORIZED;
             session.setAttribute(ATTRIBUTE_USER_ROLE, roleType);
             RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher(URL_CONTROLLER);
+                    .getRequestDispatcher(URL);
             dispatcher.forward(request, response);
             return;
         }

@@ -1,10 +1,8 @@
 package by.siarhei.beerfest.command.impl;
 
-import static by.siarhei.beerfest.command.Page.Router.*;
-
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
-import by.siarhei.beerfest.command.Page;
+import by.siarhei.beerfest.command.Router;
 import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
@@ -36,7 +34,7 @@ public class FeedUpdateCommand implements ActionCommand {
     }
 
     @Override
-    public Page execute(SessionRequestContent content) {
+    public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_FEED);
         LocaleType localeType = languageService.defineLocale(content);
         List<Article> list = new ArrayList<>();
@@ -47,6 +45,6 @@ public class FeedUpdateCommand implements ActionCommand {
             content.setAttribute(ATTRIBUTE_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE,localeType));
         }
         content.setAttribute(ATTRIBUTE_FEED, list);
-        return new Page(uri, FORWARD);
+        return new Router(uri);
     }
 }

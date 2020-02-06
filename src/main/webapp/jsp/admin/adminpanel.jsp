@@ -43,7 +43,7 @@
                                         <input type="text" name="beerName" class="form-control"
                                                placeholder="<fmt:message key="panel.admin.placeholder.beer"/>"
                                                aria-label="<fmt:message key="panel.admin.placeholder.beer"/>"
-                                               aria-describedby="basic-addon1">
+                                               aria-describedby="basic-addon1" required="required">
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                         <input type="text" name="foodName" class="form-control"
                                                placeholder="<fmt:message key="panel.admin.placeholder.food"/>"
                                                aria-label="<fmt:message key="panel.admin.placeholder.food"/>"
-                                               aria-describedby="basic-addon1">
+                                               aria-describedby="basic-addon1" required="required">
                                     </div>
                                 </div>
                             </div>

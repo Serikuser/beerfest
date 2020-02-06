@@ -55,6 +55,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void signupUser(String login, String eMail, String password, RoleType role, StatusType inactive) throws ServiceException {
         String avatarUrl = ConfigurationManager.getProperty(PROPERTIES_DEFAULT_AVATAR_URL);
+
         try {
             if (!userDao.isExist(login, eMail)) {
                 User user = UserProvider.getInstance().create(login, password, eMail, avatarUrl, role, inactive);

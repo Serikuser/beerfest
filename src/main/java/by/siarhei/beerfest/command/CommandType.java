@@ -18,6 +18,8 @@ public enum CommandType {
     CHANGE_LOCALE(new ChangeLocaleCommand()),
     CONTINUE_REGISTRATION(new ContinueRegistrationCommand()),
     SELECT_USERS(new SelectUserListCommand()),
+    ADD_NEWS(new AddNewsCommand()),
+    DELETE_NEWS(new DeleteNewsCommand()),
     FEED_UPDATE(new FeedUpdateCommand());
 
     CommandType(ActionCommand command) {

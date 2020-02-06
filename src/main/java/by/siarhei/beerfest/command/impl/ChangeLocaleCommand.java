@@ -1,10 +1,8 @@
 package by.siarhei.beerfest.command.impl;
 
-import static by.siarhei.beerfest.command.Page.Router.*;
-
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.LocaleType;
-import by.siarhei.beerfest.command.Page;
+import by.siarhei.beerfest.command.Router;
 import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
@@ -14,7 +12,7 @@ public class ChangeLocaleCommand implements ActionCommand {
     private static final String ATTRIBUTE_LOCALE = "locale";
 
     @Override
-    public Page execute(SessionRequestContent content) {
+    public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
         String locale;
         if (content.getParameter(PARAMETER_LOCALE) != null) {
@@ -26,6 +24,8 @@ public class ChangeLocaleCommand implements ActionCommand {
                 content.setSessionAttribute(ATTRIBUTE_LOCALE, LocaleType.RU.name());
             }
         }
-        return new Page(uri, REDIRECT);
+        Router router = new Router(uri);
+        router.setRedirect();
+        return router;
     }
 }

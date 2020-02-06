@@ -4,21 +4,26 @@
 <%@ page isELIgnored="false" %>
 <html>
 <head>
-    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="<c:url value="/css/style.css" />" rel="stylesheet">
     <link href="<c:url value="/css/main.css" />" rel="stylesheet">
 </head>
 <body>
-<aside class="sidebar_inner" style="width: 277.796px; margin-top: 0px; display: ${displayGuest}">
-    <jsp:include page="/jsp/sidebarGuest.jsp"/>
-</aside>
-<aside class="sidebar_inner" style="width: 277.796px; margin-top: 0px;
-        display: <c:if test="${displayUser == null}">none</c:if>">
-    <div class="sidebar-block sidebar-block_border">
-        <jsp:include page="/jsp/sidebarUser.jsp"/>
-    </div>
-</aside>
+<c:choose>
+    <c:when test="${userRole == 'UNAUTHORIZED'}">
+        <aside class="sidebar_inner" style="width: 277.796px; margin-top: 0px;">
+            <jsp:include page="/jsp/sidebarGuest.jsp"/>
+        </aside>
+    </c:when>
+    <c:otherwise>
+        <aside class="sidebar_inner" style="width: 277.796px; margin-top: 0px;">
+            <div class="sidebar-block sidebar-block_border">
+                <jsp:include page="/jsp/sidebarUser.jsp"/>
+            </div>
+        </aside>
+    </c:otherwise>
+</c:choose>
 <aside class="sidebar_inner" style="width: 277.796px; margin-top: 0px;">
     <jsp:include page="/jsp/sidebarLanguage.jsp"/>
 </aside>
