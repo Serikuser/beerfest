@@ -7,7 +7,6 @@ import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.manager.MessageManager;
 import by.siarhei.beerfest.service.FeedUpdateService;
 import by.siarhei.beerfest.service.LanguageService;
-import by.siarhei.beerfest.service.UploadType;
 import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import by.siarhei.beerfest.service.impl.FeedUpdateServiceImpl;
 import by.siarhei.beerfest.service.impl.LanguageServiceImpl;
