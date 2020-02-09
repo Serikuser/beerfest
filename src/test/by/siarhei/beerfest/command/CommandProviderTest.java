@@ -1,4 +1,4 @@
-package command;
+package by.siarhei.beerfest.command;
 
 import by.siarhei.beerfest.command.ActionCommand;
 import by.siarhei.beerfest.command.CommandProvider;
@@ -44,7 +44,7 @@ public class CommandProviderTest {
                 {"signup", CommandType.SIGNUP.getCurrentCommand()},
                 {"profile", CommandType.PROFILE.getCurrentCommand()},
                 {"add_news", CommandType.ADD_NEWS.getCurrentCommand()},
-                {"change_password", CommandType.CHANGE_PASSWORD.getCurrentCommand()},};
+                {"change_password", CommandType.CHANGE_PASSWORD.getCurrentCommand()}};
     }
 
     @Test(dataProvider = "correctCommand", description = "providing new login command test")

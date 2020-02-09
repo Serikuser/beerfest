@@ -7,7 +7,7 @@ import by.siarhei.beerfest.manager.ConfigurationManager;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 public class ChangeLocaleCommand implements ActionCommand {
-    private static final String JSP_MAIN = "path.page.index";
+    private static final String JSP_MAIN = "path.page.main";
     private static final String PARAMETER_LOCALE = "locale";
     private static final String ATTRIBUTE_LOCALE = "locale";
 

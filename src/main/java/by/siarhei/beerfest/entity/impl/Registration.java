@@ -34,7 +34,7 @@ public class Registration extends Entity {
         this.expired = expired;
     }
 
-    public Timestamp getDate() {
+    public Timestamp  getDate() {
         return date;
     }
 

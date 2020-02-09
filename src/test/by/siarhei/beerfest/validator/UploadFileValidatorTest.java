@@ -1,4 +1,4 @@
-package validator;
+package by.siarhei.beerfest.validator;
 
 import by.siarhei.beerfest.validator.UploadFileValidator;
 import org.mockito.Mock;

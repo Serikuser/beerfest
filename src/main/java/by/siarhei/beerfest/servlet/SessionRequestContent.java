@@ -21,7 +21,6 @@ public class SessionRequestContent {
         extractValues(request);
     }
 
-
     private void extractValues(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Iterator<String> sessionAttributesIterator = session.getAttributeNames().asIterator();

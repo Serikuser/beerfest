@@ -63,6 +63,7 @@ public enum ConnectionPool {
                 logger.error(String.format("Connections cannot be taken form freeConnections pool throws exception: %s", e));
             }
         }
+        poolConsistencyObserver.cancel();
         deregisterDrivers();
         logger.info(String.format("Poll: %s destroyed", this.toString()));
     }

@@ -30,7 +30,8 @@ public class ConnectionProvider {
     }
 
     static ProxyConnection getConnection() throws SQLException {
-        String databaseUrl = ConfigurationManager.getProperty(PROPERTIES_DATABASE_URL) + ConfigurationManager.getProperty(PROPERTIES_DATABASE_NAME);
+        String databaseUrl = ConfigurationManager.getProperty(PROPERTIES_DATABASE_URL)
+                + ConfigurationManager.getProperty(PROPERTIES_DATABASE_NAME);
         String userName = ConfigurationManager.getProperty(PROPERTIES_DATABASE_ROOT_USER);
         String userPassword = ConfigurationManager.getProperty(PROPERTIES_DATABASE_ROOT_PASSWORD);
         return new ProxyConnection(

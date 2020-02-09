@@ -7,11 +7,11 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 public class LogoutCommand implements ActionCommand {
 
-    private static final String JSP_MAIN = "path.page.index";
+    private static final String JSP_INDEX = "path.page.index";
 
     @Override
     public Router execute(SessionRequestContent content){
-        String uri = ConfigurationManager.getProperty(JSP_MAIN);
+        String uri = ConfigurationManager.getProperty(JSP_INDEX);
         content.invalidateSession();
         Router router = new Router(uri);
         router.setRedirect();

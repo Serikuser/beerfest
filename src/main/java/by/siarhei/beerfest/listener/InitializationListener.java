@@ -15,9 +15,9 @@ public class InitializationListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        RegistrationServiceImpl.getInstance();
         ConnectionPool connectionPool = ConnectionPool.INSTANCE;
         logger.info(String.format("%s is on duty ", connectionPool.toString()));
+        RegistrationServiceImpl.getInstance();
     }
 
     @Override

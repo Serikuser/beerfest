@@ -28,7 +28,7 @@
                 <div class="feed">
                     <div class="auth_field">
                         <div class="auth_error"> ${userListMessage}</div>
-                        <nav aria-label="Page navigation example">
+                        <nav aria-label="Page navigation">
                             <ul class="pagination">
                                 <c:forEach begin="1" end="${maxValue}" varStatus="loop">
                                     <form class="page-item" id="update" action="controller" method="POST">
