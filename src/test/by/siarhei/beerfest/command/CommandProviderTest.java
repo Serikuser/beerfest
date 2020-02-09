@@ -1,8 +1,5 @@
 package by.siarhei.beerfest.command;
 
-import by.siarhei.beerfest.command.ActionCommand;
-import by.siarhei.beerfest.command.CommandProvider;
-import by.siarhei.beerfest.command.CommandType;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -15,7 +12,7 @@ public class CommandProviderTest {
     private static final String PARAMETER_COMMAND = "command";
     private static final String LOGOUT_COMMAND = "LOGOUT";
     @Mock
-    HttpServletRequest request;
+    private HttpServletRequest request;
 
     @BeforeClass
     public void setUp() {

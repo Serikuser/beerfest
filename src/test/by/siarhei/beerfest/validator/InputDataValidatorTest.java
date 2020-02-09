@@ -1,6 +1,5 @@
 package by.siarhei.beerfest.validator;
 
-import by.siarhei.beerfest.validator.InputDataValidator;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

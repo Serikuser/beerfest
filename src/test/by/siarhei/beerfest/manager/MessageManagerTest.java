@@ -1,6 +1,5 @@
 package by.siarhei.beerfest.manager;
 
-import by.siarhei.beerfest.command.CommandType;
 import by.siarhei.beerfest.command.LocaleType;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
