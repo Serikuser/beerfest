@@ -59,7 +59,10 @@ public class Registration extends Entity {
         if (expired != that.expired) {
             return false;
         }
-        return token != null ? token.equals(that.token) : that.token == null;
+        if (token != null ? !token.equals(that.token) : that.token != null) {
+            return false;
+        }
+        return id == that.id;
     }
 
     @Override

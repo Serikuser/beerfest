@@ -49,7 +49,10 @@ public class Article extends Entity {
         if (text != null ? !text.equals(article.text) : article.text != null) {
             return false;
         }
-        return imgSrc != null ? imgSrc.equals(article.imgSrc) : article.imgSrc == null;
+        if (imgSrc != null ? !imgSrc.equals(article.imgSrc) : article.imgSrc != null) {
+            return false;
+        }
+        return id == article.id;
     }
 
     @Override

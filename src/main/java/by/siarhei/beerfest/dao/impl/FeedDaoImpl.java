@@ -4,7 +4,7 @@ import by.siarhei.beerfest.dao.DaoTransaction;
 import by.siarhei.beerfest.dao.FeedDao;
 import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.DaoException;
-import by.siarhei.beerfest.provider.ArticleProvider;
+import by.siarhei.beerfest.entity.impl.provider.ArticleProvider;
 
 import java.sql.*;
 import java.util.ArrayList;

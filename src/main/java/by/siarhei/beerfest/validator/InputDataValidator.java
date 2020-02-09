@@ -5,7 +5,9 @@ import java.util.regex.Pattern;
 
 public class InputDataValidator {
     private static final int MIN_LOGIN_LENGTH = 3;
+    private static final int MAX_LOGIN_LENGTH = 20;
     private static final int MIN_EMAIL_LENGTH = 5;
+    private static final int MAX_EMAIL_LENGTH = 50;
     private static final int MIN_BAR_NAME_LENGTH = 10;
     private static final int MAX_BAR_NAME_LENGTH = 50;
     private static final int MIN_BAR_DESCRIPTION_LENGTH = 20;
@@ -14,12 +16,13 @@ public class InputDataValidator {
     private static final String REGEX_NON_NUMERIC = "[^\\d. +-]+";
     private static final int MAX_BAR_PLACES = 60;
 
+
     public boolean isLoginValid(String login) {
-        return !login.isBlank() && login.length() > MIN_LOGIN_LENGTH;
+        return !login.isBlank() && login.length() > MIN_LOGIN_LENGTH && login.length() < MAX_LOGIN_LENGTH;
     }
 
     public boolean isEMailValid(String eMail) {
-        return !eMail.isBlank() && eMail.length() > MIN_EMAIL_LENGTH;
+        return !eMail.isBlank() && eMail.length() > MIN_EMAIL_LENGTH && eMail.length() < MAX_EMAIL_LENGTH;
     }
 
     public boolean isValidPlaces(String places) {

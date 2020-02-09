@@ -1,4 +1,4 @@
-package by.siarhei.beerfest.service;
+package by.siarhei.beerfest.servlet;
 
 public enum UploadType {
     AVATAR,

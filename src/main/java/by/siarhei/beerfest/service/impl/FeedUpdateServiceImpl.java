@@ -5,7 +5,7 @@ import by.siarhei.beerfest.dao.impl.FeedDaoImpl;
 import by.siarhei.beerfest.entity.impl.Article;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
-import by.siarhei.beerfest.provider.ArticleProvider;
+import by.siarhei.beerfest.entity.impl.provider.ArticleProvider;
 import by.siarhei.beerfest.service.FeedUpdateService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
