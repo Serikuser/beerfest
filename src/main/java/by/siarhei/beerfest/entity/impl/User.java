@@ -64,6 +64,49 @@ public class User extends Entity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        User user = (User) o;
+
+        if (login != null ? !login.equals(user.login) : user.login != null) {
+            return false;
+        }
+        if (password != null ? !password.equals(user.password) : user.password != null) {
+            return false;
+        }
+        if (email != null ? !email.equals(user.email) : user.email != null) {
+            return false;
+        }
+        if (avatarUrl != null ? !avatarUrl.equals(user.avatarUrl) : user.avatarUrl != null) {
+            return false;
+        }
+        if (role != user.role) {
+            return false;
+        }
+        if (status != user.status) {
+            return false;
+        }
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = login != null ? login.hashCode() : 0;
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (avatarUrl != null ? avatarUrl.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "login: %s, password: %s, email: %s, role: %s, status: %s", login, password, email, role, status);

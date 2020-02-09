@@ -8,7 +8,7 @@ import by.siarhei.beerfest.entity.impl.User;
 import by.siarhei.beerfest.exception.DaoException;
 import by.siarhei.beerfest.exception.ServiceException;
 import by.siarhei.beerfest.manager.ConfigurationManager;
-import by.siarhei.beerfest.provider.UserProvider;
+import by.siarhei.beerfest.entity.impl.provider.UserProvider;
 import by.siarhei.beerfest.service.AccountService;
 import by.siarhei.beerfest.validator.InputDataValidator;
 import org.apache.logging.log4j.LogManager;

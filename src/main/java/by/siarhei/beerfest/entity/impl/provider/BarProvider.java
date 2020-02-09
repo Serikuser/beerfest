@@ -1,4 +1,4 @@
-package by.siarhei.beerfest.provider;
+package by.siarhei.beerfest.entity.impl.provider;
 
 import by.siarhei.beerfest.entity.impl.Bar;
 

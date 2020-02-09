@@ -92,7 +92,10 @@ public class Book extends Entity {
         if (places != book.places) {
             return false;
         }
-        return date != null ? date.equals(book.date) : book.date == null;
+        if (date != null ? !date.equals(book.date) : book.date != null) {
+            return false;
+        }
+        return id == book.id;
     }
 
     @Override

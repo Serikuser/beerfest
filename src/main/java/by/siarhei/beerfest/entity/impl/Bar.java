@@ -109,7 +109,10 @@ public class Bar extends Entity {
         if (foodName != null ? !foodName.equals(bar.foodName) : bar.foodName != null) {
             return false;
         }
-        return beerName != null ? beerName.equals(bar.beerName) : bar.beerName == null;
+        if (beerName != null ? !beerName.equals(bar.beerName) : bar.beerName != null) {
+            return false;
+        }
+        return id == bar.id;
     }
 
     @Override
