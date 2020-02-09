@@ -27,6 +27,7 @@ public class ConnectionProviderTest {
         //given
         connection = ConnectionProvider.getConnection();
         //when
+
         Class<?> actual = connection.getClass();
         Class<?> expected = ProxyConnection.class;
         //then
