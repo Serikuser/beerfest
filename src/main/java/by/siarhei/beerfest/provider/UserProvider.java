@@ -1,4 +1,4 @@
-package by.siarhei.beerfest.entity.impl.provider;
+package by.siarhei.beerfest.provider;
 
 import by.siarhei.beerfest.entity.RoleType;
 import by.siarhei.beerfest.entity.StatusType;

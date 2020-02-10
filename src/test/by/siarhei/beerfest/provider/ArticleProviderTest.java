@@ -1,7 +1,6 @@
 package by.siarhei.beerfest.provider;
 
 import by.siarhei.beerfest.entity.impl.Article;
-import by.siarhei.beerfest.entity.impl.provider.ArticleProvider;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
