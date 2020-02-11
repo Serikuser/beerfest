@@ -5,15 +5,11 @@ import by.siarhei.beerfest.connection.ConnectionPool;
 import java.sql.Connection;
 
 public abstract class DaoTransaction {
-    protected Connection connection;
-    boolean inTransaction;
+    private Connection connection;
+    protected boolean inTransaction;
 
     public void setInTransaction() {
         this.inTransaction = true;
-    }
-
-    protected boolean isInTransaction() {
-        return inTransaction;
     }
 
     protected Connection getConnection() {

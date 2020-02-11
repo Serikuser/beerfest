@@ -2,6 +2,9 @@
          pageEncoding="utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isErrorPage="true" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<fmt:setLocale value="${locale}" scope="session" />
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <title>Error 404 (Not Found)!!1</title>
@@ -14,9 +17,7 @@
 <p><b>404.</b>
     <ins>Упс...</ins>
 </p>
-<p>Мы не нашли запрашиваемый адресс
-<p>может вам уже хватит?:)</p>
-<p>или нам... ик...</p>
+<p><fmt:message key="error.404.text"/></p>
 </p>
 </body>
 </html>

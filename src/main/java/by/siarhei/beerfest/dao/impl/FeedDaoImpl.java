@@ -39,7 +39,7 @@ public class FeedDaoImpl extends DaoTransaction implements FeedDao {
         } catch (SQLException e) {
             throw new DaoException("Cant update new list", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -68,7 +68,7 @@ public class FeedDaoImpl extends DaoTransaction implements FeedDao {
         } catch (SQLException e) {
             throw new DaoException("Cannot delete news", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -91,7 +91,7 @@ public class FeedDaoImpl extends DaoTransaction implements FeedDao {
             throw new DaoException(String.format("Cannot insert new news: %s", article), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }

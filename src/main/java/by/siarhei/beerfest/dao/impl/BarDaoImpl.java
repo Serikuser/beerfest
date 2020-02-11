@@ -68,7 +68,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
         } catch (SQLException e) {
             throw new DaoException("Bar list cant be updated", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -114,7 +114,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cannot find beer id by name: %s", name), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -139,7 +139,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cannot find food id by name: %s", name), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -166,7 +166,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cannot insert new bar: %s", bar), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -189,7 +189,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cannot check is user : %s submission exists", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -216,7 +216,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
         } catch (SQLException e) {
             throw new DaoException("Cant find food list ", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -244,7 +244,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
         } catch (SQLException e) {
             throw new DaoException("Cant find beer list ", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -267,7 +267,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cannot insert new beer: %s", beerName), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -287,7 +287,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cannot insert new food: %s", foodName), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -310,7 +310,7 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
             throw new DaoException(String.format("Cant find bar id by user id %s", userId), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);

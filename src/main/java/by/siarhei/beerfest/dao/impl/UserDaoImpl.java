@@ -93,7 +93,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot find user by login: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -120,7 +120,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot check login/password exists: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -147,7 +147,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot check login/eMail exists exists: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -168,7 +168,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change password: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -187,7 +187,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change avatar: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -206,7 +206,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change status login: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -225,7 +225,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot change status id: %s", id), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -248,7 +248,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
         } finally {
             close(statement);
             close(resultSet);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -284,7 +284,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException("Cannot find users", e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -309,25 +309,25 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 user.setId(id);
-                int index = 2;
-                String login = resultSet.getString(index++);
+                int index = 1;
+                String login = resultSet.getString(++index);
                 user.setLogin(login);
-                String password = resultSet.getString(index++);
+                String password = resultSet.getString(++index);
                 user.setPassword(password);
-                String eMail = resultSet.getString(index++);
+                String eMail = resultSet.getString(++index);
                 user.setEmail(eMail);
-                String avatarUrl = resultSet.getString(index++);
+                String avatarUrl = resultSet.getString(++index);
                 user.setAvatarUrl(avatarUrl);
-                String role = resultSet.getString(index++);
+                String role = resultSet.getString(++index);
                 user.setRole(RoleType.valueOf(role.toUpperCase()));
-                String status = resultSet.getString(index);
+                String status = resultSet.getString(++index);
                 user.setStatus(StatusType.valueOf(status.toUpperCase()));
             }
         } catch (SQLException e) {
             throw new DaoException(String.format("Cannot find user by id: %s", id), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -362,7 +362,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
             throw new DaoException(String.format("Cannot insert new user: %s", user), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }

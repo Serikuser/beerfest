@@ -46,7 +46,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException(String.format("Cannot change status id: %s", id), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -77,7 +77,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException(String.format("Cannot find registration by token: %s", token), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -107,7 +107,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException("Cannot select expired tokens throws excpetion", e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -130,7 +130,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
         } catch (SQLException e) {
             throw new DaoException("Cannot delete registration", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -148,7 +148,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
         } catch (SQLException e) {
             throw new DaoException("Cannot delete registration", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -171,7 +171,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
             throw new DaoException(String.format("Cannot insert new registration: %s", registration), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }

@@ -61,7 +61,7 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
         } catch (SQLException e) {
             throw new DaoException("Cannot delete book", e);
         } finally {
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(statement);
@@ -95,7 +95,7 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
             throw new DaoException("Cannot find user book ", e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -128,7 +128,7 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
             throw new DaoException("Cannot find bar book ", e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);
@@ -153,7 +153,7 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
             throw new DaoException(String.format("Cannot insert new book: %s", book), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
         }
@@ -181,7 +181,7 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
             throw new DaoException(String.format("Cannot check users book exists: %s", login), e);
         } finally {
             close(statement);
-            if (!isInTransaction()) {
+            if (!inTransaction) {
                 close(connection);
             }
             close(resultSet);

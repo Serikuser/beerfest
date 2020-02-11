@@ -3,7 +3,7 @@ package by.siarhei.beerfest.command;
 public class Router {
     public enum TransitionType {
         FORWARD,
-        REDIRECT;
+        REDIRECT
     }
 
     private String uri;
@@ -34,9 +34,7 @@ public class Router {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         Router router = (Router) o;
-
         if (uri != null ? !uri.equals(router.uri) : router.uri != null) {
             return false;
         }
