@@ -38,17 +38,17 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
 
     @Override
     public List<Book> findAll() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Book findEntity(Long id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean delete(Book book) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class BookDaoImpl extends DaoTransaction implements BookDao {
 
     @Override
     public Book update(Book book) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

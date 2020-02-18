@@ -50,12 +50,12 @@ public class FeedDaoImpl extends DaoTransaction implements FeedDao {
 
     @Override
     public Article findEntity(Long id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean delete(Article article) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -99,6 +99,6 @@ public class FeedDaoImpl extends DaoTransaction implements FeedDao {
 
     @Override
     public Article update(Article article) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

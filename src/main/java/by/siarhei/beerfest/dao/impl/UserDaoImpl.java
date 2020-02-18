@@ -294,7 +294,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public List<User> findAll() throws DaoException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -337,7 +337,7 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public boolean delete(User user) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -370,6 +370,6 @@ public class UserDaoImpl extends DaoTransaction implements UserDao {
 
     @Override
     public User update(User user) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

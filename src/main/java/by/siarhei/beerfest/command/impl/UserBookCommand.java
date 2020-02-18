@@ -50,38 +50,45 @@ public class UserBookCommand implements ActionCommand {
             switch (roleType) {
                 case GUEST:
                     uri = ConfigurationManager.getProperty(JSP_GUEST_BOOK);
-                    try {
-                        long id = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
-                        List<Book> list = bookService.findUserBook(id);
-                        if (!list.isEmpty()) {
-                            content.setAttribute(ATTRIBUTE_BOOK, list);
-                        } else {
-                            content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_EMPTY, localeType));
-                        }
-                    } catch (ServiceException e) {
-                        content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_SERVER, localeType));
-                    }
+                    findGuestBook(content, localeType);
                     break;
                 case PARTICIPANT:
                     uri = ConfigurationManager.getProperty(JSP_PARTICIPANT_BOOK);
-                    try {
-                        long userId = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
-                        long barId = barService.findUserByBarId(userId);
-                        List<Book> list = bookService.finBarBook(barId);
-                        if (!list.isEmpty()) {
-                            content.setAttribute(ATTRIBUTE_BOOK, list);
-                        } else {
-                            content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_EMPTY, localeType));
-                        }
-                    } catch (ServiceException e) {
-                        content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_SERVER, localeType));
-                    }
+                    findParticipantBook(content, localeType);
                     break;
             }
-
         } else {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_JOKE, localeType));
         }
         return new Router(uri);
+    }
+
+    private void findGuestBook(SessionRequestContent content, LocaleType localeType) {
+        try {
+            long id = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
+            List<Book> list = bookService.findUserBook(id);
+            if (!list.isEmpty()) {
+                content.setAttribute(ATTRIBUTE_BOOK, list);
+            } else {
+                content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_EMPTY, localeType));
+            }
+        } catch (ServiceException e) {
+            content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_SERVER, localeType));
+        }
+    }
+
+    private void findParticipantBook(SessionRequestContent content, LocaleType localeType) {
+        try {
+            long userId = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
+            long barId = barService.findUserByBarId(userId);
+            List<Book> list = bookService.finBarBook(barId);
+            if (!list.isEmpty()) {
+                content.setAttribute(ATTRIBUTE_BOOK, list);
+            } else {
+                content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_EMPTY, localeType));
+            }
+        } catch (ServiceException e) {
+            content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE_SERVER, localeType));
+        }
     }
 }

@@ -79,22 +79,22 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
 
     @Override
     public Bar findEntity(Long id) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean delete(Bar entity) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(Long id) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Bar update(Bar entity) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

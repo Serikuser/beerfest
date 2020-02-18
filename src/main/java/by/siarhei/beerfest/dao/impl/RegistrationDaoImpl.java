@@ -25,12 +25,12 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
 
     @Override
     public List<Registration> findAll() throws DaoException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Registration findEntity(Long id) throws DaoException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
 
     @Override
     public boolean delete(Registration registration) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -179,6 +179,6 @@ public class RegistrationDaoImpl extends DaoTransaction implements RegistrationD
 
     @Override
     public Registration update(Registration registration) throws DaoException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
