@@ -58,7 +58,6 @@ public class UploadServlet extends HttpServlet {
         languageService = new LanguageServiceImpl();
     }
 
-    // FIXME: 19.01.2020
     @Override
     protected void doPost(HttpServletRequest request
             , HttpServletResponse response)

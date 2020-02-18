@@ -31,35 +31,38 @@ public class ProfileCommand implements ActionCommand {
     private LanguageService languageService;
     private BarService barService;
 
-    public ProfileCommand(){
+    public ProfileCommand() {
         languageService = new LanguageServiceImpl();
         barService = new BarServiceImpl();
     }
 
     @Override
-    public Router execute(SessionRequestContent content){
+    public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
         LocaleType localeType = languageService.defineLocale(content);
         if (content.getSessionAttribute(ATTRIBUTE_USER_ROLE) != RoleType.UNAUTHORIZED) {
             RoleType roleType = (RoleType) content.getSessionAttribute(ATTRIBUTE_USER_ROLE);
             uri = ConfigurationManager.getProperty(roleType.getPage());
-            // TODO: 18.01.2020 remove it to listener 
             if (roleType == RoleType.PARTICIPANT) {
-                Map<Long, String> beerList = new HashMap<>();
-                Map<Long, String> foodList = new HashMap<>();
-                try {
-                    beerList = barService.updateBeerList();
-                    foodList = barService.updateFoodList();
-                } catch (ServiceException e) {
-                    logger.error(String.format("Cant update beer/food list throws exception: %s", e));
-                    content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE,localeType));
-                }
-                content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
-                content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
+                fillBeerFoodList(content, localeType);
             }
         } else {
-            content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE,localeType));
+            content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_MESSAGE, localeType));
         }
         return new Router(uri);
+    }
+
+    private void fillBeerFoodList(SessionRequestContent content, LocaleType localeType) {
+        Map<Long, String> beerList = new HashMap<>();
+        Map<Long, String> foodList = new HashMap<>();
+        try {
+            beerList = barService.updateBeerList();
+            foodList = barService.updateFoodList();
+        } catch (ServiceException e) {
+            logger.error(String.format("Cant update beer/food list throws exception: %s", e));
+            content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
+        }
+        content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
+        content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
     }
 }

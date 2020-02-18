@@ -78,7 +78,20 @@ public class SubmitBarCommand implements ActionCommand {
         } else {
             content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(SIGNUP_ERROR_JOKE, localeType));
         }
-        // TODO: 17.01.2020 remove it to session listener
+        fillBeerFoodList(content, localeType);
+        return new Router(uri);
+    }
+
+
+    private boolean isEnterDataExist(SessionRequestContent content) {
+        return content.getParameter(PARAMETER_BAR_NAME) != null
+                && content.getParameter(PARAMETER_PLACES) != null
+                && content.getParameter(PARAMETER_BEER_TYPE) != null
+                && content.getParameter(PARAMETER_FOOD_TYPE) != null
+                && content.getParameter(PARAMETER_BAR_DESCRIPTION) != null;
+    }
+
+    private void fillBeerFoodList(SessionRequestContent content, LocaleType localeType) {
         Map<Long, String> beerList = new HashMap<>();
         Map<Long, String> foodList = new HashMap<>();
         try {
@@ -90,15 +103,5 @@ public class SubmitBarCommand implements ActionCommand {
         }
         content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
         content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
-        return new Router(uri);
-    }
-
-
-    private boolean isEnterDataExist(SessionRequestContent content) {
-        return content.getParameter(PARAMETER_BAR_NAME) != null
-                && content.getParameter(PARAMETER_PLACES) != null
-                && content.getParameter(PARAMETER_BEER_TYPE) != null
-                && content.getParameter(PARAMETER_FOOD_TYPE) != null
-                && content.getParameter(PARAMETER_BAR_DESCRIPTION) != null;
     }
 }

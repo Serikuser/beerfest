@@ -53,7 +53,6 @@ public class MakeBookCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
-    // FIXME: 14.01.2020 validation
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
@@ -80,15 +79,7 @@ public class MakeBookCommand implements ActionCommand {
             } catch (ServiceException e) {
                 content.setAttribute(ATTRIBUTE_MESSAGE, MessageManager.getProperty(MAKE_BOOK_ERROR, localeType));
             }
-            // TODO: 17.01.2020 remove it to listener
-            List<Bar> list = new ArrayList<>();
-            try {
-                list = barService.updateParticipants();
-            } catch (ServiceException e) {
-                logger.error(String.format("Cant update beer/food list throws exception: %s", e));
-                content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
-            }
-            content.setAttribute(ATTRIBUTE_PARTICIPANTS, list);
+            fillParticipantList(content, localeType);
         } else {
             content.setAttribute(ATTRIBUTE_INDEX_MESSAGE, MessageManager.getProperty(ERROR_JOKE, localeType));
         }
@@ -100,5 +91,16 @@ public class MakeBookCommand implements ActionCommand {
         return content.getParameter(PARAMETER_BAR_ID) != null
                 && content.getParameter(PARAMETER_BOOK_PLACES) != null
                 && content.getParameter(PARAMETER_BOOK_DATE) != null;
+    }
+
+    private void fillParticipantList(SessionRequestContent content, LocaleType localeType) {
+        List<Bar> list = new ArrayList<>();
+        try {
+            list = barService.updateParticipants();
+        } catch (ServiceException e) {
+            logger.error(String.format("Cant update beer/food list throws exception: %s", e));
+            content.setAttribute(ATTRIBUTE_BOOK_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
+        }
+        content.setAttribute(ATTRIBUTE_PARTICIPANTS, list);
     }
 }

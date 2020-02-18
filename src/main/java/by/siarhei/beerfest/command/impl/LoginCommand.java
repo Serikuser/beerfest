@@ -99,19 +99,8 @@ public class LoginCommand implements ActionCommand {
 
     private void fillRequest(SessionRequestContent content, User user, LocaleType localeType) {
         RoleType roleType = user.getRole();
-        // TODO: 18.01.2020 remove it to listener
         if (roleType == RoleType.PARTICIPANT) {
-            Map<Long, String> beerList = new HashMap<>();
-            Map<Long, String> foodList = new HashMap<>();
-            try {
-                beerList = barService.updateBeerList();
-                foodList = barService.updateFoodList();
-            } catch (ServiceException e) {
-                logger.error(String.format("Cant update beer/food list throws exception: %s", e));
-                content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
-            }
-            content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
-            content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
+            fillBeerFoodList(content, localeType);
         }
         content.setAttribute(ATTRIBUTE_USER_LOGIN, user.getLogin());
         content.setAttribute(ATTRIBUTE_USER_AVATAR_URL, user.getAvatarUrl());
@@ -128,5 +117,19 @@ public class LoginCommand implements ActionCommand {
         RoleType roleType = user.getRole();
         content.setSessionAttribute(ATTRIBUTE_USER_ROLE, roleType);
         content.setSessionAttribute(ATTRIBUTE_USER_STATUS, user.getStatus());
+    }
+
+    private void fillBeerFoodList(SessionRequestContent content, LocaleType localeType) {
+        Map<Long, String> beerList = new HashMap<>();
+        Map<Long, String> foodList = new HashMap<>();
+        try {
+            beerList = barService.updateBeerList();
+            foodList = barService.updateFoodList();
+        } catch (ServiceException e) {
+            logger.error(String.format("Cant update beer/food list throws exception: %s", e));
+            content.setAttribute(ATTRIBUTE_BAR_ERROR_MESSAGE, MessageManager.getProperty(ERROR_UPDATE_MESSAGE, localeType));
+        }
+        content.setAttribute(ATTRIBUTE_BEER_LIST, beerList);
+        content.setAttribute(ATTRIBUTE_FOOD_LIST, foodList);
     }
 }
