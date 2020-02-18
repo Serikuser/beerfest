@@ -14,32 +14,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 public class RegistrationServiceImpl implements RegistrationService {
     private static final Logger logger = LogManager.getLogger();
 
-    private static RegistrationServiceImpl instance;
-    private static final long MINUTES_15 = 900_000L;
-    private static final long HOURS_2 = 7_200_000L;
-    private TimerTask expiredTokenObserver;
-    private TimerTask expiredDateObserver;
     private RegistrationDao registrationDao;
 
-    private RegistrationServiceImpl() {
+    public RegistrationServiceImpl() {
         registrationDao = new RegistrationDaoImpl();
-        checkExpiredTokens();
-        checkExpiredDate();
-    }
-
-    public static RegistrationServiceImpl getInstance() {
-        if (instance == null) {
-            instance = new RegistrationServiceImpl();
-        }
-        return instance;
     }
 
     @Override
@@ -91,49 +74,5 @@ public class RegistrationServiceImpl implements RegistrationService {
     private void sendEmail(String token, String eMail) {
         MailThread mailOperator = new MailThread(token, eMail);
         mailOperator.start();
-    }
-
-    private void checkExpiredTokens() {
-        if (expiredTokenObserver == null) {
-            expiredTokenObserver = new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        registrationDao.deleteExpired();
-                    } catch (DaoException e) {
-                        logger.error("Cannot delete expired tokens ", e);
-                    }
-                }
-            };
-            logger.info("Expired tokens observer started. Clean up every two hours");
-            Timer timer = new Timer("Expired tokens observer");
-            timer.scheduleAtFixedRate(expiredTokenObserver, HOURS_2, HOURS_2);
-        }
-    }
-
-    private void checkExpiredDate() {
-        if (expiredDateObserver == null) {
-            expiredDateObserver = new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        List<Registration> list = registrationDao.findAllNotExpiredTokens();
-                        if (!list.isEmpty()) {
-                            for (Registration registration : list) {
-                                if (registration.getDate().getTime() + MINUTES_15 < System.currentTimeMillis()) {
-                                    long id = registration.getId();
-                                    registrationDao.updateExpiredByToken(id, true);
-                                }
-                            }
-                        }
-                    } catch (DaoException e) {
-                        logger.error("Cannot update tokens ", e);
-                    }
-                }
-            };
-            logger.info("Expired date observer started. Clean up every fifteen minutes");
-            Timer timer = new Timer("Expired date observer");
-            timer.scheduleAtFixedRate(expiredDateObserver, MINUTES_15, MINUTES_15);
-        }
     }
 }

@@ -37,7 +37,7 @@ public class SignupCommand implements ActionCommand {
     public SignupCommand(){
         languageService = new LanguageServiceImpl();
         accountService = new AccountServiceImpl();
-        registrationService = RegistrationServiceImpl.getInstance();
+        registrationService = new RegistrationServiceImpl();
     }
 
     @Override
