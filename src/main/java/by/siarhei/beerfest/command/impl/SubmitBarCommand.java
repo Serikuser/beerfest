@@ -18,6 +18,13 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing bar submission logic for {@code RoleType} Participant.
+ *
+ * using {@code LanguageService}.
+ * using {@code BarService}
+ */
 public class SubmitBarCommand implements ActionCommand {
     private static final Logger logger = LogManager.getLogger();
 
@@ -40,7 +47,15 @@ public class SubmitBarCommand implements ActionCommand {
     private static final String PARAMETER_BAR_DESCRIPTION = "barDescription";
     private static final String PARAMETER_PLACES = "places";
     private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BarService} used to define bar data logic.
+     */
     private BarService barService;
 
     public SubmitBarCommand() {
@@ -48,6 +63,13 @@ public class SubmitBarCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method validate bar data in {@code BarService}
+     * and forwarding user to profile.jsp based on {@code RoleType}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
@@ -82,7 +104,12 @@ public class SubmitBarCommand implements ActionCommand {
         return new Router(uri);
     }
 
-
+    /**
+     * Call method check entered data for existence
+     *
+     * @param content object that contain request, response and session information.
+     * @return boolean value is entered data exists.
+     */
     private boolean isEnterDataExist(SessionRequestContent content) {
         return content.getParameter(PARAMETER_BAR_NAME) != null
                 && content.getParameter(PARAMETER_PLACES) != null
@@ -91,6 +118,12 @@ public class SubmitBarCommand implements ActionCommand {
                 && content.getParameter(PARAMETER_BAR_DESCRIPTION) != null;
     }
 
+    /**
+     * Call method filled request by beef/food data after forward to profile.jsp
+     *
+     * @param content object that contain request, response and session information.
+     * @param localeType object that contains property path based on user's locale
+     */
     private void fillBeerFoodList(SessionRequestContent content, LocaleType localeType) {
         Map<Long, String> beerList = new HashMap<>();
         Map<Long, String> foodList = new HashMap<>();

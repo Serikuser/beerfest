@@ -18,6 +18,13 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing participants display logic.
+ *
+ * using {@code LanguageService}.
+ * using {@code BarService}
+ */
 public class ParticipantListUpdateCommand implements ActionCommand {
     private static final Logger logger = LogManager.getLogger();
 
@@ -25,7 +32,15 @@ public class ParticipantListUpdateCommand implements ActionCommand {
     private static final String ATTRIBUTE_PARTICIPANTS = "participants";
     private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
     private static final String ATTRIBUTE_ERROR_MESSAGE = "bookErrorMessage";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BarService} used to define displaying bar data logic.
+     */
     private BarService barService;
 
     public ParticipantListUpdateCommand(){
@@ -33,6 +48,12 @@ public class ParticipantListUpdateCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method adding participants list to request and forwards it to {@code participants.jsp}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content){
         String uri = ConfigurationManager.getProperty(JSP_PARTICIPANTS);

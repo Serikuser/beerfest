@@ -18,6 +18,13 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing news viewing from database.
+ *
+ * using {@code LanguageService}.
+ * using {@code FeedUpdateService}
+ */
 public class FeedUpdateCommand implements ActionCommand {
     private static final Logger logger = LogManager.getLogger();
 
@@ -25,7 +32,15 @@ public class FeedUpdateCommand implements ActionCommand {
     private static final String JSP_FEED = "path.page.feed";
     private static final String ATTRIBUTE_FEED = "feed";
     private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code FeedUpdateService} used to define news display logic.
+     */
     private FeedUpdateService feedUpdateService;
 
     public FeedUpdateCommand(){
@@ -33,6 +48,12 @@ public class FeedUpdateCommand implements ActionCommand {
         feedUpdateService = new FeedUpdateServiceImpl();
     }
 
+    /**
+     * Call method getting news feed from database and forwarding user to {@code feed.jsp}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_FEED);

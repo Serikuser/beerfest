@@ -16,6 +16,12 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is making booking delete logic for {@code RoleType} Guest
+ * using {@code LanguageService}.
+ * using {@code BookService}
+ */
 public class BookDeleteCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String JSP_GUEST_BOOK = "path.page.guest.book";
@@ -30,7 +36,14 @@ public class BookDeleteCommand implements ActionCommand {
     private static final String ERROR_MESSAGE_EMPTY = "message.book.empty.error";
     private static final String ERROR_MESSAGE_SERVER = "message.book.server.error";
 
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BookService} used to define booking logic.
+     */
     private BookService bookService;
 
     public BookDeleteCommand() {
@@ -38,6 +51,14 @@ public class BookDeleteCommand implements ActionCommand {
         bookService = new BookServiceImpl();
     }
 
+    /**
+     * Call method checking role type from {@code Session Request Content}
+     * and delete user's {@code Book} from database
+     * forwards user to {@code book.jsp}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);

@@ -16,6 +16,13 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing user's display logic to {@code RoleType} Admin with pagination.
+ *
+ * using {@code LanguageService}.
+ * using {@code BarService}
+ */
 public class SelectUserListCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String JSP_ADMIN_USERS = "path.page.admin.users";
@@ -28,7 +35,14 @@ public class SelectUserListCommand implements ActionCommand {
     private static final String ATTRIBUTE_MAX_VALUE = "maxValue";
     private static final String PARAMETER_PAGE_NUMBER = "pageNumber";
 
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code AccountService} used to process pagination logic and viewing users.
+     */
     private AccountService accountService;
 
     public SelectUserListCommand() {
@@ -36,6 +50,14 @@ public class SelectUserListCommand implements ActionCommand {
         accountService = new AccountServiceImpl();
     }
 
+    /**
+     * Call method gets pages count from {@code AccountService} and sets it to request,
+     * gets called page number fromm request and gets user's list based on it,
+     * forwards user to {@code userList.jsp}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);

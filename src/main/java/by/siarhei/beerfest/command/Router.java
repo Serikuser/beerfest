@@ -1,14 +1,30 @@
 package by.siarhei.beerfest.command;
 
+/**
+ * The {@code Router} class represents uri to resource and routing type.
+ */
 public class Router {
+    /**
+     * Inner enum of routing types.
+     */
     public enum TransitionType {
         FORWARD,
         REDIRECT
     }
-
+    /**
+     * The value is used for resource uri storage.
+     */
     private String uri;
+
+    /**
+     * The value is used for routing type storage.
+     */
     private TransitionType type;
 
+    /**
+     * Default class constructor; it creates a new Router object with the given url and
+     * default routing type - Forward.
+     */
     public Router(String uri) {
         this.uri = uri;
         this.type = TransitionType.FORWARD;

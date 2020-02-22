@@ -22,6 +22,14 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing login user logic.
+ *
+ * using {@code LanguageService}.
+ * using {@code AccountService}
+ * using {@code BarService}
+ */
 public class LoginCommand implements ActionCommand {
     private static final Logger logger = LogManager.getLogger();
 
@@ -44,8 +52,20 @@ public class LoginCommand implements ActionCommand {
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
     private static final String ATTRIBUTE_BEER_LIST = "beerMap";
     private static final String ATTRIBUTE_FOOD_LIST = "foodMap";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code AccountService} used to define login logic.
+     */
     private AccountService accountService;
+
+    /**
+     * {@code BarService} used to define displaying bar data logic for {@code RoleType} Participant.
+     */
     private BarService barService;
 
     public LoginCommand() {
@@ -54,6 +74,16 @@ public class LoginCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method checking login data, and defines login logic based on {@code StatusType}
+     * all {@code StatusType} Active, forwarding on profile.jsp based on {@code RoleType}
+     * and get seession filled by needed values, special feed logic to {@code RoleType} Participant
+     * by adding bar data to request.
+     * all not {@code StatusType} Active got forwarding to {@code main.jsp} with specified error message.
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
@@ -92,11 +122,24 @@ public class LoginCommand implements ActionCommand {
         return new Router(uri);
     }
 
+    /**
+     * Call method check entered data for existence
+     *
+     * @param content object that contain request, response and session information.
+     * @return boolean value is entered data exists.
+     */
     private boolean isEnterDataExist(SessionRequestContent content) {
         return content.getParameter(PARAMETER_USERNAME) != null
                 && content.getParameter(PARAMETER_PASSWORD) != null;
     }
 
+    /**
+     * Call method filled request by needed data with special logic for {@code RoleType} Participant
+     *
+     * @param content object that contain request, response and session information.
+     * @param user object that contains all user information based on data from database.
+     * @param localeType object that contains property file path based on user's locale.
+     */
     private void fillRequest(SessionRequestContent content, User user, LocaleType localeType) {
         RoleType roleType = user.getRole();
         if (roleType == RoleType.PARTICIPANT) {
@@ -109,6 +152,12 @@ public class LoginCommand implements ActionCommand {
         content.setAttribute(ATTRIBUTE_USER_STATUS, user.getStatus());
     }
 
+    /**
+     * Call method filled session by needed data
+     *
+     * @param content object that contain request, response and session information.
+     * @param user object that contains all user information based on data from database
+     */
     private void fillSession(SessionRequestContent content, User user) {
         content.setSessionAttribute(ATTRIBUTE_ACCOUNT_ID, user.getId());
         content.setSessionAttribute(ATTRIBUTE_USER_LOGIN, user.getLogin());
@@ -119,6 +168,12 @@ public class LoginCommand implements ActionCommand {
         content.setSessionAttribute(ATTRIBUTE_USER_STATUS, user.getStatus());
     }
 
+    /**
+     * Call method filled request for {@code RoleType} Participant with bar data
+     *
+     * @param content object that contain request, response and session information.
+     * @param localeType object that contains property path based on user's locale
+     */
     private void fillBeerFoodList(SessionRequestContent content, LocaleType localeType) {
         Map<Long, String> beerList = new HashMap<>();
         Map<Long, String> foodList = new HashMap<>();

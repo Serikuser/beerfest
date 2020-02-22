@@ -13,6 +13,13 @@ import by.siarhei.beerfest.service.impl.BarServiceImpl;
 import by.siarhei.beerfest.service.impl.LanguageServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing adding bar data into database by {@code RoleType} Admin
+ *
+ * using {@code LanguageService}.
+ * using {@code BarService}
+ */
 public class SubmitFoodCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String ATTRIBUTE_USER_ROLE = "userRole";
@@ -21,7 +28,15 @@ public class SubmitFoodCommand implements ActionCommand {
     private static final String SUBMIT_FOOD_SUCCESS = "message.submit.food.success";
     private static final String SUBMIT_FOOD_ERROR = "message.submit.food.error";
     private static final String SIGNUP_ERROR_JOKE = "message.signup.error.joke";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BarService} used to define adding bar data logic.
+     */
     private BarService barService;
 
     public SubmitFoodCommand() {
@@ -29,6 +44,14 @@ public class SubmitFoodCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method checking {@code RoleType} and process data adding logic in {@code BarService}
+     * forwards user to profile.jsp based on {@code RoleType}
+     * command has vice validations due to the user's trusted role
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);

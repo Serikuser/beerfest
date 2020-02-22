@@ -18,6 +18,14 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
 
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing user booking logic.
+ *
+ * using {@code LanguageService}.
+ * using {@code BookService}
+ * using {@code BarService}
+ */
 public class UserBookCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String JSP_GUEST_BOOK = "path.page.guest.book";
@@ -31,8 +39,19 @@ public class UserBookCommand implements ActionCommand {
     private static final String ERROR_MESSAGE_EMPTY = "message.book.empty.error";
     private static final String ERROR_MESSAGE_SERVER = "message.book.server.error";
 
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BookService} used to define booking logic.
+     */
     private BookService bookService;
+
+    /**
+     * {@code BarService} used to define users bar booked logic.
+     */
     private BarService barService;
 
     public UserBookCommand() {
@@ -41,6 +60,14 @@ public class UserBookCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method makes book display logic based on {@code RoleType}
+     * forwards {@code RoleType} Guest: to {@code /guest/book.jsp}
+     * forwards {@code RoleType} Participant: to {@code /participant/book.jsp}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
@@ -63,6 +90,12 @@ public class UserBookCommand implements ActionCommand {
         return new Router(uri);
     }
 
+    /**
+     * Call method makes book display logic for {@code RoleType} Guest
+     *
+     * @param content object that contain request, response and session information.
+     * @param localeType object that contains property file path based on user's locale.
+     */
     private void findGuestBook(SessionRequestContent content, LocaleType localeType) {
         try {
             long id = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());
@@ -77,6 +110,12 @@ public class UserBookCommand implements ActionCommand {
         }
     }
 
+    /**
+     * Call method makes book display logic for {@code RoleType} Participant
+     *
+     * @param content object that contain request, response and session information.
+     * @param localeType object that contains property file path based on user's locale.
+     */
     private void findParticipantBook(SessionRequestContent content, LocaleType localeType) {
         try {
             long userId = Long.parseLong(content.getSessionAttribute(ATTRIBUTE_ACCOUNT_ID).toString());

@@ -1,5 +1,8 @@
 package by.siarhei.beerfest.command;
 
+/**
+ * Contain objects that contain action message property file path.
+ */
 public enum LocaleType {
     RU("message_ru"),
     EN("message_en"),

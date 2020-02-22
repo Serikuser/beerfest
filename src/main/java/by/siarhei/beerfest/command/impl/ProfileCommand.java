@@ -18,6 +18,13 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing user's profile display logic.
+ *
+ * using {@code LanguageService}.
+ * using {@code BarService}
+ */
 public class ProfileCommand implements ActionCommand {
     private static final Logger logger = LogManager.getLogger();
 
@@ -28,7 +35,15 @@ public class ProfileCommand implements ActionCommand {
     private static final String ATTRIBUTE_FOOD_LIST = "foodMap";
     private static final String ERROR_UPDATE_MESSAGE = "message.update.error";
     private static final String ERROR_MESSAGE = "message.profile.error";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BarService} used to define displaying bar data logic for {@code RoleType} Participant.
+     */
     private BarService barService;
 
     public ProfileCommand() {
@@ -36,6 +51,12 @@ public class ProfileCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method forwards user to profile.jsp based on {@code RoleType}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
@@ -52,6 +73,12 @@ public class ProfileCommand implements ActionCommand {
         return new Router(uri);
     }
 
+    /**
+     * Call method filled request for {@code RoleType} Participant with bar data
+     *
+     * @param content object that contain request, response and session information.
+     * @param localeType object that contains property path based on user's locale
+     */
     private void fillBeerFoodList(SessionRequestContent content, LocaleType localeType) {
         Map<Long, String> beerList = new HashMap<>();
         Map<Long, String> foodList = new HashMap<>();

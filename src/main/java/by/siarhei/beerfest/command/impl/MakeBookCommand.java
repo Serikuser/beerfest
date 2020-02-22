@@ -22,6 +22,14 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing login user logic.
+ *
+ * using {@code LanguageService}.
+ * using {@code BookService}
+ * using {@code BarService}
+ */
 public class MakeBookCommand implements ActionCommand {
     private static final Logger logger = LogManager.getLogger();
 
@@ -43,8 +51,20 @@ public class MakeBookCommand implements ActionCommand {
     private static final String PARAMETER_BAR_ID = "barId";
     private static final String PARAMETER_BOOK_PLACES = "bookPlaces";
     private static final String PARAMETER_BOOK_DATE = "bookDate";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code BookService} used to define booking logic.
+     */
     private BookService bookService;
+
+    /**
+     * {@code BarService} used to define displaying bar data logic for {@code RoleType} Guest.
+     */
     private BarService barService;
 
     public MakeBookCommand() {
@@ -53,6 +73,14 @@ public class MakeBookCommand implements ActionCommand {
         barService = new BarServiceImpl();
     }
 
+    /**
+     * Call method checking user's book on max value = 2, if limit is not exhausted
+     * makes book for user based on user id and bar id. Otherwise setting to user error message
+     * forwards user to {@code participants.jsp}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
@@ -87,12 +115,23 @@ public class MakeBookCommand implements ActionCommand {
         return new Router(uri);
     }
 
+    /**
+     * Call method check entered data for existence
+     *
+     * @param content object that contain request, response and session information.
+     * @return boolean value is entered data exists.
+     */
     private boolean isEnterDataExist(SessionRequestContent content) {
         return content.getParameter(PARAMETER_BAR_ID) != null
                 && content.getParameter(PARAMETER_BOOK_PLACES) != null
                 && content.getParameter(PARAMETER_BOOK_DATE) != null;
     }
 
+    /**
+     * Call method filling bar date to display it to user after making book
+     *
+     * @param content object that contain request, response and session information..
+     */
     private void fillParticipantList(SessionRequestContent content, LocaleType localeType) {
         List<Bar> list = new ArrayList<>();
         try {

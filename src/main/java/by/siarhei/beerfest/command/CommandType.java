@@ -2,6 +2,9 @@ package by.siarhei.beerfest.command;
 
 import by.siarhei.beerfest.command.impl.*;
 
+/**
+ * Contain objects that contain action command.
+ */
 public enum CommandType {
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand()),

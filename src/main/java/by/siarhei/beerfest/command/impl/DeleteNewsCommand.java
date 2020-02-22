@@ -17,6 +17,13 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is processing news delete logic.
+ *
+ * using {@code LanguageService}.
+ * using {@code FeedUpdateService}
+ */
 public class DeleteNewsCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String JSP_FEED = "path.page.feed";
@@ -28,13 +35,28 @@ public class DeleteNewsCommand implements ActionCommand {
     private static final String ERROR_MESSAGE_JOKE = "message.signup.error.joke";
     private static final String ERROR_MESSAGE_SERVER = "message.news.server.delete.error";
 
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code FeedUpdateService} used to define news display logic.
+     */
     private FeedUpdateService feedUpdateService;
 
     public DeleteNewsCommand(){
         languageService = new LanguageServiceImpl();
         feedUpdateService = new FeedUpdateServiceImpl();
     }
+
+    /**
+     * Call method checking user role token from {@code Session Request Content}
+     * and deletes news based on newsId taken from request.
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);

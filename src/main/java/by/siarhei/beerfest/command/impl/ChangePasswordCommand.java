@@ -13,6 +13,15 @@ import by.siarhei.beerfest.service.impl.AccountServiceImpl;
 import by.siarhei.beerfest.service.impl.LanguageServiceImpl;
 import by.siarhei.beerfest.servlet.SessionRequestContent;
 
+/**
+ * Realization of {@code ActionCommand} interface.
+ * Command is making password changes logic for authorized users
+ * based on users's login and eMail from session and new password from request in MD5 encryption.
+ * It is understood that the password is already encoded.
+ *
+ * using {@code LanguageService}.
+ * using {@code AccountService}
+ */
 public class ChangePasswordCommand implements ActionCommand {
     private static final String JSP_MAIN = "path.page.main";
     private static final String PARAMETER_NEW_PASSWORD = "newPassword";
@@ -22,7 +31,15 @@ public class ChangePasswordCommand implements ActionCommand {
     private static final String ATTRIBUTE_MESSAGE = "errorMessage";
     private static final String SUCCESS_MESSAGE = "message.change.password.success";
     private static final String ERROR_MESSAGE = "message.change.password.error";
+
+    /**
+     * {@code LanguageService} used to display messages based on user's locale.
+     */
     private LanguageService languageService;
+
+    /**
+     * {@code AccountService} used to define account logic.
+     */
     private AccountService accountService;
 
     public ChangePasswordCommand(){
@@ -31,6 +48,14 @@ public class ChangePasswordCommand implements ActionCommand {
 
     }
 
+    /**
+     * Call method checking role type from {@code Session Request Content}
+     * and changes user's password in database password cakes already encrypted.
+     * forwards user to profile.jsp based on {@code RoleType}
+     *
+     * @param content object that contain request, response and session information.
+     * @return {@code Router} with forward routing type.
+     */
     @Override
     public Router execute(SessionRequestContent content) {
         String uri = ConfigurationManager.getProperty(JSP_MAIN);
