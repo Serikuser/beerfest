@@ -98,8 +98,8 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
     }
 
     @Override
-    public int findBeerIdByName(String name) throws DaoException {
-        int id = 0;
+    public long findBeerIdByName(String name) throws DaoException {
+        long id = 0;
         Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -123,8 +123,8 @@ public class BarDaoImpl extends DaoTransaction implements BarDao {
     }
 
     @Override
-    public int findFoodIdByName(String name) throws DaoException {
-        int id = 0;
+    public long findFoodIdByName(String name) throws DaoException {
+        long id = 0;
         Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
