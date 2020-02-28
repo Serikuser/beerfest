@@ -1,4 +1,4 @@
-package by.siarhei.beerfest.observer;
+package by.siarhei.beerfest.job;
 
 import by.siarhei.beerfest.dao.RegistrationDao;
 import by.siarhei.beerfest.dao.impl.RegistrationDaoImpl;

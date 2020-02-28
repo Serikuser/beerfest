@@ -1,7 +1,7 @@
 package by.siarhei.beerfest.listener;
 
 import by.siarhei.beerfest.connection.ConnectionPool;
-import by.siarhei.beerfest.observer.RegistrationTokensObserver;
+import by.siarhei.beerfest.job.RegistrationTokensJob;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +17,7 @@ public class InitializationListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ConnectionPool connectionPool = ConnectionPool.INSTANCE;
         logger.info(String.format("%s is on duty ", connectionPool.toString()));
-        RegistrationTokensObserver registrationTokensObserver = RegistrationTokensObserver.getInstance();
+        RegistrationTokensJob registrationTokensJob = RegistrationTokensJob.getInstance();
     }
 
     @Override
