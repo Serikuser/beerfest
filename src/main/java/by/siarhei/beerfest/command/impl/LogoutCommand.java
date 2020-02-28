@@ -12,7 +12,7 @@ import by.siarhei.beerfest.servlet.SessionRequestContent;
  */
 public class LogoutCommand implements ActionCommand {
 
-    private static final String JSP_INDEX = "path.page.index";
+    private static final String GET_JSP_INDEX = "get.page.jsp.index";
 
     /**
      * Call method defines logout logic by setting invalidate session flag on true in {@code SessionRequestContent}
@@ -23,7 +23,7 @@ public class LogoutCommand implements ActionCommand {
      */
     @Override
     public Router execute(SessionRequestContent content){
-        String uri = ConfigurationManager.getProperty(JSP_INDEX);
+        String uri = ConfigurationManager.getProperty(GET_JSP_INDEX);
         content.invalidateSession();
         Router router = new Router(uri);
         router.setRedirect();
